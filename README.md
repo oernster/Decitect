@@ -235,7 +235,7 @@ Fulcrum is free and stays free. There is no paid tier, no licence key and no
 feature held back behind a donation. If it has saved you time or simply been
 useful, a donation supports its maintenance and continued development.
 
-<a href="https://www.paypal.com/ncp/payment/URFW8QCB4GGZC"><img src="docs/donate.png" alt="Donate to Fulcrum" width="120"></a>
+<a href="https://www.paypal.com/ncp/payment/2NATMHXG4X3E6"><img src="docs/donate.png" alt="Donate to Fulcrum" width="120"></a>
 
 ## Licence
 
