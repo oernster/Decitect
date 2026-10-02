@@ -214,6 +214,8 @@ python main.py
   read its result.
 - [Technical debt](TECH_DEBT.md): the standing reference to what is still open,
   what is deliberately left and what only looks like debt.
+- [`DECISIONS-TRADEOFFS.md`](DECISIONS-TRADEOFFS.md) sets out the decisions
+  Fulcrum rests on, with what each one gains and what it costs.
 
 ## Test
 
