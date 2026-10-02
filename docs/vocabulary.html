@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The moves, the signals and the ideas: Fulcrum's vocabulary</title>
+<meta name="description" content="What you actually do with Fulcrum: every move you can play from delegating authority to the matrix overlay, the signals you watch and the ideas underneath, as defined in the app's decision glossary.">
+<meta name="author" content="Oliver Ernster">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0d0f12">
+<link rel="canonical" href="https://ernster.dev/fulcrum/vocabulary.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Fulcrum">
+<meta property="og:title" content="The moves, the signals and the ideas: Fulcrum's vocabulary">
+<meta property="og:description" content="What you actually do with Fulcrum: every move you can play from delegating authority to the matrix overlay, the signals you watch and the ideas underneath, as defined in the app's decision glossary.">
+<meta property="og:url" content="https://ernster.dev/fulcrum/vocabulary.html">
+<meta property="og:image" content="https://ernster.dev/fulcrum/assets/screenshots/play-board.png">
+<meta property="og:image:alt" content="The Fulcrum board scoring an organisation&#x27;s structure">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The moves, the signals and the ideas: Fulcrum's vocabulary">
+<meta name="twitter:description" content="What you actually do with Fulcrum: every move you can play from delegating authority to the matrix overlay, the signals you watch and the ideas underneath, as defined in the app's decision glossary.">
+<meta name="twitter:image" content="https://ernster.dev/fulcrum/assets/screenshots/play-board.png">
+<link rel="icon" type="image/png" href="assets/fulcrum.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="./">
+      <img src="assets/fulcrum.png" alt="Fulcrum icon">Fulcrum</a>
+    <nav class="nav-links">
+      <a href="tool.html">The tool</a>
+      <a href="why.html">Why</a>
+      <a href="model.html">The model</a>
+      <a href="why.html#books">The books</a>
+      <a href="download.html">Download</a>
+      <a href="https://github.com/oernster/fulcrum">GitHub</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="container crumb">
+    <a href="tool.html">The tool</a> <span aria-hidden="true">/</span> The moves, the signals and the ideas
+  </div>
+  <section id="vocabulary">
+    <div class="container prose">
+      <div class="eyebrow">The pieces</div>
+      <h2 class="section-title">What you actually do with it</h2>
+      <p>You draw an organisation or open one of the shipped examples. Teams
+        are the leaves, units nest above them, dependencies say who waits on
+        whom and with how much delay; each team is marked as either deciding
+        locally or escalating to someone above. Fulcrum then scores
+        that structure out of 100, lists every move legally open to you with
+        the points it would gain or lose and lets you play one, watching the
+        number and the map change. The same definitions below are in the app
+        under Help, Decision glossary.</p>
+      <h3 class="vocab-heading">The moves you can play</h3>
+      <ul>
+        <li><b>Delegate authority.</b> Give a team the right to decide and ship
+          on its own, removing an escalation and dissolving influence that had
+          collected with no authority to use it.</li>
+        <li><b>Resolve authority.</b> Collapse a contested decision class to a
+          single accountable owner, so who decides never has to be settled
+          before anything can be decided. The repair for matrix and dual
+          reporting.</li>
+        <li><b>Downgrade a claim.</b> Turn a second claimant into a consulted
+          party: an explicit interface with a small delay rather than shared
+          control, so the overhead is priced instead of hidden.</li>
+        <li><b>Stabilise interfaces.</b> Thin and steady the boundaries so
+          changes cross between teams with less waiting.</li>
+        <li><b>Realign incentives.</b> Pull a team's rewards back toward the
+          outcome it is asked to ship, so less delivered work comes back as
+          rework.</li>
+        <li><b>Collapse a boundary.</b> Let one team own the whole slice. It
+          deletes a handoff, not headcount, so it is not centralisation;
+          merging far past a small band, however, raises internal coordination
+          and turns costly.</li>
+        <li><b>Split a team or add an owner.</b> Relieve an overloaded owner
+          by creating a second complete one, the opposite of splitting along a
+          technical layer.</li>
+        <li><b>Add an approval layer.</b> The canonical blunder, playable here
+          like any other: a gate every team routes through, formalising missing
+          authority as process.</li>
+        <li><b>Impose a matrix overlay.</b> Its contest twin: a second claimant
+          on every team at once, so every decision starts with an argument
+          about who decides.</li>
+      </ul>
+      <h3 class="vocab-heading">The signals you watch</h3>
+      <ul>
+        <li><b>Handoff queue age.</b> How long a change waits at a boundary
+          before the next team picks it up.</li>
+        <li><b>Escalations per release.</b> How many teams must push a decision
+          up to get one release out.</li>
+        <li><b>Rework rate.</b> The share of delivered work that comes back for
+          redo soon after.</li>
+        <li><b>Influence without authority.</b> Teams many others depend on but
+          that cannot decide locally. Left unchecked it burns people out.</li>
+        <li><b>Contested ownership.</b> Teams whose decisions carry a standing
+          claim from someone else.</li>
+        <li><b>Centre escalation load.</b> Escalated decisions per turn landing
+          on the single most loaded authority.</li>
+        <li><b>Unowned interfaces.</b> Two sovereign teams depending on each
+          other with nobody above both to settle a conflict.</li>
+      </ul>
+      <h3 class="vocab-heading">The ideas underneath</h3>
+      <ul>
+        <li><b>Local authority and escalation.</b> Whether a real person at the
+          team can decide or whether the decision has to travel. A team that
+          needs sign-off for every schema change escalates constantly; that
+          wait is structural rather than personal.</li>
+        <li><b>Propagation delay.</b> The turns a change spends waiting at a
+          boundary. A ticket sitting four days in another team's queue is four
+          days of it.</li>
+        <li><b>Incentive skew.</b> How far a team's rewards pull away from what
+          it is asked to ship. A team measured on tickets closed while asked to
+          improve reliability is skewed; it surfaces later as rework.</li>
+        <li><b>Structural health.</b> The 0 to 100 score, falling with backlog
+          at boundaries, with teams that cannot decide locally and with skewed
+          incentives.</li>
+        <li><b>Move classification.</b> How a move grades before you play it,
+          exactly as a chess engine grades moves: great, good, neutral, bad,
+          blunder, by the points it would move the score. Deltas are scored
+          inside the section you are focused on, so the same change reads
+          larger the deeper you drill.</li>
+        <li><b>The prince band.</b> Concentration priced by size. One decisive
+          founder works up to roughly the Dunbar horizon, because escalating to
+          them is a conversation; the identical structure at thousands of
+          people scores badly, because the centre is now far from the work.</li>
+      </ul>
+    </div>
+  </section>
+  <section class="onward">
+    <div class="container">
+      <p class="onward-links">
+        <a class="btn btn-ghost" href="tool.html">The tool</a>
+        <a class="btn btn-ghost" href="play.html">The board, the guide and the plan</a>
+      </p>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="container footer-inner">
+    <div>
+      <strong>Fulcrum</strong>: Organisational Decision Architecture Simulation Tool<br>
+      (c) Oliver Ernster · Local-first · GPL-3.0 + LGPL-3.0 · v<!--VERSION-->4.4.0<!--/VERSION-->
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/oernster/fulcrum/releases">Releases</a>
+      <a href="https://github.com/oernster/fulcrum">GitHub</a>
+      <a href="https://www.crankthecode.com/books">The books</a>
+      <a href="https://www.crankthecode.com/">crankthecode.com</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

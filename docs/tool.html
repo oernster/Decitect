@@ -51,164 +51,27 @@
       <div class="features"><div class="feature"><div class="fnum">01</div><h3>Structural moves</h3><p>Delegate authority, stabilise interfaces, realign incentives, collapse a boundary or resolve a contested decision class to a single owner. Every move is scored from blunder to great.</p></div><div class="feature"><div class="fnum">02</div><h3>Signals to watch</h3><p>Handoff queue age, escalations, rework, influence without authority, contested ownership, centre escalation load and unowned interfaces: the lagging indicators, each with its own definition.</p></div><div class="feature"><div class="fnum">03</div><h3>A guide for every level</h3><p>The guide plans the whole hierarchy at once: each unit's line in its own frame, with the leaf lines composing into an honest whole-org climb, the way an engine shows its line at every depth. On a large organisation the planning spreads across every processor core, so an enterprise of thousands plans in seconds; the parallel build is deterministic and matches the single-core one to the last digit; every planning bar can be cancelled mid-build.</p></div><div class="feature"><div class="fnum">04</div><h3>Yours, on your machine</h3><p>Generate a level, model your own organisation, import one as JSON or open a built-in example, from a healthy small agency to a matrixed enterprise of six thousand people. There is no account and no server; nothing about you or your organisations leaves your machine, the one outbound call being an anonymous daily ask of GitHub's releases API for whether a newer Fulcrum exists. A light and a dark theme, remembered between runs, with the maps and the authority colours following.</p></div></div>
     </div>
   </section>
-  <section id="vocabulary" class="alt">
-    <div class="container prose">
-      <div class="eyebrow">The pieces</div>
-      <h2 class="section-title">What you actually do with it</h2>
-      <p>You draw an organisation or open one of the shipped examples. Teams
-        are the leaves, units nest above them, dependencies say who waits on
-        whom and with how much delay; each team is marked as either deciding
-        locally or escalating to someone above. Fulcrum then scores
-        that structure out of 100, lists every move legally open to you with
-        the points it would gain or lose and lets you play one, watching the
-        number and the map change. The same definitions below are in the app
-        under Help, Decision glossary.</p>
-      <h3 class="vocab-heading">The moves you can play</h3>
-      <ul>
-        <li><b>Delegate authority.</b> Give a team the right to decide and ship
-          on its own, removing an escalation and dissolving influence that had
-          collected with no authority to use it.</li>
-        <li><b>Resolve authority.</b> Collapse a contested decision class to a
-          single accountable owner, so who decides never has to be settled
-          before anything can be decided. The repair for matrix and dual
-          reporting.</li>
-        <li><b>Downgrade a claim.</b> Turn a second claimant into a consulted
-          party: an explicit interface with a small delay rather than shared
-          control, so the overhead is priced instead of hidden.</li>
-        <li><b>Stabilise interfaces.</b> Thin and steady the boundaries so
-          changes cross between teams with less waiting.</li>
-        <li><b>Realign incentives.</b> Pull a team's rewards back toward the
-          outcome it is asked to ship, so less delivered work comes back as
-          rework.</li>
-        <li><b>Collapse a boundary.</b> Let one team own the whole slice. It
-          deletes a handoff, not headcount, so it is not centralisation;
-          merging far past a small band, however, raises internal coordination
-          and turns costly.</li>
-        <li><b>Split a team or add an owner.</b> Relieve an overloaded owner
-          by creating a second complete one, the opposite of splitting along a
-          technical layer.</li>
-        <li><b>Add an approval layer.</b> The canonical blunder, playable here
-          like any other: a gate every team routes through, formalising missing
-          authority as process.</li>
-        <li><b>Impose a matrix overlay.</b> Its contest twin: a second claimant
-          on every team at once, so every decision starts with an argument
-          about who decides.</li>
-      </ul>
-      <h3 class="vocab-heading">The signals you watch</h3>
-      <ul>
-        <li><b>Handoff queue age.</b> How long a change waits at a boundary
-          before the next team picks it up.</li>
-        <li><b>Escalations per release.</b> How many teams must push a decision
-          up to get one release out.</li>
-        <li><b>Rework rate.</b> The share of delivered work that comes back for
-          redo soon after.</li>
-        <li><b>Influence without authority.</b> Teams many others depend on but
-          that cannot decide locally. Left unchecked it burns people out.</li>
-        <li><b>Contested ownership.</b> Teams whose decisions carry a standing
-          claim from someone else.</li>
-        <li><b>Centre escalation load.</b> Escalated decisions per turn landing
-          on the single most loaded authority.</li>
-        <li><b>Unowned interfaces.</b> Two sovereign teams depending on each
-          other with nobody above both to settle a conflict.</li>
-      </ul>
-      <h3 class="vocab-heading">The ideas underneath</h3>
-      <ul>
-        <li><b>Local authority and escalation.</b> Whether a real person at the
-          team can decide or whether the decision has to travel. A team that
-          needs sign-off for every schema change escalates constantly; that
-          wait is structural rather than personal.</li>
-        <li><b>Propagation delay.</b> The turns a change spends waiting at a
-          boundary. A ticket sitting four days in another team's queue is four
-          days of it.</li>
-        <li><b>Incentive skew.</b> How far a team's rewards pull away from what
-          it is asked to ship. A team measured on tickets closed while asked to
-          improve reliability is skewed; it surfaces later as rework.</li>
-        <li><b>Structural health.</b> The 0 to 100 score, falling with backlog
-          at boundaries, with teams that cannot decide locally and with skewed
-          incentives.</li>
-        <li><b>Move classification.</b> How a move grades before you play it,
-          exactly as a chess engine grades moves: great, good, neutral, bad,
-          blunder, by the points it would move the score. Deltas are scored
-          inside the section you are focused on, so the same change reads
-          larger the deeper you drill.</li>
-        <li><b>The prince band.</b> Concentration priced by size. One decisive
-          founder works up to roughly the Dunbar horizon, because escalating to
-          them is a conversation; the identical structure at thousands of
-          people scores badly, because the centre is now far from the work.</li>
-      </ul>
-    </div>
-  </section>
-  <section id="play">
+  <section class="alt">
     <div class="container">
-      <div class="eyebrow">Decision-support / Simulation tool</div>
-      <h2 class="section-title">Watch a score climb, move by move</h2>
-      <p class="section-sub">Load an organisation and the board scores its
-        structural health, maps who decides locally against who escalates and
-        lists every move open to you.</p>
-      <div class="shots">
-        <figure class="shot">
-          <div class="frame">
-            <img loading="lazy" src="assets/screenshots/play-board.png" alt="The Fulcrum board drilled into one runtime group of the six-thousand-person enterprise, with the section's score, moves and signals">
-          </div>
-          <figcaption><b>The position.</b> The shipped matrixed enterprise,
-            6,000 people across 1,076 teams, drilled into a single runtime
-            group: the 45.343 score and the listed moves belong to this
-            section, not the summit. The group's lead is contested, drawn
-            violet; the move list opens with the resolve that would
-            settle it; every delegate beneath rates good at around +4.4
-            section points while the realigns sit neutral at around +1.3,
-            so the board is saying precisely which repair this frame wants
-            first. Amber marks a team that escalates, green marks one that
-            decides locally; the ring around Runtime team 18 is the
-            move just played, which is what makes a repair visible at a
-            scale where the colours barely move. The seven signals flag the
-            5.0-turn queue age, the 51% rework and the centre's escalation
-            load; the corner chips zoom the map at any depth.</figcaption>
-        </figure>
-        <figure class="shot">
-          <div class="frame">
-            <img loading="lazy" src="assets/screenshots/play-guide1.png" alt="The Fulcrum guide: the level tree beside the company frame's own line, every step priced from its before score to its after score">
-          </div>
-          <figcaption><b>The line.</b> The guide plans every level of the
-            enterprise at once: the left pane lists each frame's line with
-            its worth in org points and the composing leaf lines climb the
-            whole organisation from 21.264 to 70.024; three lines that
-            would cost the whole organisation are kept out of that headline
-            and flagged, so the climb the tree advertises is one the
-            organisation would actually make. The right pane plays the
-            selected frame move by move, here the company frame itself
-            climbing 14.398 to 64.650 on its own 0 to 100 scale over twelve
-            moves, six delegations and a stabilise before the realigns.
-            It is labelled as the view from that altitude: its gains
-            overlap the leaf repairs beneath it, so only leaf rows count
-            toward the headline.</figcaption>
-        </figure>
-        <figure class="shot">
-          <div class="frame">
-            <img loading="lazy" src="assets/screenshots/play-guide2.png" alt="A leaf line in the Fulcrum guide: the teams sitting directly in Checkout, a two-move line worth +0.700 org points to the whole organisation">
-          </div>
-          <figcaption><b>One leaf line.</b> Select a leaf row and the guide
-            shows that level's own line: here the teams sitting directly in
-            Checkout climb from 40.152 to 98.000 on their own 0 to 100
-            scale in two moves, resolving the programme office's standing
-            claim on the Checkout lead first, rated great, then realigning
-            that lead's incentives. Teams directly inside a unit that also
-            holds sub-units get their own row precisely so a line like this
-            is not lost between tiers. Its honest worth to the whole
-            organisation is the +0.700 org points in the tree: a
-            fifty-eight-point climb in its own frame, under a point at the
-            summit, which is the move-locality result made visible in one
-            row. Only leaf rows compose into the headline, so nothing is
-            counted twice.</figcaption>
-        </figure>
-      </div>
-      <div class="cta">
-        <a class="btn btn-primary" href="download.html">Download Fulcrum</a>
-        <a class="btn btn-ghost" href="why.html">Why this exists</a>
+      <div class="eyebrow">In detail</div>
+      <h2 class="section-title">A page for each part</h2>
+      <div class="features gateways">
+        <div class="feature card-link">
+          <h3>The moves, the signals and the ideas</h3>
+          <p>What you actually do with it: draw an organisation or open a shipped example, read its score out of 100, then play the moves legally open to you.</p>
+          <p>The page defines every move you can play from delegating authority to the matrix overlay, the signals you watch and the ideas underneath. The same definitions are in the app under Help, Decision glossary.</p>
+          <p class="feat-cta"><a class="btn btn-ghost stretched" href="vocabulary.html">Read the vocabulary</a></p>
+        </div>
+        <div class="feature card-link">
+          <h3>The board, the guide and the plan</h3>
+          <p>The board scores an organisation and grades every move open to you; the guide plans every level of it at once, move by move.</p>
+          <p>The page follows the shipped matrixed enterprise of 6,000 people on the board and in the guide, then the self-contained HTML report a played line exports to, embedded as shipped.</p>
+          <p class="feat-cta"><a class="btn btn-ghost stretched" href="play.html">See the board and the guide</a></p>
+        </div>
       </div>
     </div>
   </section>
-  <section id="model" class="alt">
+  <section id="model">
     <div class="container">
       <div class="eyebrow">Model your organisation</div>
       <h2 class="section-title">Draw the org you actually have</h2>
@@ -234,52 +97,6 @@
             its origin and exports as JSON; even at this size the
             editor opens in a fraction of a second.</figcaption>
         </figure>
-      </div>
-    </div>
-  </section>
-  <section id="output">
-    <div class="container">
-      <div class="eyebrow">The output</div>
-      <h2 class="section-title">From a played line to a plan you can send</h2>
-      <p class="section-sub">One click exports the moves you played as a
-        self-contained HTML report: the health change, before and after maps
-        and a recommendation section addressed to each unit's lead, each move
-        justified by the signal it eased. It lands in your Downloads folder
-        under a name that never overwrites an earlier one and opens straight
-        away for reading. Every move is judged twice: against the whole
-        organisation and, where it acted inside one unit, within that unit's
-        own frame, so a repair that is good where it lives never vanishes
-        into whole-org neutrality. This is a real export, embedded here as
-        shipped.</p>
-      <div class="shots">
-        <figure class="shot">
-          <div class="frame">
-            <iframe src="assets/html/fulcrum-presentation.html"
-                    title="An example Fulcrum plan export"
-                    loading="lazy"
-                    style="display:block;width:100%;height:640px;border:0;background:#0d0f12"></iframe>
-          </div>
-          <figcaption><b>The report.</b> Eight moves on the matrixed
-            enterprise, priced honestly at both scales: structural health
-            climbs from 16.255 to 21.264 and every move names its lead, its
-            org-wide verdict, its frame verdict and the signal it moved.
-            This is the whole argument in one page. Every one of the five
-            organisation-wide delegations reads <b>neutral</b> against the
-            summit while reading <b>great</b> inside the section it acted
-            on, the Data delegation taking that section from 16.917 to
-            54.528 for a whole-org gain of under two points. Two moves run
-            the other way and read bad within their own frame while still
-            neutral org-wide. Each rationale names the signal that actually
-            moved, escalations per release falling 891 to 674 across the
-            eight. Recommendations are grouped by the lead who holds them,
-            CTO-level moves separated from a domain's own. The record
-            separates earlier runs' moves from the current run's by colour
-            and a JSON twin exports alongside it, so the organisation and
-            its played moves re-import to resume.</figcaption>
-        </figure>
-      </div>
-      <div class="cta">
-        <a class="btn btn-ghost" href="assets/html/fulcrum-presentation.html" target="_blank" rel="noopener">Open the example report</a>
       </div>
     </div>
   </section>
@@ -330,5 +147,18 @@
     </div>
   </div>
 </footer>
+<script>
+    // These sections now live on pages of their own. Old deep links
+    // (bookmarks, shared URLs) land here first and hop across.
+    (function () {
+        var moved = {
+            '#vocabulary': 'vocabulary.html#vocabulary',
+            '#play': 'play.html#play',
+            '#output': 'play.html#output'
+        };
+        var target = moved[window.location.hash];
+        if (target) { window.location.replace(target); }
+    })();
+</script>
 </body>
 </html>

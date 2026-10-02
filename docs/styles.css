@@ -186,6 +186,32 @@ section.alt {
 }
 .feature h3 { margin: 12px 0 8px; font-size: 18px; }
 .feature p { margin: 0; color: var(--muted); font-size: 15px; }
+/* A card holding several paragraphs shows the break between them. */
+.feature p + p { margin-top: 12px; }
+/* The button that leads from a hub's gateway card to its own page sits at the
+   card's foot, so the buttons line up whatever the length above them. */
+.gateways .feature { display: flex; flex-direction: column; }
+.gateways .feat-cta { margin-top: auto; padding-top: 20px; }
+
+/* Where a detail page sits: its hub, then itself. The section after it gives
+   up most of its top padding, since the trail already opens the page. */
+.crumb {
+  padding-top: 40px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.crumb + section { padding-top: 32px; }
+
+/* The way on from the foot of a detail page: back to its hub, then its
+   siblings. */
+.onward { padding-top: 0; }
+.onward-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  margin: 0;
+}
 
 .shots { display: grid; gap: 44px; }
 .shot figure { margin: 0; }

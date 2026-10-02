@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Testing Fulcrum's model: the falsification protocol and the sensitivity sweep</title>
+<meta name="description" content="The external blind test that would falsify Fulcrum's model, specified and not yet run, then the sensitivity sweep showing all five published conclusions survive every perturbation of the coefficients.">
+<meta name="author" content="Oliver Ernster">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0d0f12">
+<link rel="canonical" href="https://ernster.dev/fulcrum/testing.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Fulcrum">
+<meta property="og:title" content="Testing Fulcrum's model: the falsification protocol and the sensitivity sweep">
+<meta property="og:description" content="The external blind test that would falsify Fulcrum's model, specified and not yet run, then the sensitivity sweep showing all five published conclusions survive every perturbation of the coefficients.">
+<meta property="og:url" content="https://ernster.dev/fulcrum/testing.html">
+<meta property="og:image" content="https://ernster.dev/fulcrum/assets/screenshots/play-board.png">
+<meta property="og:image:alt" content="The Fulcrum board scoring an organisation&#x27;s structure">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Testing Fulcrum's model: the falsification protocol and the sensitivity sweep">
+<meta name="twitter:description" content="The external blind test that would falsify Fulcrum's model, specified and not yet run, then the sensitivity sweep showing all five published conclusions survive every perturbation of the coefficients.">
+<meta name="twitter:image" content="https://ernster.dev/fulcrum/assets/screenshots/play-board.png">
+<link rel="icon" type="image/png" href="assets/fulcrum.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="./">
+      <img src="assets/fulcrum.png" alt="Fulcrum icon">Fulcrum</a>
+    <nav class="nav-links">
+      <a href="tool.html">The tool</a>
+      <a href="why.html">Why</a>
+      <a href="model.html">The model</a>
+      <a href="why.html#books">The books</a>
+      <a href="download.html">Download</a>
+      <a href="https://github.com/oernster/fulcrum">GitHub</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <div class="container crumb">
+    <a href="model.html">The model</a> <span aria-hidden="true">/</span> Testing the model
+  </div>
+  <section id="falsify">
+    <div class="container prose">
+      <div class="eyebrow">The test</div>
+      <h2 class="section-title">What would actually falsify this</h2>
+      <p>An earlier version of this site offered an internal test: model an organisation in which
+        adding an approval layer improves structural health and the framework is wrong. That test
+        cannot come out false, because Fulcrum's own scoring function decides whether the layer
+        improved anything. It is a consistency check wearing a falsifiability costume; it has
+        been retired.</p>
+      <p>The real test is external and blind:</p>
+      <ol>
+        <li>Assemble a set of real organisations whose structural outcomes are independently
+          documented: sustained delivery at scale on one side, delivery collapse or a structural
+          post-mortem on the other. The outcome record is fixed before anything is scored.</li>
+        <li>A modeller who does not know the outcomes builds each organisation's Fulcrum model
+          from structural facts alone: the org chart, the dependency map and the authority
+          placement as they stood at the time.</li>
+        <li>Score each model once. No re-modelling after seeing a result.</li>
+        <li>Test whether the score ranking predicts the outcome ranking better than chance,
+          against acceptance thresholds fixed before any score is computed.</li>
+      </ol>
+      <p>Fixed where matters. A threshold stated only on this page is timestamped by the same
+        person who computes the scores, which a reviewer can discount for free. The full
+        protocol, thresholds included, therefore lives in the repository as
+        <a href="https://github.com/oernster/fulcrum/blob/main/PREREGISTRATION.md">PREREGISTRATION.md</a>,
+        written for deposit with an independent registry (OSF) whose timestamp is not the
+        author's to edit. Until that deposit exists, the honest reading is that the bar is
+        public but self-timestamped; discount accordingly.</p>
+      <p><b>This protocol has not been run.</b> The obstacle is data honesty rather than design:
+        structural facts about failed organisations are confidential and post-hoc accounts of them
+        are unreliable, so assembling a clean blind set is slow. Until it runs, the correct status
+        of the model is: a published, inspectable expert prior whose external validation is
+        specified but outstanding. If you hold structural records that could join such a set, the
+        <a href="https://github.com/oernster/fulcrum">repository</a> is the place to say so.</p>
+    </div>
+  </section>
+  <section id="sensitivity" class="alt">
+    <div class="container prose">
+      <div class="eyebrow">Robustness</div>
+      <h2 class="section-title">Sensitivity: do the conclusions depend on the exact numbers?</h2>
+      <p>If the published results only hold at precisely these coefficients, the model is a
+        curve-fit to its own examples. So the repository carries a deterministic sweep,
+        <a href="https://github.com/oernster/fulcrum/blob/main/sensitivity.py">sensitivity.py</a>,
+        which scales every tunable coefficient by 0.8 and by 1.2 (the three composite penalty
+        shares are renormalised to keep their enforced sum of 1.0; the prince band's float
+        coefficients are swept while its headcount edges, being structural counts, are not),
+        re-scores the ten shipped archetypes under each of the 34 perturbed configurations and
+        checks five qualitative conclusions: the typical archetypes still collapse in order with scale, the well-designed
+        archetypes keep their order, every well-designed archetype still outscores its typical
+        counterpart and both canonical blunders (the approval layer and the matrix overlay) still
+        lower the score on every typical archetype.</p>
+      <p><b>All five conclusions survive every perturbation.</b> The baseline scores below
+        reproduce the published archetype numbers exactly; under all 34 perturbed configurations
+        the orderings, the typical-versus-well-designed gap and the signs of both blunders are
+        unchanged. The qualitative results come from the structure of the model, not from the
+        particular values of its coefficients.</p>
+      <p>An axis sweep only explores the edges of the box; models typically break in the
+        interior, where several coefficients drift at once. So the same script runs a second,
+        joint sweep: a Latin hypercube of 1,000 draws inside the same &plusmn;20% band with
+        every coefficient moving simultaneously, each draw renormalised and capped so it
+        respects the model's own validation, reporting the fraction of draws under which each
+        conclusion holds. <b>All five conclusions hold in 100% of the 1,000 joint draws</b>
+        (seed 20260711, the same published seed the books use).</p>
+      <p>The sweep has already earned its keep once: the first cut of contested ownership
+        counted a team's own authority as its only structural claimant; under that rule the
+        matrix overlay read <b>positive</b> on the escalation-heavy archetypes (it barely
+        contested anyone while diluting every penalty share). The sweep failed, the semantics
+        were corrected (the structural owner is always claimant one, so any standing claim is
+        contest) and the failure is recorded here rather than erased.</p>
+      <div class="table-scroll">
+        <table class="weights">
+          <thead>
+            <tr><th>Archetype</th><th>Typical</th><th>Well-designed</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Startup</td><td>83.4</td><td>98.7</td></tr>
+            <tr><td>Scale-up</td><td>44.9</td><td>88.9</td></tr>
+            <tr><td>Enterprise</td><td>18.8</td><td>75.9</td></tr>
+            <tr><td>Very large</td><td>15.1</td><td>66.8</td></tr>
+            <tr><td>Conglomerate</td><td>12.0</td><td>64.9</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The sweep's own limits, stated plainly: it stays within &plusmn;20%, against the ten
+        shipped archetypes. It does not test larger swings or every published claim (the
+        1,732-team move-locality result is not re-run under perturbation). And the archetypes
+        themselves are authored by the same hand as the coefficients: both sweeps test
+        robustness to the numbers while holding fixed test cases that were built to exhibit the
+        very properties the model penalises. It is a robustness check on the published
+        conclusions, not a proof about every organisation. Rerun it from the repository root
+        with <code>python sensitivity.py</code>; the axis sweep has no randomness and the joint
+        sweep draws from the published seed, so you will get these numbers exactly.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="download.html">Download Fulcrum</a>
+        <a class="btn btn-ghost" href="why.html">Why this exists</a>
+      </div>
+    </div>
+  </section>
+  <section class="onward">
+    <div class="container">
+      <p class="onward-links">
+        <a class="btn btn-ghost" href="model.html">The model</a>
+        <a class="btn btn-ghost" href="weights.html">Where the weights come from</a>
+        <a class="btn btn-ghost" href="assumptions.html">Assumptions and known limits</a>
+      </p>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="container footer-inner">
+    <div>
+      <strong>Fulcrum</strong>: Organisational Decision Architecture Simulation Tool<br>
+      (c) Oliver Ernster · Local-first · GPL-3.0 + LGPL-3.0 · v<!--VERSION-->4.4.0<!--/VERSION-->
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/oernster/fulcrum/releases">Releases</a>
+      <a href="https://github.com/oernster/fulcrum">GitHub</a>
+      <a href="https://www.crankthecode.com/books">The books</a>
+      <a href="https://www.crankthecode.com/">crankthecode.com</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
