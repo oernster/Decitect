@@ -32,6 +32,7 @@ import time
 from pathlib import Path
 
 import stamp_version
+from build_utils import require_nuitka
 
 # --- Project identity (single source of truth for installer metadata) -------
 APP_DISPLAY_NAME = "Fulcrum"
@@ -310,6 +311,7 @@ def build_installer() -> int:
 
 
 def main() -> int:
+    require_nuitka()
     return build_installer()
 
 
