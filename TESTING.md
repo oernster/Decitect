@@ -16,10 +16,14 @@ The configuration in `pyproject.toml` runs coverage automatically and fails the
 run below 100% on the gated layers. To format and lint as well:
 
 ```
-black --check fulcrum tests
-flake8 fulcrum tests
+black --check .
+flake8 .
 ruff check .
 ```
+
+Run from the repo root so the installer and the build scripts are read too.
+`ruff check .` is clean under the 0.15 series' default rules; ruff 0.16 widens
+its defaults (see [TECH_DEBT.md](TECH_DEBT.md)).
 
 ## Reading the result
 
@@ -42,7 +46,7 @@ The tests mirror the package, one area per layer:
 | `tests/installer` | unit tests of the Windows installer's decisions, deploying real zips into a temp directory | temp files |
 | `tests/scripts` | smoke tests of the three analysis scripts at the repo root | reads examples |
 | `tests/structural` | an AST scan that enforces the architectural invariants | reads source |
-| `tests/ui` | Qt tests on a real offscreen `QApplication`: an update check whose controller is deleted before its answer arrives drops the answer instead of raising on the worker thread; the donate button sits immediately left of the theme toggle in the row and in the ring, asks the desktop for its one literal `https://` address and says so when the desktop refuses, with the `links` seam replaced so no browser ever opens | none |
+| `tests/ui` | Qt tests on a real `QApplication` (pytest-qt's `qapp`) that never show a window: the update check and the donate button | none |
 
 ## Coverage scope
 
@@ -88,6 +92,15 @@ environment or Qt. The architectural rules are therefore tested, not merely
 documented.
 
 ## Verifying the UI
+
+`tests/ui` holds two behaviours that matter beyond their pixels. An update
+check whose controller is deleted before its answer arrives drops the answer
+rather than raising on the worker thread. The donate button sits immediately
+left of the theme toggle, in the row and in the focus ring alike, asks the
+desktop for its one address and says so when the desktop refuses; the
+`fulcrum.ui.links` seam is replaced in those tests, so no browser ever opens.
+No UI test shows a window. Set `QT_QPA_PLATFORM=offscreen` to run the suite
+with no display at all.
 
 The UI is outside the coverage gate, so it is checked two ways: by constructing
 widgets headlessly (an offscreen `QApplication`) and asserting their structure

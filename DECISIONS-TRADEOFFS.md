@@ -71,11 +71,28 @@ are permanently excluded from it.
 ### One way out
 
 The update check is the only code that opens a network connection: one
-request to GitHub's releases API with a five-second timeout.
+request to GitHub's releases API with a short timeout. Opening a link (the
+releases page, a saved report, the donation page) hands the address to the
+desktop's own browser; Fulcrum fetches nothing itself.
 
 - **Rather than:** any feature reaching out on its own account.
 - **Gains:** the README can say plainly what Fulcrum asks the network.
 - **Costs:** no test counts the ways out; the rule is held by review.
+
+### Support asked for in one quiet place
+
+A donate button sits in the header's row of icon buttons, immediately left of
+the light and dark toggle, in the drawn order and the keyboard ring alike. A
+press hands the payment page to the browser. The app is free, with nothing
+held back behind a donation.
+
+- **Rather than:** a band of its own along the foot of the window; a prompt
+  that asks; a paid tier or features held back.
+- **Gains:** the ask is visible without interrupting anyone; the app opens no
+  connection for it.
+- **Costs:** the picture alone does not say it leaves the app, so its tooltip
+  does; a desktop that refuses to open the page is answered with the address
+  in a message box.
 
 ### The update check names nobody
 
@@ -89,7 +106,7 @@ comparison is made on the machine.
 
 ### Update checks: daily, quiet unless there is news
 
-A check runs three seconds after launch and then once a day. It says
+A check runs a few seconds after launch and then once a day. It says
 nothing unless there is a newer release; a skipped version never prompts
 again. A check from the Help menu always answers and ignores the skip. A
 version that cannot be read is never treated as newer. Only a published
@@ -147,8 +164,8 @@ than the absolute load.
 
 ### Classification bands absolute in every frame
 
-A move is great at nine points or more, good at three, a blunder at minus
-one or worse, whatever the frame.
+A move is graded from blunder to great by fixed bands on its score change,
+the same bands in every frame.
 
 - **Rather than:** bands scaled to the depth of the focus.
 - **Gains:** "great" is never stamped on a negligible change at the summit;
@@ -159,18 +176,19 @@ one or worse, whatever the frame.
 
 ### Headcount enters through one door
 
-Population affects the score only through the prince band. Up to 150 people
-concentrated authority costs a fraction of its flat price; the price rises
-to parity by 200, then grows with the log of the population up to a ceiling.
+Population affects the score only through the prince band. Up to the Dunbar
+horizon concentrated authority costs a fraction of its flat price; the price
+rises to parity across a short band, then grows with the log of the
+population up to a ceiling.
 Each frame is priced at its own population. A structure holding no
 concentration, no claims and no unowned interfaces scores the same at every
 size.
 
 - **Rather than:** a flat price for concentration at every scale; headcount
   read everywhere.
-- **Gains:** a founder deciding for 30 people scores well while the identical
-  structure at 30,000 scores badly; a conformance suite pins each half of
-  that claim.
+- **Gains:** a founder deciding for a few dozen people scores well while the
+  identical structure at conglomerate scale scores badly; a conformance suite
+  pins each half of that claim.
 - **Costs:** the band's edges are a modelling choice rather than a figure
   measured for any one organisation.
 
@@ -193,7 +211,7 @@ upstream's queue, whatever its authority. That share may never exceed the
 escalation share; the parameters refuse it.
 
 - **Rather than:** demand travelling only along escalation lines, under which
-  a five-person team that thirty-four teams wait on read as healthy.
+  a small team that dozens of teams wait on read as healthy.
 - **Gains:** an empowered hub saturates exactly as a deciding centre does;
   waiting on a supplier never costs more than resolving through an
   authority.
@@ -231,10 +249,10 @@ A dependency between two clean sovereigns that share no enclosing unit is an
 unowned interface: nobody can arbitrate its conflicts. It pushes both ends
 toward the share of teams that cannot decide cleanly.
 
-- **Rather than:** pricing concentration only, under which a roofless network
-  of sovereign teams scored 98.8 at 20,000 people.
-- **Gains:** a roofless network fragments at scale (that network fell to 70.4
-  when the change was made); any shared unit owns the edge.
+- **Rather than:** pricing concentration only, under which a large roofless
+  network of sovereign teams read as healthy.
+- **Gains:** a roofless network fragments at scale; any shared unit owns the
+  edge.
 - **Costs:** a federation whose real arbiter is not modelled reads as
   fragmented until a roof is drawn.
 
@@ -242,13 +260,13 @@ toward the share of teams that cannot decide cleanly.
 
 ### Sections are played; the whole is an overview
 
-A scope of up to 500 teams is scored and valued live. Above that the board
-shows an overview to drill into.
+A scope up to a playable size is scored and valued live. Above that the
+board shows an overview to drill into.
 
-- **Rather than:** scoring every scope live, which froze the interface: a
-  section of 150 or more teams took several seconds to score.
-- **Gains:** with scoring made linear, a whole division scores in under a
-  second on a worker thread; the interface never blocks.
+- **Rather than:** scoring every scope live, which froze the interface while
+  a large section scored.
+- **Gains:** with scoring made linear, a whole division scores on a worker
+  thread; the interface never blocks.
 - **Costs:** a whole group or company cannot be played as one position.
 
 ### Higher levels play their children as single actors
@@ -311,21 +329,23 @@ of their own, as do loose teams at the top level.
 
 ### Generated levels carry a reachable great move
 
-A random organisation is a branching tree whose leaves are cloned from a pool
-of at most 24 cluster templates. Each template is resampled until a great
-move is reachable within ten greedy improvements, up to 200 tries.
+A random organisation is a branching tree whose leaves are cloned from a
+small pool of cluster templates. Each template is resampled until a great
+move is reachable within a short greedy line, up to a capped number of tries.
 
 - **Rather than:** demanding a great move available at once; building every
   leaf from scratch.
-- **Gains:** even a 250,000-person organisation generates at once; a clone
-  scores exactly as its template does.
-- **Costs:** the guarantee holds per cluster; after 200 tries the last sample
-  is used as it is, so an unlucky draw could ship without one.
+- **Gains:** the costly search runs a fixed number of times however large
+  the organisation; a clone scores exactly as its template does.
+- **Costs:** the great move is sought per cluster rather than proven; once
+  the cap is reached the last sample is used as it is, so an unlucky draw
+  could ship without one.
 
 ### A greedy guide
 
 The guide repeatedly takes the strongest improving move and stops when none
-gains half a point, like a chess engine's principal variation. It plans at
+gains enough to matter or the line reaches its length limit, like a chess
+engine's principal variation. It plans at
 the organisation's current size unless growth is switched on.
 
 - **Rather than:** a search over move sequences.
@@ -385,8 +405,8 @@ that breaks falls back to pricing in-process.
 ### Every planning bar can cancel
 
 A cancel request is checked at every step, valuation chunk and progress tick.
-The pool waits in quarter-second slices so a cancel lands even while workers
-are starting.
+The pool waits in short slices so a cancel lands even while workers are
+starting.
 
 - **Rather than:** a bar that runs to completion.
 - **Gains:** a machine without the cores is never trapped in a long build.
@@ -694,7 +714,7 @@ is tested but not held to a figure.
 
 ### Small modules
 
-No module may exceed four hundred lines, tests and the installer included.
+No module may exceed a fixed line cap, tests and the installer included.
 The build scripts are exempt as linear recipes.
 
 - **Rather than:** letting files grow.
@@ -704,7 +724,7 @@ The build scripts are exempt as linear recipes.
 ### Tests with real parts
 
 No mocking library. Infrastructure tests write real files in a temporary
-folder; the guide's pool is tested live with two real worker processes;
+folder; the guide's pool is tested live with real worker processes;
 fakes are written by hand.
 
 - **Rather than:** mocks.
@@ -714,8 +734,9 @@ fakes are written by hand.
 ### The analysis scripts sit in the suite
 
 The sensitivity sweep, the calibration harness and the generator of the large
-calibration case each have smoke tests. The sweep scales every coefficient by
-plus and minus a fifth, then runs a thousand joint draws.
+calibration case each have smoke tests. The sweep scales every coefficient
+up and down one at a time, then moves them all at once across many seeded
+draws.
 
 - **Rather than:** scripts run by hand when remembered.
 - **Gains:** the suite fails if a published conclusion stops holding or a
@@ -727,7 +748,8 @@ plus and minus a fifth, then runs a thousand joint draws.
 
 Background work runs on owned threads; a result is delivered to a method of
 an object on the interface thread. Closing the window saves first, then stops
-the analysis and generation work.
+the analysis and generation work. An answer whose recipient has gone is
+dropped rather than raised on a thread nobody watches.
 
 - **Rather than:** fire-and-forget threads.
 - **Gains:** quitting never pulls the ground from under work still running.
@@ -740,5 +762,5 @@ clear, in a commit of its own.
 
 - **Rather than:** a wholesale automatic fix across the repository.
 - **Gains:** every change is reviewable with the gate green.
-- **Costs:** with every rule selected the repository reports 4752 findings
-  still to work through.
+- **Costs:** with every rule selected the repository still reports thousands
+  of findings to work through.

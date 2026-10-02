@@ -196,7 +196,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-Linux and macOS:
+macOS and Linux:
 
 ```
 python3 -m venv venv
@@ -210,14 +210,16 @@ python main.py
 - [Architecture](ARCHITECTURE.md): the layers, the invariants and the model,
   with each invariant linked to the test that enforces it.
 - [Development](DEVELOPMENT-README.md): running from source, the quality gate
-  and the build scripts (icons, the Windows executable and installer, the Linux
-  Flatpak, the macOS disk image and the site).
+  and the build scripts (icons, the Windows executable and installer, the macOS
+  disk image, the Linux Flatpak and the site).
 - [Testing](TESTING.md): how the suite is structured, how to run it and how to
   read its result.
 - [Technical debt](TECH_DEBT.md): the standing reference to what is still open,
   what is deliberately left and what only looks like debt.
-- [`DECISIONS-TRADEOFFS.md`](DECISIONS-TRADEOFFS.md) sets out the decisions
-  Fulcrum rests on, with what each one gains and what it costs.
+- [Decisions and trade-offs](DECISIONS-TRADEOFFS.md): the decisions Fulcrum
+  rests on, with what each one gains and what it costs.
+- [Pre-registration](PREREGISTRATION.md): the blind external validation
+  protocol, with its thresholds fixed before any organisation is scored.
 
 ## Test
 
@@ -229,8 +231,8 @@ The suite fails below 100% coverage on the gated layers. See [TESTING.md](TESTIN
 
 ## Build
 
-The development builds for Windows, Linux and macOS (the icon set, the Windows
-executable and installer, the Linux Flatpak, the macOS disk image and the GitHub
+The development builds for Windows, macOS and Linux (the icon set, the Windows
+executable and installer, the macOS disk image, the Linux Flatpak and the GitHub
 Pages site) are described in [DEVELOPMENT-README.md](DEVELOPMENT-README.md).
 
 ## Supporting the project

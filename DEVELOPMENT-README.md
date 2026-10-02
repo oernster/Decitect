@@ -18,7 +18,7 @@ pip install -r requirements-dev.txt
 python main.py
 ```
 
-Linux and macOS:
+macOS and Linux:
 
 ```
 python3 -m venv venv
@@ -31,8 +31,8 @@ python main.py
 `requirements.txt` is the single runtime dependency (PySide6).
 `requirements-dev.txt` adds the tooling: pytest with pytest-cov and pytest-qt,
 Pillow for the icons and the site images, plus black, flake8 and ruff. It also
-includes Nuitka, which the packaged Windows builds (buildexe.py and
-buildinstaller.py) use.
+includes Nuitka, which the packaged Windows and macOS builds (buildexe.py,
+buildinstaller.py and builddmg.py) use.
 
 ## Project layout
 
@@ -48,7 +48,7 @@ installer/         the bespoke Windows installer, a second application layered
                    the same way: logic decides, scripts build the command text,
                    ops acts, lifecycle composes and the Qt modules present
 tests/             domain, application, infrastructure, shared, installer,
-                   scripts and structural
+                   scripts, structural and ui
 assets/            book covers, the generated header-button icons and the
                    donate master (donate.png), which never ships itself
 examples/          reference org JSON: a debt ladder, a healthy reference and
@@ -73,6 +73,10 @@ Run them from the repo root so the installer and the build scripts are read
 too; `.flake8` carries the exclusions and `pyproject.toml` mirrors them for
 ruff, so the three tools see the same files at the same width.
 
+`ruff check .` is clean under the 0.15 series' default rules. Ruff 0.16 widens
+its default selection and reports import-order findings the earlier series
+does not; [TECH_DEBT.md](TECH_DEBT.md) records them.
+
 `pytest` enforces 100% coverage on the gated layers (domain, application,
 infrastructure, shared and the installer's pure modules). The structural
 tests in `tests/structural` enforce the architectural invariants: domain
@@ -88,8 +92,8 @@ is in [TESTING.md](TESTING.md).
 Each build step is a plain script, run with the venv active from the repo root.
 The Windows and macOS builds compile with Nuitka (in `requirements-dev.txt`); the
 Linux build is a source-based Flatpak. Build for the platform you are on: the
-executable and installer on Windows, the Flatpak on Linux and the disk image on
-macOS.
+executable and installer on Windows, the disk image on macOS and the Flatpak on
+Linux.
 
 ### Icons
 
@@ -109,8 +113,8 @@ emitted icon carries the shipped look.
 python generate_button_icons.py
 ```
 
-Draws the header-button icons (the org tree, the pencil, the guide's
-climbing arrow and the overview's two view glyphs) deterministically into
+Draws the header-button icons (the org tree, the pencil and the guide's
+climbing arrow) deterministically into
 `assets/buttons` at the sizes the app loads, one variant per theme (dark
 strokes carry a `_light` suffix). Rerunning writes identical files; edit
 the script and rerun rather than editing the PNGs.
@@ -170,6 +174,27 @@ app's own UI is. `app.py` is the entry point. Every module is inside the
 Nothing under `installer/` may import from the `fulcrum` package: the two
 binaries are built and released separately.
 
+### macOS disk image
+
+```
+python builddmg.py
+```
+
+Compiles a standalone `Fulcrum.app` with Nuitka and packages it into
+`fulcrum.dmg`. Needs macOS with the Xcode command-line tools, Homebrew and
+`create-dmg`. The app and the disk image are always code signed (with the
+identity in `DEVELOPER_ID_APPLICATION` when it is set) and notarized.
+Notarization uses `APPLE_ID` and `APPLE_APP_PASSWORD` when both are set,
+refusing a password that is not app-specific before any build work; otherwise
+it uses the keychain profile `Fulcrum` (or the one `APPLE_KEYCHAIN_PROFILE`
+names). A missing or rejected credential stops the build at the notarization
+step. Only `ALLOW_UNNOTARIZED=1` skips notarization, for a local test build
+that must never be released. The
+`.icns` derives from the glow-treated icon set `generate_icons.py` emits
+(`fulcrum_1024.png` downwards), never from the raw `fulcrum.png` master, so
+run the icon generator first or the build warns and ships without a custom
+icon.
+
 ### Linux Flatpak
 
 ```
@@ -195,36 +220,17 @@ artefacts (`fulcrum.flatpak`, the build and repo directories and the generated
 manifest). It leaves the Nuitka and macOS outputs untouched, so the build paths
 stay independent.
 
-### macOS disk image
-
-```
-python builddmg.py
-```
-
-Compiles a standalone `Fulcrum.app` with Nuitka and packages it into
-`fulcrum.dmg`. Needs macOS with the Xcode command-line tools, Homebrew and
-`create-dmg`. The app and the disk image are always code signed (with the
-identity in `DEVELOPER_ID_APPLICATION` when it is set) and notarized.
-Notarization uses `APPLE_ID` and `APPLE_APP_PASSWORD` when both are set,
-refusing a password that is not app-specific before any build work; otherwise
-it uses the keychain profile `Fulcrum` (or the one `APPLE_KEYCHAIN_PROFILE`
-names). A missing or rejected credential stops the build at the notarization
-step. Only `ALLOW_UNNOTARIZED=1` skips notarization, for a local test build
-that must never be released. The
-`.icns` derives from the glow-treated icon set `generate_icons.py` emits
-(`fulcrum_1024.png` downwards), never from the raw `fulcrum.png` master, so
-run the icon generator first or the build warns and ships without a custom
-icon.
-
 ### GitHub Pages site
 
 The site under `docs/` is hand-maintained static HTML, served from the
-`main` branch `/docs` folder: `index.html` plus `why.html`, `model.html`,
-`tool.html` and `download.html`, sharing one `styles.css`. Edit the pages
+`main` branch `/docs` folder: `index.html` plus `tool.html` (with its two
+detail pages, `vocabulary.html` and `play.html`), `why.html`, `model.html`
+(with `weights.html`, `assumptions.html` and `testing.html`) and
+`download.html`, sharing one `styles.css`. Edit the pages
 directly. There is no generator: the site is authored, not built, so nothing
 can overwrite it. Version numbers in the pages sit between `<!--VERSION-->`
-delimiters and are stamped from the `VERSION` file (the packaged builds run
-this automatically):
+delimiters and are stamped from the `VERSION` file (the Windows builds run
+this automatically; the macOS and Linux builds deliberately do not):
 
 ```
 python stamp_version.py
