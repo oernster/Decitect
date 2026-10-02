@@ -2,7 +2,7 @@
 
 The suite is `pytest` with a hard 100% coverage gate on the layers that carry
 logic. For the design see [ARCHITECTURE.md](ARCHITECTURE.md); for the wider
-workflow see [DEVELOPMENT-README.md](DEVELOPMENT-README.md).
+workflow see [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## Running
 

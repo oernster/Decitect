@@ -209,7 +209,7 @@ python main.py
 
 - [Architecture](ARCHITECTURE.md): the layers, the invariants and the model,
   with each invariant linked to the test that enforces it.
-- [Development](DEVELOPMENT-README.md): running from source, the quality gate
+- [Development](DEVELOPMENT.md): running from source, the quality gate
   and the build scripts (icons, the Windows executable and installer, the macOS
   disk image, the Linux Flatpak and the site).
 - [Testing](TESTING.md): how the suite is structured, how to run it and how to
@@ -233,7 +233,7 @@ The suite fails below 100% coverage on the gated layers. See [TESTING.md](TESTIN
 
 The development builds for Windows, macOS and Linux (the icon set, the Windows
 executable and installer, the macOS disk image, the Linux Flatpak and the GitHub
-Pages site) are described in [DEVELOPMENT-README.md](DEVELOPMENT-README.md).
+Pages site) are described in [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## Supporting the project
 
