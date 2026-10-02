@@ -212,6 +212,10 @@ this automatically):
 python stamp_version.py
 ```
 
+It also versions the pages' stylesheet and script links by content
+(`styles.css?v=<hash>`), so a browser never pairs a new page with a cached
+old stylesheet.
+
 The images under `docs/assets/` are committed alongside the pages: the
 play-by-play screenshots in `docs/assets/screenshots/` are captured from the
 running app; the book covers in `docs/assets/books/` are web-sized copies
