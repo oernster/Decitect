@@ -1,11 +1,12 @@
-"""An update check whose window has gone before its answer comes back.
+"""An update check whose controller is deleted before its answer comes back.
 
-The controller is a child of the main window, so Qt deletes it with the
-window; quitting while a check is out does exactly that, since ``main()``
-lets go of the window as soon as the event loop returns. The worker then
-emits its answer through a controller that no longer exists. Nobody is left
-to tell, so the answer is dropped; what must not happen is an exception
-escaping a thread this application started.
+The controller is a child of the main window, so deleting the window deletes
+it. Measured on 2026-10-02, quitting the real ``main()`` did not do that: the
+window and the controller were both still alive after it returned. This is
+therefore hardening, not a reproduction of a seen crash. Without it the
+worker emits through a controller that no longer exists and the emit raises
+on that thread. Nobody is left to tell, so the answer is dropped; what must
+not happen is an exception escaping a thread this application started.
 """
 
 from __future__ import annotations
