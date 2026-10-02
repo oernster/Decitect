@@ -4,7 +4,8 @@ Threading shape (the house pattern): the worker thread emits ``_result_ready``,
 which is connected to a bound method of this controller. The controller lives
 on the UI thread, so delivery is a queued connection and the slot (and every
 dialog it opens) runs on the UI thread; a signal connected to a bare callable
-would run in the worker's thread instead.
+would run in the worker's thread instead. An answer arriving after the window
+(and this controller with it) has gone is dropped rather than raised.
 
 The automatic check (a few seconds after launch, then daily) honours the
 skipped version and is silent on every non-offer outcome. The manual Help-menu
@@ -15,6 +16,7 @@ from __future__ import annotations
 
 import threading
 
+import shiboken6
 from PySide6.QtCore import QObject, QTimer, QUrl, Signal, Slot
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import QMessageBox, QWidget
@@ -74,9 +76,24 @@ class UpdateCheckController(QObject):
                 status = self._service.check(skipped_version)
             except Exception:  # noqa: BLE001 (any error reads as unreachable)
                 status = None
-            self._result_ready.emit(status, manual)
+            self._hand_back(status, manual)
 
         threading.Thread(target=_run, daemon=True, name="fulcrum-update-check").start()
+
+    def _hand_back(self, status: UpdateStatus | None, manual: bool) -> None:
+        """Hand the answer across to the UI thread, from the worker thread.
+
+        The window can go while the question is out, taking this controller
+        with it; the emit then raises on a thread nothing would catch it on.
+        Nobody is left to tell, so that answer is dropped. Asking first whether
+        the controller still exists would not do: it can go between the asking
+        and the emit. Anything else the emit raises is still raised.
+        """
+        try:
+            self._result_ready.emit(status, manual)
+        except RuntimeError:
+            if shiboken6.isValid(self):
+                raise
 
     @Slot(object, bool)
     def _apply_result(self, status: UpdateStatus | None, manual: bool) -> None:

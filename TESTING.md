@@ -42,6 +42,7 @@ The tests mirror the package, one area per layer:
 | `tests/installer` | unit tests of the Windows installer's decisions, deploying real zips into a temp directory | temp files |
 | `tests/scripts` | smoke tests of the three analysis scripts at the repo root | reads examples |
 | `tests/structural` | an AST scan that enforces the architectural invariants | reads source |
+| `tests/ui` | Qt tests on a real offscreen `QApplication`: an update check whose window is deleted before its answer arrives drops the answer instead of raising on the worker thread | none |
 
 ## Coverage scope
 
