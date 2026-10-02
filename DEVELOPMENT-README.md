@@ -54,7 +54,7 @@ assets/            book covers, the generated header-button icons and the
 examples/          reference org JSON: a debt ladder, a healthy reference and
                    the calibration cases (examples/calibration)
 docs/              the GitHub Pages site (hand-maintained; donate.png is
-                   generated)
+                   the mark every project site shares)
 main.py            the composition root
 ```
 
@@ -123,11 +123,11 @@ The same script derives the donate mark from its master, `assets/donate.png`.
 The mark is a wide picture rather than an icon, so it skips the squaring the
 app icon takes: it is cropped to its artwork, then scaled by height alone to
 four times the height the header draws it at (`BUTTON_ICON_PX` in
-`fulcrum/ui/header_buttons.py`), so it stays crisp under display scaling. One
-render is written to `assets/buttons/donate.png` for the app and to
-`docs/donate.png` for the site, so the two cannot drift. Replace the master
-and rerun; never hand-scale either copy. The master itself is bundled by no
-build.
+`fulcrum/ui/header_buttons.py`), so it stays crisp under display scaling; the
+render goes to `assets/buttons/donate.png` for the app. Replace the master and
+rerun; never hand-scale the render. The site's `docs/donate.png` is not
+generated: it is the small mark every project site shares byte for byte. The
+master itself is bundled by no build.
 
 ### Windows executable
 

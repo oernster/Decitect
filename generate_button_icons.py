@@ -10,9 +10,9 @@ scale. Deterministic: rerunning writes identical files.
 
 It also derives the donate mark from its master, assets/donate.png. That
 mark is a wide picture rather than a square glyph, so it is cropped to its
-artwork and scaled by height alone, then written once into assets/buttons for
-the app and once into docs for the site, from the same render, so the two
-copies cannot drift.
+artwork and scaled by height alone, then written into assets/buttons for the
+app. The site's docs/donate.png is not written here: it is the small mark
+every project site shares byte for byte.
 
 Run from the repository root:
 
@@ -31,11 +31,11 @@ from fulcrum.ui.header_buttons import BUTTON_ICON_PX
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "assets" / "buttons"
 
-# The donate master and every place its render goes. The tray draws the mark
-# at its own glyph height; the render is this many times taller so it stays
-# crisp under display scaling.
+# The donate master and where its render goes. The tray draws the mark at its
+# own glyph height; the render is this many times taller so it stays crisp
+# under display scaling.
 DONATE_MASTER = ROOT / "assets" / "donate.png"
-DONATE_OUTPUTS = (OUTPUT_DIR / "donate.png", ROOT / "docs" / "donate.png")
+DONATE_OUTPUTS = (OUTPUT_DIR / "donate.png",)
 _DONATE_RENDER_SCALE = 4
 
 _SCALE = 2
@@ -187,7 +187,7 @@ def donate_mark(master: Image.Image, height: int) -> Image.Image:
 
 
 def write_donate_mark() -> None:
-    """Write one render of the donate mark to every destination."""
+    """Write the render of the donate mark the app loads."""
     mark = donate_mark(Image.open(DONATE_MASTER), BUTTON_ICON_PX * _DONATE_RENDER_SCALE)
     for path in DONATE_OUTPUTS:
         mark.save(path)
