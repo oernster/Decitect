@@ -28,7 +28,7 @@ It has not been run against a real Nuitka standalone build. Under freezing, each
 
 ## 4. Ruff has never been run against this repository beyond its default rules
 
-With ruff 0.15.22 (the repo venv's), `ruff check .` passes clean and exits zero; that is ruff's default selection (E4, E7, E9 and F) doing very little work. `requirements-dev.txt` asks only for `ruff>=0.4`, so a fresh install gets whatever is newest: ruff 0.16.0 widens its default selection and the same command reports 10 findings and exits 1 (nine `I001` unsorted import blocks and one `UP035`, all auto-fixable), across `main_window.py`, `complete_map_painter.py`, `github_release_source.py`, four installer modules and three test modules. Either pin ruff below 0.16 or clear those ten in a commit of their own.
+With ruff 0.15.22 (the repo venv's), `ruff check .` passes clean and exits zero; that is ruff's default selection (E4, E7, E9 and F) doing very little work. `requirements-dev.txt` pins `ruff==0.15.22`, so a fresh install runs the same rules. Moving the pin to 0.16 is its own piece of work: ruff 0.16.0 widens its default selection and the same command reports 10 findings and exits 1 (nine `I001` unsorted import blocks and one `UP035`, all auto-fixable), across `main_window.py`, `complete_map_painter.py`, `github_release_source.py`, four installer modules and three test modules, which would be cleared in the commit that moves the pin.
 
 Run with `--select ALL` under ruff 0.15.22 the repository reports **4811 findings**, of which 320 are auto-fixable with `--fix` and a further 912 sit behind `--unsafe-fixes`. The largest families:
 

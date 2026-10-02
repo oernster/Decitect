@@ -22,8 +22,8 @@ ruff check .
 ```
 
 Run from the repo root so the installer and the build scripts are read too.
-`ruff check .` is clean under the 0.15 series' default rules; ruff 0.16 widens
-its defaults (see [TECH_DEBT.md](TECH_DEBT.md)).
+`ruff check .` is clean under ruff 0.15.22, the version `requirements-dev.txt`
+pins; ruff 0.16 widens its defaults (see [TECH_DEBT.md](TECH_DEBT.md)).
 
 ## Reading the result
 

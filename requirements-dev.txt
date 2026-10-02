@@ -5,7 +5,9 @@ pytest-qt>=4.4
 Pillow>=10.0
 black>=24.0
 flake8>=7.0
-ruff>=0.4
+# Pinned: the repository is clean under 0.15.22; ruff 0.16 widens its default
+# selection and reports findings this series does not (see TECH_DEBT.md).
+ruff==0.15.22
 # Nuitka compiles the packaged Windows and macOS builds (buildexe.py,
 # buildinstaller.py, builddmg.py). The Linux Flatpak runs from source.
-Nuitka>=2.0
+Nuitka>=4.2.1

@@ -73,9 +73,10 @@ Run them from the repo root so the installer and the build scripts are read
 too; `.flake8` carries the exclusions and `pyproject.toml` mirrors them for
 ruff, so the three tools see the same files at the same width.
 
-`ruff check .` is clean under the 0.15 series' default rules. Ruff 0.16 widens
-its default selection and reports import-order findings the earlier series
-does not; [TECH_DEBT.md](TECH_DEBT.md) records them.
+`ruff check .` is clean under the default rules of ruff 0.15.22, the version
+`requirements-dev.txt` pins. Ruff 0.16 widens its default selection and reports
+import-order findings this version does not; [TECH_DEBT.md](TECH_DEBT.md)
+records them.
 
 `pytest` enforces 100% coverage on the gated layers (domain, application,
 infrastructure, shared and the installer's pure modules). The structural

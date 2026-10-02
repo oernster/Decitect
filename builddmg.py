@@ -40,7 +40,7 @@ from pathlib import Path
 
 from packaging.requirements import InvalidRequirement, Requirement
 
-from build_utils import require, run, section
+from build_utils import require, require_nuitka, run, section
 from dmg_icon import png_to_icns, set_volume_icon
 
 
@@ -584,6 +584,7 @@ def main() -> int:
     print(f"Signing identity: {DEVELOPER_ID}")
 
     check_platform()
+    require_nuitka()
     check_runtime_dependencies()
     check_notarization_credentials()
     clean()
