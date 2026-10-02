@@ -10,12 +10,16 @@ the venv active:
 
 Notarization is mandatory. A Developer ID signature alone is not enough: since
 macOS 10.15 Gatekeeper rejects signed-but-unnotarized apps with "Apple could not
-verify ... is free of malware". APPLE_ID and APPLE_APP_PASSWORD must be set or
-the build stops before doing any work.
+verify ... is free of malware". Notarization authenticates with APPLE_ID and
+APPLE_APP_PASSWORD when both are set; otherwise with the keychain profile
+Fulcrum. A missing or rejected credential stops the build at the notarization
+step; only ALLOW_UNNOTARIZED=1 skips notarization.
 
 Env vars:
-    APPLE_ID                  : Apple ID for notarization (required)
-    APPLE_APP_PASSWORD        : app-specific password for notarization (required)
+    APPLE_ID                  : Apple ID for notarization (with the password)
+    APPLE_APP_PASSWORD        : app-specific password for notarization
+    APPLE_KEYCHAIN_PROFILE    : keychain profile used when the pair above is
+                                unset (defaults to Fulcrum)
     DEVELOPER_ID_APPLICATION  : override the default signing identity
     APPLE_TEAM_ID             : Team ID for notarization (defaults to W7K465GKFJ)
     ALLOW_UNNOTARIZED         : set to 1 to build without notarizing. The result
@@ -48,7 +52,7 @@ def _read_version() -> str:
 
 
 def _resolve_source_png() -> Path | None:
-    """The highest-fidelity glow-treated icon PNG present, or None."""
+    """The highest-fidelity glow-treated icon PNG present; None if there is none."""
     root = Path(__file__).parent
     for name in SOURCE_PNG_CANDIDATES:
         candidate = root / name
@@ -134,7 +138,7 @@ APPLE_TEAM_ID = os.environ.get("APPLE_TEAM_ID", "W7K465GKFJ")
 #     --apple-id <id> --team-id <team> --password <app-specific>
 # One profile per app means a leaked credential can be revoked for a single
 # app. Stated explicitly rather than derived from a display name: the profile
-# is a fact registered with Apple, and deriving it would silently change which
+# is a fact registered with Apple. Deriving it would silently change which
 # credential the build looks for if that name were ever edited.
 # APPLE_KEYCHAIN_PROFILE overrides it.
 NOTARY_PROFILE = os.environ.get("APPLE_KEYCHAIN_PROFILE", "") or "Fulcrum"
@@ -146,7 +150,7 @@ APP_SPECIFIC_PASSWORD_RE = re.compile(r"^[a-z]{4}-[a-z]{4}-[a-z]{4}-[a-z]{4}$")
 
 # Escape hatch for local test builds. Distribution builds must never set this:
 # an unnotarized DMG is rejected by Gatekeeper on every machine but the one that
-# signed it, and the failure is invisible at build time.
+# signed it; the failure is invisible at build time.
 ALLOW_UNNOTARIZED = os.environ.get("ALLOW_UNNOTARIZED", "") == "1"
 # Notarization is the default and the keychain profile always resolves, so the
 # only way to skip it is to ask for that explicitly.
@@ -203,10 +207,11 @@ def check_platform() -> None:
 
 
 def check_notarization_credentials() -> None:
-    """Fail before the build starts if the release cannot be notarized.
+    """Report the notarization route before the build starts.
 
-    Checked up front rather than at the notarization step so a missing password
-    costs seconds instead of a full PyInstaller run.
+    A password that is not app-specific is refused up front rather than at the
+    notarization step, so it costs seconds instead of a full Nuitka build. The
+    keychain profile is not probed here; a missing one fails at notarytool.
     """
     section("Notarization credentials")
     if ALLOW_UNNOTARIZED:
@@ -221,7 +226,7 @@ def check_notarization_credentials() -> None:
                 "  An Apple account password is rejected by the notary service with\n"
                 "  'HTTP status code: 401. Invalid credentials'.\n"
                 "  Generate one at https://appleid.apple.com (Sign-In and Security,\n"
-                "  App-Specific Passwords), or leave both variables unset and store\n"
+                "  App-Specific Passwords). Alternatively leave both unset and store\n"
                 f"  the credential in the keychain as profile {NOTARY_PROFILE}."
             )
         print(f"  Notarizing as {APPLE_ID} (team {APPLE_TEAM_ID}).")
@@ -302,7 +307,7 @@ def notarytool_credentials() -> list[str]:
 def redact(cmd: list[str]) -> str:
     """Render a command with the value after --password masked.
 
-    run() echoes every command it runs, and CalledProcessError repeats the whole
+    run() echoes every command it runs; CalledProcessError repeats the whole
     argument list in its traceback. Both would otherwise copy the app-specific
     password into build logs and CI output.
     """

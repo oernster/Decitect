@@ -3,12 +3,13 @@
 Generation must stay fast even for a quarter of a million people, so the cost
 of finding section-solvable clusters is paid a fixed number of times, not once
 per leaf. A small pool of clusters is resampled until each, scored on its own,
-reaches a great move; those templates are then cloned across the org's leaves
+reaches a great move (up to a capped number of tries, after which the last
+sample is kept as it is); those templates are then cloned across the org's leaves
 with fresh ids, names and headcounts. A clone keeps its template's authority
 pattern, incentive skews and dependency delays; every cluster's population sits
 far below the Dunbar horizon, where the prince-band scale factor is constant, so
 a clone scores exactly as its template does and stays exactly as solvable.
-Per-section solvability therefore holds for thousands of leaves while the
+Each template's solvability therefore carries to thousands of leaves while the
 simulator runs only a couple of dozen times.
 """
 
@@ -51,7 +52,7 @@ _TEAMS_PER_LEAF_CHOICES: tuple[int, ...] = (4, 5)
 # runs a bounded number of times however big the org grows.
 _POOL_SIZE_CAP: int = 24
 
-# A cluster is resampled until it is section-solvable, but never more than this:
+# A cluster is resampled until it is section-solvable, never more than this:
 # clusters are reliably solvable, so the cap is only a guard against an unlucky
 # run looping forever. If it is ever reached, the last sample is used as-is, since
 # a section with a weaker move beats a generation that never returns.
@@ -151,8 +152,8 @@ def _random_cluster(
 ) -> tuple[tuple[Team, ...], tuple[Dependency, ...]]:
     """Resample a cluster until its own sub-org reaches a great move.
 
-    Only its flavour (skew, delays, headcount) is resampled, never the guarantee,
-    so the returned cluster offers a reachable great move when drilled into. The
+    Only its flavour (skew, delays, headcount) is resampled, so a returned sample
+    that passed the check offers a reachable great move when drilled into. The
     resampling is capped: if no sample is solvable within the cap the last one is
     returned, so an unlucky run can never loop forever.
     """
@@ -201,7 +202,7 @@ def clone_cluster(
 
     Authority, skew and dependency delays carry over unchanged, so the clone is
     exactly as solvable as the template; only the cosmetic identity and the
-    people count are renewed, and a cluster's population always sits in the
+    people count are renewed. A cluster's population always sits in the
     constant region of the prince band, so the score cannot move.
     """
     template_teams, template_deps = template
@@ -233,8 +234,8 @@ def _cross_dependencies(
     """Link consecutive clusters by a single dependency each: a sparse surface.
 
     These are the only inter-cluster edges, so the cross-domain dependency count
-    grows with the number of clusters rather than the square of the team count,
-    and they never fall inside a focused leaf slice.
+    grows with the number of clusters rather than the square of the team count.
+    They never fall inside a focused leaf slice.
     """
     edges = [
         Dependency(

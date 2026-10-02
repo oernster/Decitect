@@ -616,9 +616,10 @@ import the application. It asks the user to close a running Fulcrum first.
 
 ### macOS builds are notarised or refused
 
-Notarisation is required. Credentials are checked before any build work; an
-Apple account password is refused at once, since the notary service accepts
-only an app-specific one. Both the app and the disk image are stapled and
+Notarisation is required. An Apple account password given in the environment
+is refused before any build work, since the notary service accepts only an
+app-specific one; a missing or rejected keychain profile stops the build at
+the notarisation step. Both the app and the disk image are stapled and
 verified as an end user's machine would.
 
 - **Rather than:** skipping notarisation when credentials were absent, which

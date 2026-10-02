@@ -9,9 +9,10 @@ bottom of the vocabulary, so leaves are always Domains and only a deep enough
 tree reaches Company at its root.
 
 Headcount lives on the teams and rolls up the tree, so every unit's people are
-exactly the sum of its teams. Solvability is guaranteed per leaf, not globally:
-each cloned cluster reaches a great move on its own, which is the slice the
-player scores when they drill into that domain.
+exactly the sum of its teams. Solvability is sought per leaf, not globally: each
+cloned cluster's template was resampled until it reached a great move on its own
+(up to a capped number of tries), which is the slice the player scores when they
+drill into that domain.
 """
 
 from __future__ import annotations

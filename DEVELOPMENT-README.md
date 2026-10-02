@@ -191,8 +191,14 @@ python builddmg.py
 
 Compiles a standalone `Fulcrum.app` with Nuitka and packages it into
 `fulcrum.dmg`. Needs macOS with the Xcode command-line tools, Homebrew and
-`create-dmg`. Code signing and notarization run when `DEVELOPER_ID_APPLICATION`,
-`APPLE_ID` and `APPLE_APP_PASSWORD` are set; otherwise they are skipped. The
+`create-dmg`. The app and the disk image are always code signed (with the
+identity in `DEVELOPER_ID_APPLICATION` when it is set) and notarized.
+Notarization uses `APPLE_ID` and `APPLE_APP_PASSWORD` when both are set,
+refusing a password that is not app-specific before any build work; otherwise
+it uses the keychain profile `Fulcrum` (or the one `APPLE_KEYCHAIN_PROFILE`
+names). A missing or rejected credential stops the build at the notarization
+step. Only `ALLOW_UNNOTARIZED=1` skips notarization, for a local test build
+that must never be released. The
 `.icns` derives from the glow-treated icon set `generate_icons.py` emits
 (`fulcrum_1024.png` downwards), never from the raw `fulcrum.png` master, so
 run the icon generator first or the build warns and ships without a custom

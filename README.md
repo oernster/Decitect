@@ -36,7 +36,9 @@ A short tour and the books behind it are at <https://ernster.dev/fulcrum/>.
 
 ## Capabilities
 
-- Generated levels, each resampled until it provably has a great move to find.
+- Generated levels whose every leaf is cloned from a cluster template, each
+  resampled until a great move is reachable within ten greedy improving moves.
+  The resampling stops at 200 tries; the last sample is then used as it is.
 - "Model my organisation": a two-pane editor where the org tree you are
   building is always visible as a structure. Start at any tier from the New
   dropdown (a whole company down to a single team), add items inside a unit
