@@ -21,10 +21,11 @@ rather than a preference asserted uniformly:
       organisation: the same move reads bigger at scale.
   C10 A Dunbar-sized pocket inside a large organisation may stay princely
       in its own frame while the large frames demand a republic.
-Claims C11 to C14 (escalation loads the centre, escalation priced at its
+Claims C11 to C17 (escalation loads the centre, escalation priced at its
 resolution distance, fragmentation priced under no roof, influence priced
-proportionally), the conformance half of the adversarial repairs, live in
-test_resolution_conformance.py.
+proportionally, claims priced proportionally, shed load following the wiring,
+a roof needing an officer), the conformance half of the adversarial repairs,
+live in test_resolution_conformance.py.
 """
 
 from itertools import pairwise
@@ -81,7 +82,7 @@ def _autocracy(per_team: int, authority_everywhere: bool = False) -> OrgState:
     """A founder-autocrat: every team escalates to one authoritative centre.
 
     Both shapes live under a common roof (the org itself as a domain): the
-    autocracy resolves through the founder either way, and the republic's
+    autocracy resolves through the founder either way; the republic's
     sovereign interfaces are owned by the roof, its senate, so the fixtures
     compare concentration against distribution rather than against
     fragmentation (which test_resolution_conformance.py prices on its own).
