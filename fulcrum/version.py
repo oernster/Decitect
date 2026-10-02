@@ -17,6 +17,11 @@ APP_COPYRIGHT: str = "(c) 2026 Oliver Ernster"
 # changing it makes Windows treat newer builds as a separate app.
 APP_APPUSERMODELID: str = "uk.codecrafter.fulcrum"
 
+# Where the donate button sends a browser. The only address the application
+# knows; it is handed to the desktop rather than fetched, so nothing here ever
+# opens a connection of its own.
+DONATE_URL: str = "https://www.paypal.com/ncp/payment/X2U2V8TML89DE"
+
 # Single source of truth for the version: the VERSION file in the repo root.
 _VERSION_FILE = Path(__file__).resolve().parents[1] / "VERSION"
 _FALLBACK_VERSION = "0.0.0-dev"

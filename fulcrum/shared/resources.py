@@ -21,6 +21,9 @@ _ICON_FILENAMES = (
 )
 _PNG_SUFFIX = ".png"
 _PROVENANCE_FILENAME = "fulcrum_provenance_256.png"
+# Derived by generate_button_icons.py from the assets/donate.png master into
+# assets/buttons, so the button finds the small render and never the master.
+_DONATE_FILENAME = "donate.png"
 _LICENSE_FILENAME = "LICENSE"
 _MODEL_LICENCE_FILENAME = "LICENSE-GPL-3.0.txt"
 _UI_LICENCE_FILENAME = "LICENSE-LGPL-3.0.txt"
@@ -106,6 +109,11 @@ def find_button_icon(filename: str) -> Path | None:
         if candidate.is_file():
             return candidate
     return None
+
+
+def find_donate_png() -> Path | None:
+    """The artwork for the button that offers to buy the author a drink."""
+    return find_button_icon(_DONATE_FILENAME)
 
 
 def find_examples_dir() -> Path | None:

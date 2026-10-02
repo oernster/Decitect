@@ -8,7 +8,7 @@
 # --no-index, so the build itself is offline.
 #
 # Usage:
-#   ./build_flatpak.sh             - build, install locally, AND produce fulcrum.flatpak
+#   ./build_flatpak.sh             - build, install locally plus produce fulcrum.flatpak
 #   ./build_flatpak.sh --no-bundle - build + install only (skip the distributable bundle)
 
 set -euo pipefail
@@ -231,7 +231,8 @@ modules:
       - mkdir -p /app/share/${SHARE_DIR}
       - cp main.py VERSION LICENSE LICENSE-GPL-3.0.txt LICENSE-LGPL-3.0.txt /app/share/${SHARE_DIR}/
       - cp -r fulcrum /app/share/${SHARE_DIR}/
-      # Book covers shown by Help > Book background, resolved at assets/books.
+      # Book covers shown by Help > Book background, resolved at assets/books,
+      # and the header-button icons (the donate mark among them) at assets/buttons.
       - cp -r assets /app/share/${SHARE_DIR}/
       # Calibration examples offered by File > Open example organisation.
       - mkdir -p /app/share/${SHARE_DIR}/examples
@@ -296,9 +297,15 @@ modules:
       - type: dir
         path: examples/calibration
         dest: examples/calibration
+      # The two asset folders the app reads, named one by one so the donate
+      # master in assets/ stays out of the bundle; only its small render in
+      # assets/buttons ships.
       - type: dir
-        path: assets
-        dest: assets
+        path: assets/books
+        dest: assets/books
+      - type: dir
+        path: assets/buttons
+        dest: assets/buttons
       - type: dir
         path: packaging
         dest: packaging

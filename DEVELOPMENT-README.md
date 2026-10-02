@@ -49,10 +49,12 @@ installer/         the bespoke Windows installer, a second application layered
                    ops acts, lifecycle composes and the Qt modules present
 tests/             domain, application, infrastructure, shared, installer,
                    scripts and structural
-assets/            book covers and the generated header-button icons
+assets/            book covers, the generated header-button icons and the
+                   donate master (donate.png), which never ships itself
 examples/          reference org JSON: a debt ladder, a healthy reference and
                    the calibration cases (examples/calibration)
-docs/              the GitHub Pages site (hand-maintained)
+docs/              the GitHub Pages site (hand-maintained; donate.png is
+                   generated)
 main.py            the composition root
 ```
 
@@ -112,6 +114,16 @@ climbing arrow and the overview's two view glyphs) deterministically into
 `assets/buttons` at the sizes the app loads, one variant per theme (dark
 strokes carry a `_light` suffix). Rerunning writes identical files; edit
 the script and rerun rather than editing the PNGs.
+
+The same script derives the donate mark from its master, `assets/donate.png`.
+The mark is a wide picture rather than an icon, so it skips the squaring the
+app icon takes: it is cropped to its artwork, then scaled by height alone to
+four times the height the header draws it at (`BUTTON_ICON_PX` in
+`fulcrum/ui/header_buttons.py`), so it stays crisp under display scaling. One
+render is written to `assets/buttons/donate.png` for the app and to
+`docs/donate.png` for the site, so the two cannot drift. Replace the master
+and rerun; never hand-scale either copy. The master itself is bundled by no
+build.
 
 ### Windows executable
 

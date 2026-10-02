@@ -239,7 +239,11 @@ Fulcrum is free and stays free. There is no paid tier, no licence key and no
 feature held back behind a donation. If it has saved you time or simply been
 useful, a donation supports its maintenance and continued development.
 
-<a href="https://www.paypal.com/ncp/payment/2NATMHXG4X3E6"><img src="docs/donate.png" alt="Donate to Fulcrum" width="120"></a>
+The same link sits in the app's header, just left of the light and dark
+toggle. Pressing it hands the address to your browser; Fulcrum itself sends
+nothing and opens no connection of its own.
+
+<a href="https://www.paypal.com/ncp/payment/X2U2V8TML89DE"><img src="docs/donate.png" alt="Donate to Fulcrum" width="120"></a>
 
 ## Licence
 

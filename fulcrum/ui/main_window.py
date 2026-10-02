@@ -7,10 +7,8 @@ from random import Random
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QApplication,
-    QHBoxLayout,
     QMainWindow,
     QMessageBox,
-    QPushButton,
     QVBoxLayout,
     QWidget,
 )
@@ -29,10 +27,9 @@ from fulcrum.shared.resources import (
     find_model_licence,
     find_ui_licence,
 )
-from fulcrum.ui import header_buttons
 from fulcrum.ui.close_guard import install_close_guard
 from fulcrum.ui.guide_launcher import GuideLauncher
-from fulcrum.ui.icons import button_icon
+from fulcrum.ui.header_tray import HeaderTray, TrayHandlers
 from fulcrum.ui.map_palette import set_map_theme
 from fulcrum.ui.org_intake import OrgIntakeController
 from fulcrum.ui.plan_files import PlanFileActions
@@ -49,18 +46,6 @@ from fulcrum.ui.widgets.keyboard_nav import KeyboardNavigator
 from fulcrum.ui.widgets.move_record_dialog import MoveRecordDialog
 from fulcrum.ui.widgets.provenance_dialog import ProvenanceDialog
 from fulcrum.version import APP_NAME, APP_TAGLINE
-
-_GLOSSARY_GLYPH = "\N{INFORMATION SOURCE}\N{VARIATION SELECTOR-16}"
-_GLOSSARY_TOOLTIP = "Decision glossary"
-_RECORD_TOOLTIP = "Move record: every move to date, with the position before and after"
-_PRESENTATION_GLYPH = "\N{CHART WITH UPWARDS TREND}"
-_PRESENTATION_TOOLTIP = "Create the presentation and open it"
-_MODEL_ORG_TOOLTIP = "Model my organisation"
-_EDIT_ORG_TOOLTIP = "Edit my org: reopen and edit the current organisation"
-_GUIDE_TOOLTIP = "Show the guide"
-_PROVENANCE_TOOLTIP = (
-    "What grounds the numbers: every coefficient, its source and its fragility"
-)
 
 
 class MainWindow(QMainWindow):
@@ -89,9 +74,6 @@ class MainWindow(QMainWindow):
         )
         self._theme = settings.load_theme() if settings is not None else DEFAULT_THEME
         set_map_theme(self._theme)
-        # The generated header icons carry a variant per theme; the toggle
-        # re-dresses each of these (button, icon name) pairs on switch.
-        self._themed_icon_buttons: list[tuple[QPushButton, str]] = []
         self._session: GameSession | None = None
         self._started = False
         self._intake = OrgIntakeController(
@@ -127,8 +109,8 @@ class MainWindow(QMainWindow):
             lambda: self._theme,
         )
         restored = org_store.load() if org_store is not None else None
-        # A failed restore is not the same as having nothing to restore, and
-        # the user is the only one who can tell which happened. Held until
+        # A failed restore is not the same as having nothing to restore; the
+        # user is the only one who can tell which happened. Held until
         # the window is shown, since a message box during construction has no
         # parent to sit over.
         self._restore_warning = self._restore_warning_text(org_store)
@@ -152,66 +134,26 @@ class MainWindow(QMainWindow):
         self._focus_start.setFixedSize(0, 0)
         self._focus_start.setFocusPolicy(Qt.FocusPolicy.TabFocus)
         layout = QVBoxLayout(central)
-        top = QHBoxLayout()
-        model_button = self._icon_button(
-            "model_org", _MODEL_ORG_TOOLTIP, self._intake.model_org
+        self._tray = HeaderTray(
+            self._theme,
+            TrayHandlers(
+                model_org=self._intake.model_org,
+                edit_org=self._intake.edit_org,
+                show_guide=self._show_guide,
+                move_record=self._move_record,
+                provenance=self._provenance,
+                presentation=self._plan_files.export_html,
+                toggle_theme=self._toggle_theme,
+                glossary=self._glossary,
+                inform=self._inform,
+            ),
         )
-        edit_button = self._icon_button(
-            "edit_org", _EDIT_ORG_TOOLTIP, self._intake.edit_org
-        )
-        guide_button = self._icon_button("guide", _GUIDE_TOOLTIP, self._show_guide)
-        top.addWidget(model_button)
-        top.addWidget(edit_button)
-        top.addWidget(guide_button)
-        top.addStretch()
-        # The app icon sits at the centre of the tray and opens the move
-        # record; the complete overview lives on the board itself now.
-        record_button = header_buttons.app_icon_button(
-            _RECORD_TOOLTIP, self._move_record
-        )
-        top.addWidget(record_button)
-        # Its golden kin sits beside it and answers why the numbers are
-        # what they are: the model's provenance, coefficient by coefficient.
-        provenance_button = header_buttons.provenance_icon_button(
-            _PROVENANCE_TOOLTIP, self._provenance
-        )
-        top.addWidget(provenance_button)
-        # The presentation joins the pair at the centre rather than sitting
-        # out on the right edge with the utilities: it is what the board is
-        # for, and on the edge it read as an afterthought.
-        presentation_link = QPushButton(_PRESENTATION_GLYPH)
-        presentation_link.setObjectName("IconLink")
-        presentation_link.setToolTip(_PRESENTATION_TOOLTIP)
-        presentation_link.setCursor(Qt.CursorShape.PointingHandCursor)
-        presentation_link.clicked.connect(self._plan_files.export_html)
-        presentation_link.setEnabled(False)
+        presentation_link = self._tray.presentation_link
         self._board.historyChanged.connect(presentation_link.setEnabled)
-        top.addWidget(presentation_link)
-        top.addStretch()
-        self._theme_toggle = header_buttons.theme_toggle_button(self._toggle_theme)
-        header_buttons.dress_theme_toggle(self._theme_toggle, self._theme)
-        top.addWidget(self._theme_toggle)
-        glossary_link = QPushButton(_GLOSSARY_GLYPH)
-        glossary_link.setObjectName("IconLink")
-        glossary_link.setToolTip(_GLOSSARY_TOOLTIP)
-        glossary_link.setCursor(Qt.CursorShape.PointingHandCursor)
-        glossary_link.clicked.connect(self._glossary)
-        top.addWidget(glossary_link)
-        layout.addLayout(top)
+        layout.addLayout(self._tray.row)
         layout.addWidget(self._board, 1)
         self.setCentralWidget(central)
-        self._install_keyboard_nav(
-            (
-                model_button,
-                edit_button,
-                guide_button,
-                record_button,
-                provenance_button,
-                presentation_link,
-                self._theme_toggle,
-                glossary_link,
-            )
-        )
+        self._install_keyboard_nav(self._tray.ring_stops())
         disabled_cue.install(
             self,
             (presentation_link, self._undo_button),
@@ -224,18 +166,11 @@ class MainWindow(QMainWindow):
         set_map_theme(self._theme)
         if self._settings is not None:
             self._settings.save_theme(self._theme)
-        header_buttons.dress_theme_toggle(self._theme_toggle, self._theme)
-        for button, name in self._themed_icon_buttons:
-            button.setIcon(button_icon(name, self._theme))
+        self._tray.apply_theme(self._theme)
         # The map paints its own colours; rebuild the board so the canvas,
         # nodes and edges repaint in the new palette immediately.
         self._board.apply_map_theme()
         self._board.refresh()
-
-    def _icon_button(self, name: str, tooltip: str, handler) -> QPushButton:
-        button = header_buttons.icon_button(name, tooltip, handler, self._theme)
-        self._themed_icon_buttons.append((button, name))
-        return button
 
     def _install_keyboard_nav(self, buttons) -> None:
         undo_button, map_view, level_button, moves_group, signals_group = (
@@ -352,7 +287,7 @@ class MainWindow(QMainWindow):
 
     @staticmethod
     def _restore_warning_text(org_store) -> str | None:
-        """Explain a failed restore, or None when there is nothing to explain."""
+        """Explain a failed restore; None when there is nothing to explain."""
         if org_store is None:
             return None
         if org_store.preserved_copy is not None:

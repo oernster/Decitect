@@ -8,6 +8,12 @@ climbed by an amber arrow (Show the guide). Each icon is emitted at the
 sizes the main window's QIcon loads, so buttons stay crisp at every UI
 scale. Deterministic: rerunning writes identical files.
 
+It also derives the donate mark from its master, assets/donate.png. That
+mark is a wide picture rather than a square glyph, so it is cropped to its
+artwork and scaled by height alone, then written once into assets/buttons for
+the app and once into docs for the site, from the same render, so the two
+copies cannot drift.
+
 Run from the repository root:
 
     python generate_button_icons.py
@@ -20,8 +26,17 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
+from fulcrum.ui.header_buttons import BUTTON_ICON_PX
+
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "assets" / "buttons"
+
+# The donate master and every place its render goes. The tray draws the mark
+# at its own glyph height; the render is this many times taller so it stays
+# crisp under display scaling.
+DONATE_MASTER = ROOT / "assets" / "donate.png"
+DONATE_OUTPUTS = (OUTPUT_DIR / "donate.png", ROOT / "docs" / "donate.png")
+_DONATE_RENDER_SCALE = 4
 
 _SCALE = 2
 _CANVAS = 1024 * _SCALE
@@ -161,8 +176,27 @@ def guide(p: dict) -> Image.Image:
     return img
 
 
+def donate_mark(master: Image.Image, height: int) -> Image.Image:
+    """The master cropped to its artwork, then scaled to a height."""
+    art = master.convert("RGBA")
+    box = art.getchannel("A").getbbox()
+    if box is not None:
+        art = art.crop(box)
+    width = round(art.width * height / art.height)
+    return art.resize((width, height), Image.LANCZOS)
+
+
+def write_donate_mark() -> None:
+    """Write one render of the donate mark to every destination."""
+    mark = donate_mark(Image.open(DONATE_MASTER), BUTTON_ICON_PX * _DONATE_RENDER_SCALE)
+    for path in DONATE_OUTPUTS:
+        mark.save(path)
+        print(f"[icons] wrote {path.relative_to(ROOT)}")
+
+
 def main() -> int:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    write_donate_mark()
     for suffix, palette in _VARIANTS:
         icons = {
             "model_org": model_org(palette),
