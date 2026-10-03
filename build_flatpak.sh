@@ -2,8 +2,8 @@
 # build_flatpak.sh - Build Fulcrum as a Flatpak
 #
 # Uses org.freedesktop.Platform//25.08 (Python 3.13, glibc 2.42). Fulcrum is a
-# pure PySide6 desktop app: no native toolchains, no model downloads, no network
-# at runtime. Its single wheel set (PySide6 plus shiboken6) is pre-downloaded on
+# pure PySide6 desktop app: no native toolchains, no model downloads and no
+# network at runtime beyond the update check. Its single wheel set (PySide6 plus shiboken6) is pre-downloaded on
 # the host, then installed inside the sandbox from those local wheels with
 # --no-index, so the build itself is offline.
 #
