@@ -203,9 +203,10 @@ finish-args:
   - --socket=fallback-x11
   - --socket=wayland
   - --device=dri
-  # Fulcrum stores saved games under ~/Fulcrum/saves and reads/writes user-chosen
-  # JSON for org import and plan export/edit, so it needs home access. It uses no
-  # network at runtime, so no network permission is granted.
+  # Fulcrum keeps its state under ~/.fulcrum (the last session's org autosave
+  # and the settings file) and reads or writes user-chosen JSON for org import
+  # and plan export/edit, so it needs home access. Its only network use is the
+  # update check above.
   - --filesystem=home
 
 modules:
