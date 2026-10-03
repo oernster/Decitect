@@ -77,7 +77,9 @@ desktop's own browser; Fulcrum fetches nothing itself.
 
 - **Rather than:** any feature reaching out on its own account.
 - **Gains:** the README can say plainly what Fulcrum asks the network.
-- **Costs:** no test counts the ways out; the rule is held by review.
+- **Costs:** a structural test holds the rule, so a second way out fails the
+  suite until it is argued for; the test reads source, so a connection a
+  library opens through a module it does not list is outside it.
 
 ### Support asked for in one quiet place
 

@@ -88,7 +88,8 @@ hides structure the same way an oversized source file does); if anything
 under `installer/` imports from the `fulcrum` package, which would drag the
 whole application into the setup binary; or if `installer_logic.py` or
 `installer_scripts.py` reaches for the registry, a subprocess, the
-environment or Qt. The architectural rules are therefore tested, not merely
+environment or Qt; or if anything shipped but the update check imports a
+networking module. The architectural rules are therefore tested, not merely
 documented.
 
 ## Verifying the UI
