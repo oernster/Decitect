@@ -75,9 +75,11 @@ class OrgStore(Protocol):
 
     A store that cannot read what it finds must not destroy it. ``load``
     returning None therefore has two meanings the caller has to tell apart:
-    nothing was saved, or something was saved and could not be read. The two
-    members below report the second case, so a failed restore can be said out
-    loud rather than silently replaced by a fresh session.
+    nothing was saved; something was saved and could not be read. The
+    preserved_copy and is_sealed members report the second case, so a failed
+    restore can be said out loud rather than silently replaced by a fresh
+    session. history_dropped reports the half-way case: the organisation
+    loaded but its move record did not, so the file was kept aside too.
     """
 
     def save(self, snapshot: SessionSnapshot) -> None: ...
@@ -89,6 +91,9 @@ class OrgStore(Protocol):
 
     @property
     def is_sealed(self) -> bool: ...
+
+    @property
+    def history_dropped(self) -> bool: ...
 
 
 class SettingsStore(Protocol):

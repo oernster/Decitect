@@ -1,16 +1,16 @@
 """Autosave of the current session, so a model and its moves survive closing.
 
 The file's top level is the current org as plain JSON (the same shape a
-plan's initial_org uses, and exactly what older builds wrote), with two
+plan's initial_org uses; exactly what older builds wrote), with two
 optional keys beside it: the starting org and the move history, which is
 what lets the next launch rebuild the session by replay. Both directions
 stay compatible: a pre-history file restores as an org with no moves and an
 older build reading a new file still finds the org it expects at the top
 level. Writes are atomic; a missing file means nothing to restore and an
-unreadable history degrades to the org alone.
+unreadable history degrades to the org alone, with the file kept aside.
 
 A file that is present but will not parse is never left where the next save
-can land on it. It is moved aside first, and if even that fails the store
+can land on it. It is moved aside first; if even that fails the store
 seals itself and writes nothing at all, because the session in memory can be
 replayed and the one on disk cannot be brought back.
 """
@@ -23,9 +23,11 @@ from pathlib import Path
 
 from fulcrum.application.dto import SessionSnapshot
 from fulcrum.domain.errors import FulcrumError
+from fulcrum.domain.models import OrgState
+from fulcrum.domain.moves import Move, apply_move
 from fulcrum.infrastructure.json_serialization import (
-    move_from_dict,
     move_to_dict,
+    moves_from_list,
     org_from_dict,
     org_to_dict,
 )
@@ -60,6 +62,18 @@ def move_file(source: Path, target: Path) -> bool:
     return True
 
 
+def _replay(initial: OrgState, moves: tuple[Move, ...]) -> None:
+    """Raise the domain's error when a stored move no longer applies.
+
+    A history that parses but will not replay (a version skew, a hand edit)
+    is as lost as one that will not parse: the restore falls back to the
+    org alone, so it is found here, where the file can still be kept.
+    """
+    current = initial
+    for move in moves:
+        current = apply_move(current, move)
+
+
 def default_autosave_path() -> Path:
     """The per-user location the current session is saved to and restored from."""
     return Path.home() / _APP_DIR / _FILENAME
@@ -72,6 +86,7 @@ class FileOrgStore:
         self._path = path if path is not None else default_autosave_path()
         self._preserved: Path | None = None
         self._sealed = False
+        self._history_dropped = False
 
     @property
     def preserved_copy(self) -> Path | None:
@@ -82,6 +97,11 @@ class FileOrgStore:
     def is_sealed(self) -> bool:
         """True when saving is refused because the old file could not be kept."""
         return self._sealed
+
+    @property
+    def history_dropped(self) -> bool:
+        """True when the org restored but its move record could not."""
+        return self._history_dropped
 
     def save(self, snapshot: SessionSnapshot) -> None:
         """Write the session atomically, unless the store has been sealed.
@@ -105,10 +125,13 @@ class FileOrgStore:
         os.replace(tmp, self._path)
 
     def load(self) -> SessionSnapshot | None:
-        """Read the saved session, or None when absent or unreadable.
+        """Read the saved session; None when absent or unreadable.
 
-        A file without history (or with history that fails to parse) loads
-        as the current org with no moves, matching the pre-history format.
+        A file without history loads as the current org with no moves,
+        matching the pre-history format. A file whose history fails to parse
+        or replay loads the same way, though only after the file has been kept
+        aside (history_dropped and preserved_copy report it), so the next
+        save cannot erase the record unseen.
         """
         try:
             text = self._path.read_text(encoding="utf-8")
@@ -120,23 +143,30 @@ class FileOrgStore:
         try:
             data = json.loads(text)
             org = org_from_dict(data)
-        except (ValueError, KeyError, FulcrumError):
+        except (ValueError, KeyError, TypeError, FulcrumError):
             self._preserve()
             return None
         focus = data.get(_FOCUS_KEY)
         if not isinstance(focus, str):
-            # Absent in files written before the focus was saved, and not to
-            # be trusted from a hand-edited one; either way, no focus.
+            # Absent in files written before the focus was saved; not to be
+            # trusted from a hand-edited one. Either way, no focus.
             focus = None
         try:
-            moves = tuple(move_from_dict(m) for m in data.get(_HISTORY_KEY, ()))
+            moves = moves_from_list(data.get(_HISTORY_KEY, []))
             initial = org_from_dict(data[_INITIAL_KEY]) if moves else org
+            _replay(initial, moves)
         except (ValueError, KeyError, TypeError, FulcrumError):
+            # The organisation reads but its record does not. The session
+            # restores without it and the next save would write the file
+            # without it too, so the file is kept aside first, exactly as
+            # an unreadable organisation is.
+            self._history_dropped = True
+            self._preserve()
             return SessionSnapshot(org, (), org, focus)
         return SessionSnapshot(initial, moves, org, focus)
 
     def _preserve(self) -> None:
-        """Move an unreadable file aside, or seal the store when that fails."""
+        """Move an unreadable file aside; seal the store when that fails."""
         candidate = self._free_preserved_path()
         if candidate is None or not move_file(self._path, candidate):
             self._sealed = True

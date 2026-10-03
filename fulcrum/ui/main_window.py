@@ -91,6 +91,7 @@ class MainWindow(QMainWindow):
             clock,
             lambda: self._session,
             self._set_session,
+            lambda title, text: QMessageBox.warning(self, title, text),
         )
 
         self.setWindowTitle(f"{APP_NAME} - {APP_TAGLINE}")
@@ -290,6 +291,18 @@ class MainWindow(QMainWindow):
         """Explain a failed restore; None when there is nothing to explain."""
         if org_store is None:
             return None
+        if org_store.history_dropped and org_store.preserved_copy is not None:
+            return (
+                "The saved move record could not be read, so the organisation "
+                "has been restored without it. The file as it was has been kept "
+                f"at {org_store.preserved_copy}. Nothing has been deleted."
+            )
+        if org_store.history_dropped and org_store.is_sealed:
+            return (
+                "The saved move record could not be read and the file could not "
+                "be moved aside, so the organisation has been restored without "
+                "it and this session will not be saved over the file."
+            )
         if org_store.preserved_copy is not None:
             return (
                 "The saved organisation could not be read, so it has been kept "

@@ -130,7 +130,8 @@ A short tour and the books behind it are at <https://ernster.dev/fulcrum/>.
   organisations plan in-process because they finish faster than worker
   processes take to start. Every planning bar (opening the guide, the
   grow toggle, the replan after playing a guide move) carries a Cancel
-  button that stops the build within a fraction of a second, so a
+  button that stops the build (ending any worker processes it started, so
+  the cores are free again) within a fraction of a second, so a
   machine without the cores for the pool is never trapped in a long
   serial build.
 - Move history that survives closing the app: the session autosaves the
@@ -140,12 +141,17 @@ A short tour and the books behind it are at <https://ernster.dev/fulcrum/>.
   moves too, from the board or with Ctrl+Z, all the way to the original
   organisation. A saved organisation that cannot be read is never written
   over: it is kept aside under its own name and the app says where it went.
+  The same holds for a move record that will not read or replay: the
+  organisation is restored without it and the file as it was is kept aside.
 - Plan export as a self-contained HTML report, from the header's chart button
   beside the move record and the provenance mark. It is written straight into
   your Downloads folder under a name that never overwrites an earlier one and
   then opened for reading; it covers the whole record with earlier runs
   visually separated from the current one. The same plan exports as JSON you
-  can re-import to resume the organisation and the moves played on it. Every
+  can re-import to resume the organisation and the moves played on it; a plan
+  that will not read or replay is refused with a message naming the problem
+  (the first move that fails, where it is a move) and the current session
+  stays as it was. Every
   move in the report is judged twice: against the whole organisation and
   (where it acted inside one unit) within that unit's own frame, so a repair
   played as good in a drilled section reads as good instead of vanishing into

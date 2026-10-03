@@ -12,9 +12,10 @@ import os
 from pathlib import Path
 
 from fulcrum.application.dto import Plan
+from fulcrum.domain.errors import InvalidOrgStateError
 from fulcrum.infrastructure.json_serialization import (
-    move_from_dict,
     move_to_dict,
+    moves_from_list,
     org_from_dict,
     org_to_dict,
 )
@@ -31,11 +32,16 @@ def plan_to_dict(plan: Plan) -> dict:
     }
 
 
-def plan_from_dict(data: dict) -> Plan:
+def plan_from_dict(data: object) -> Plan:
+    if not isinstance(data, dict):
+        raise InvalidOrgStateError("a plan must be a JSON object")
+    created_at = data["created_at"]
+    if not isinstance(created_at, str):
+        raise InvalidOrgStateError("a plan's created_at must be text")
     return Plan(
         initial_org=org_from_dict(data["initial_org"]),
-        moves=tuple(move_from_dict(move) for move in data["moves"]),
-        created_at=data["created_at"],
+        moves=moves_from_list(data["moves"]),
+        created_at=created_at,
     )
 
 

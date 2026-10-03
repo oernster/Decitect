@@ -108,14 +108,24 @@ class GuideWorkers:
         return self
 
     def __exit__(self, exc_type, exc, tb) -> None:
-        # Never wait: queued tasks are cancelled and the workers drain in
-        # the background. Waiting here made cancellation hang for as long
-        # as the slowest worker took to finish SPAWNING (each child
-        # re-imports the application, Qt included), which read as a
-        # frozen Cancelling button. A completed build has nothing left
-        # in flight, so not waiting costs it nothing; abandoned workers
-        # finish their current chunk, find the pool closed and exit.
+        # Never wait: queued tasks are cancelled and the workers are let go
+        # in the background. Waiting here made cancellation hang for as
+        # long as the slowest worker took to finish SPAWNING (each child
+        # re-imports the application, Qt included), which read as a frozen
+        # Cancelling button. A completed build has nothing left in flight,
+        # so not waiting costs it nothing. A build that unwinds (cancelled,
+        # or failed) would leave its workers finishing chunks whose results
+        # nobody reads, keeping every core busy after the user asked it to
+        # stop, so those workers are terminated. The executor exposes them
+        # only privately before Python 3.14; shutdown clears the reference,
+        # so they are taken first.
+        workers = self._live_workers() if exc_type is not None else ()
         self._pool.shutdown(wait=False, cancel_futures=True)
+        for worker in workers:
+            worker.terminate()
+
+    def _live_workers(self) -> tuple:
+        return tuple((self._pool._processes or {}).values())
 
     def price_lines(
         self,

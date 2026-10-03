@@ -59,7 +59,7 @@ The structural test holds every installer module to the 400-line cap, which `ins
 
 ## Looks like debt, not worth touching
 
-- The modules between 351 and 376 lines (`hierarchy.py`, `simulation.py`, `org_draft.py`, `org_guide.py`, `game_session.py`, `glossary.py`, `org_guide_dialog.py`, `board_view.py`, `theme.py` and the installer's `installer_logic.py`, `installer_widgets.py` and `installer_window.py`) are under the cap and clear of the danger band. `hierarchy.py` is the closest at 376.
+- The modules between 351 and 379 lines (`hierarchy.py`, `simulation.py`, `models.py`, `org_draft.py`, `org_guide.py`, `game_session.py`, `glossary.py`, `org_guide_dialog.py`, `board_view.py`, `theme.py` and the installer's `installer_logic.py`, `installer_widgets.py` and `installer_window.py`) are under the cap and clear of the danger band. `simulation.py` is the closest at 379, two lines short of the band; its next growth should lift a cohesive slice out rather than add to it.
 - The `org_guide_*` family (`org_guide.py`, `_compose`, `_growth`, `_parallel`) reads as a file that got split four ways. It is the 400-line cap doing its job and each part is cohesive; merging them would breach the cap immediately.
 - The dual GPL-3.0 model and LGPL-3.0 UI split, with three licence files at root plus `INSTALLER_LICENSE`, looks like duplication. It is the deliberate licence design and every file is load-bearing.
 - The four `except Exception` blocks in the installer (`installer_ops.py` once, `installer_window.py` three times) each carry a `# noqa: BLE001` and a reason; each one is a degrade-gracefully path where a raised exception is worse than a status message. Correct as written.

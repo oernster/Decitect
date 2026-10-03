@@ -83,10 +83,12 @@ records them.
 `pytest` enforces 100% coverage on the gated layers (domain, application,
 infrastructure, shared and the installer's pure modules). The structural
 tests in `tests/structural` enforce the architectural invariants: domain
-purity, inward dependencies, the 400-line module limit across source, tests
-and the installer, the installer importing nothing from the `fulcrum`
-package and its pure modules touching no registry, subprocess, environment
-or Qt. Adding a feature means placing it in the right layer (the domain stays
+purity (an allowlist of pure standard-library modules, no I/O builtins),
+inward dependencies with relative imports resolved, Qt and the UI confined
+to `fulcrum/ui`, the 400-line module limit across source, tests and the
+installer, the installer importing nothing from the `fulcrum` package and
+its pure modules touching no registry, subprocess, environment or Qt. Each
+layer rule is proven to bite on a planted violation. Adding a feature means placing it in the right layer (the domain stays
 pure; the UI talks only to the application) or those tests fail. The detail
 is in [TESTING.md](TESTING.md).
 

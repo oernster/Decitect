@@ -6,10 +6,10 @@ pure domain (apply_move, signals) with an injected simulator.
 
 from __future__ import annotations
 
-from fulcrum.application.dto import MoveValuation, SessionSnapshot
+from fulcrum.application.dto import MoveValuation, Plan, SessionSnapshot
 from fulcrum.application.interfaces import Simulator
 from fulcrum.application.move_text import describe_move
-from fulcrum.domain.errors import FulcrumError
+from fulcrum.domain.errors import FulcrumError, InvalidMoveError
 from fulcrum.domain.hierarchy import (
     AGGREGATE_MOVE_KINDS,
     TOP_LEVEL_FOCUS,
@@ -42,7 +42,7 @@ def enumerate_moves(org: OrgState, allow_growth: bool = False) -> tuple[Move, ..
     """List the candidate moves offered for an org, including the blunder.
 
     With allow_growth set, the org may also grow: an overloaded team can split
-    into two owners, or hand part of its load to a newly created owner. This is
+    into two owners or hand part of its load to a newly created owner. This is
     the path the guide takes when the player asks to let the org grow.
     """
     moves: list[Move] = []
@@ -75,7 +75,7 @@ def _append_claim_moves(org: OrgState, team: Team, moves: list[Move]) -> None:
     Any standing claim is contest (the structural owner is already claimant
     one), so a claimed team never gets a plain delegate move: granting
     authority without settling the claims would add a claimant, not remove
-    one. Resolution offers every ending: the team takes the class, or a
+    one. Resolution offers every ending: the team takes the class or a
     claimant does. Downgrade is only offered for modelled claimants; an
     unmodelled label is dealt with by resolving instead.
     """
@@ -177,7 +177,7 @@ class GameSession:
 
     @property
     def focused_on(self) -> str | None:
-        """The domain currently focused for scoring and play, or None."""
+        """The domain currently focused for scoring and play (None if none)."""
         return self._focus_id
 
     def focus(self, domain_id: str | None) -> None:
@@ -199,7 +199,7 @@ class GameSession:
         self._focus_id = domain_id
 
     def _active_org(self) -> OrgState:
-        """The org currently being scored: the focused section, or the whole."""
+        """The org currently being scored: the focused section or the whole."""
         if self._focus_id is None:
             return self._org
         if self._focus_id == TOP_LEVEL_FOCUS:
@@ -295,7 +295,7 @@ class GameSession:
         return self.try_play_in_frame(move, self._focus_id)
 
     def try_play_in_frame(self, move: Move, frame_id: str | None) -> bool:
-        """try_play, but translated against an explicit frame.
+        """try_play translated against an explicit frame.
 
         The hierarchy guide plays moves from frames other than the session's
         current focus (a drilled unit's row, the top-level row), so the
@@ -322,6 +322,24 @@ class GameSession:
     def preview(self, move: Move) -> OrgState:
         real = translate_focused_move(self._org, self._focus_id, move)
         return apply_move(self._org, real)
+
+
+def session_from_plan(plan: Plan, simulator: Simulator) -> GameSession:
+    """A session replaying an imported plan, its moves marked as prior.
+
+    Raises InvalidMoveError naming the first move that will not replay, so
+    an import can tell the user which move failed rather than failing mute.
+    """
+    session = GameSession(plan.initial_org, simulator)
+    for number, move in enumerate(plan.moves, start=1):
+        try:
+            session.play(move)
+        except FulcrumError as error:
+            raise InvalidMoveError(
+                f"move {number} ({move.display_label()}) cannot be replayed: {error}"
+            ) from error
+    session.mark_history_as_prior()
+    return session
 
 
 def restore_session(snapshot: SessionSnapshot, simulator: Simulator) -> GameSession:

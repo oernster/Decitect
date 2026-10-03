@@ -21,6 +21,7 @@ authority_scale, re-exported here so callers need one import path.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 from fulcrum.domain.authority_scale import (
@@ -32,6 +33,7 @@ from fulcrum.domain.authority_scale import (
     scaled_authority_penalty,
     scaled_contested_penalty,
 )
+from fulcrum.domain.errors import InvalidOrgStateError
 from fulcrum.domain.models import OrgState, Team
 from fulcrum.domain.parameters import (
     DEFAULT_PARAMETERS,
@@ -138,7 +140,7 @@ def is_contested(org: OrgState, team: Team, index: CouplingIndex | None = None) 
     """Whether this team's decision class carries a standing claim.
 
     Every decision class already has a structural owner: the team itself when
-    it decides locally, or the line it escalates to when it does not. That
+    it decides locally; the line it escalates to when it does not. That
     owner is claimant one, so any standing external claim makes two and the
     meta-question of who decides must be settled before anything can be
     decided. A claim is by definition unresolved: resolving one removes it.
@@ -191,7 +193,7 @@ def team_capacity(
 
     scale_factor is this team's pricing factor: a clean escalating team is
     priced at its resolution neighbourhood's population (scale_context);
-    None computes it from the org, and callers scoring many teams pass the
+    None computes it from the org; callers scoring many teams pass the
     context's per-team value. A contested team pays its full flat contest
     price up to the band and a proportionally deepened one above it, so
     contest costs strictly more than clean escalation at every scale.
@@ -224,14 +226,14 @@ def team_arrivals(
 
     inflow is the escalated load landing on this team's queue from the
     teams that resolve through it (scale_context); None computes it from
-    the org, and callers scoring many teams pass the context's value.
+    the org. Callers scoring many teams pass the context's value.
 
     Demand also travels along dependencies: every team waiting on this one
     lands dependent_demand_weight of the frame's workload on its queue,
     authority notwithstanding. An empowered hub that dozens of teams wait
     on saturates exactly as a deciding centre does; a light fan-out stays
     free while capacity absorbs it, so the cost begins where the queue
-    does (Little's law, and LatencyLab's serial-queue placement result).
+    does (Little's law; LatencyLab's serial-queue placement result).
     """
     if inflow is None:
         inflow = scale_context(org, params).inflow.get(team.id, _ZERO)
@@ -307,10 +309,10 @@ def evaluate(
     workload lands on its resolving authorities' queues, so a saturated
     centre registers as latency. A contested team cannot decide cleanly
     either (the meta-question of who decides escalates even when the team
-    formally holds local authority), and its share is never attenuated,
-    only amplified. Clean sovereigns facing each other across unowned
-    interfaces drift toward the same share, priced at the frame's scale,
-    and the influence gap divides the score by its per-team mean rather
+    formally holds local authority); its share is never attenuated, only
+    amplified. Clean sovereigns facing each other across unowned
+    interfaces drift toward the same share, priced at the frame's scale.
+    The influence gap divides the score by its per-team mean rather
     than its absolute total.
     """
     index = dependency_index(org)
@@ -367,6 +369,8 @@ def evaluate(
     # overlay across a whole division is priced as the share of the org it
     # actually contests, not as an absolute count that dwarfs everything.
     value /= _UNIT + params.contested_weight * claim_load(org, index) / team_count
+    if not math.isfinite(value):  # the clamp below would turn NaN into 100
+        raise InvalidOrgStateError("the organisation's numbers overflow the model")
     return StructuralScore(
         value=max(_ZERO, min(params.max_score, value)),
         latency_penalty=latency,

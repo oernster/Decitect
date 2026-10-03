@@ -13,7 +13,7 @@ from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import QFileDialog, QMessageBox
 
 from fulcrum.application.dto import Plan
-from fulcrum.application.game_session import GameSession
+from fulcrum.application.game_session import session_from_plan
 from fulcrum.application.interfaces import Clock, PlanExporter, Simulator
 from fulcrum.application.plan import build_plan_report
 from fulcrum.domain.errors import FulcrumError
@@ -62,6 +62,7 @@ class PlanFileActions:
         clock: Clock,
         session_of,
         set_session,
+        warn,
     ) -> None:
         self._window = window
         self._simulator = simulator
@@ -69,24 +70,29 @@ class PlanFileActions:
         self._clock = clock
         self._session_of = session_of
         self._set_session = set_session
+        self._warn = warn
 
     def import_plan(self) -> None:
         path, _ = QFileDialog.getOpenFileName(
             self._window, "Import", downloads_dir(), _PLAN_FILTER
         )
-        if not path:
-            return
+        if path:
+            self.open_plan(path)
+
+    def open_plan(self, path: str) -> None:
+        """Replace the session with a plan file; say why when it cannot.
+
+        Reading and replaying share one try: a plan that parses but whose
+        moves will not replay is as unusable as one that will not parse.
+        Either way the current session stays as it was. The imported moves
+        become the prior record, kept apart from whatever this run plays.
+        """
         try:
             plan = self._plan_exporter.read(path)
-        except (OSError, ValueError, KeyError, FulcrumError) as error:
-            QMessageBox.warning(self._window, "Could not open plan", str(error))
+            session = session_from_plan(plan, self._simulator)
+        except (OSError, ValueError, KeyError, TypeError, FulcrumError) as error:
+            self._warn("Could not open plan", str(error))
             return
-        session = GameSession(plan.initial_org, self._simulator)
-        for move in plan.moves:
-            session.play(move)
-        # An imported plan's moves are the record it arrived with, kept
-        # apart from whatever this run plays next.
-        session.mark_history_as_prior()
         self._set_session(session)
 
     def export_html(self) -> None:

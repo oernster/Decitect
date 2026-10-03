@@ -52,9 +52,14 @@ def repoint(dep: Dependency, old_id: str, new_id: str) -> Dependency:
     return Dependency(upstream, downstream, dep.propagation_delay)
 
 
+def _taken_ids(org: OrgState) -> set[str]:
+    """Every node id: teams and units share one endpoint namespace."""
+    return set(org.team_ids) | {d.id for d in org.domains}
+
+
 def unique_team_id(org: OrgState, base: str) -> str:
-    """base, or base_2, base_3 ... whichever is first unused as a team id."""
-    existing = set(org.team_ids)
+    """base itself when free; else base_2, base_3 ... the first unused node id."""
+    existing = _taken_ids(org)
     candidate = base
     index = 1
     while candidate in existing:
@@ -64,8 +69,8 @@ def unique_team_id(org: OrgState, base: str) -> str:
 
 
 def unique_prefixed_id(org: OrgState, prefix: str) -> str:
-    """prefix_1, prefix_2 ... whichever is first unused as a team id."""
-    existing = set(org.team_ids)
+    """prefix_1, prefix_2 ... whichever is first unused as a node id."""
+    existing = _taken_ids(org)
     index = 1
     candidate = f"{prefix}_{index}"
     while candidate in existing:

@@ -1,65 +1,49 @@
-"""Structural tests: enforce layer boundaries and module size via AST scan."""
+"""Structural tests: enforce layer boundaries and module size via AST scan.
 
-import ast
-from pathlib import Path
+The rules themselves live in layer_rules, where test_layer_plants proves
+each one bites on a planted violation.
+"""
 
-_ROOT = Path(__file__).resolve().parents[2]
-_PKG = _ROOT / "fulcrum"
+from layer_rules import PKG as _PKG
+from layer_rules import ROOT as _ROOT
+from layer_rules import (
+    application_violations,
+    domain_violations,
+    is_network_module,
+    network_imports,
+    ui_import_violations,
+)
+from layer_rules import imported_modules as _imported_modules
+from layer_rules import python_files as _python_files
+
 _INSTALLER = _ROOT / "installer"
 _MAX_LINES = 400
 # The installer's own payload is staged build output, not source.
 _INSTALLER_PAYLOAD = "payload"
 
-_DOMAIN_FORBIDDEN = {
-    "os",
-    "sys",
-    "pathlib",
-    "time",
-    "random",
-    "threading",
-    "logging",
-    "datetime",
-    "json",
-    "csv",
-}
-_OUTER_LAYERS = ("fulcrum.application", "fulcrum.infrastructure", "fulcrum.ui")
-_FORBIDDEN_FOR_APPLICATION = ("fulcrum.infrastructure", "fulcrum.ui")
 
-
-def _python_files(directory):
-    return sorted(directory.rglob("*.py"))
-
-
-def _imported_modules(path):
-    # `from a import b` records `a.b` as well, because `b` may be a submodule:
-    # `from PySide6 import QtNetwork` is an import of `PySide6.QtNetwork`.
-    tree = ast.parse(path.read_text(encoding="utf-8"))
-    found = set()
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Import):
-            for alias in node.names:
-                found.add(alias.name)
-                found.add(alias.name.split(".")[0])
-        elif isinstance(node, ast.ImportFrom) and node.module:
-            found.add(node.module)
-            found.add(node.module.split(".")[0])
-            found.update(f"{node.module}.{alias.name}" for alias in node.names)
-    return found
+def _layer_problems(layer, rule):
+    return [
+        f"{path.name}: {found}"
+        for path in _python_files(_PKG / layer)
+        if (found := rule(path))
+    ]
 
 
 def test_domain_imports_no_io_or_outer_layers():
-    for path in _python_files(_PKG / "domain"):
-        modules = _imported_modules(path)
-        assert not (modules & _DOMAIN_FORBIDDEN), path.name
-        assert not any(m.startswith(_OUTER_LAYERS) for m in modules), path.name
+    # An allowlist of pure standard-library modules plus the domain itself,
+    # with relative imports resolved and I/O builtins refused.
+    assert _layer_problems("domain", domain_violations) == []
 
 
 def test_application_does_not_import_infrastructure_or_ui():
-    for path in _python_files(_PKG / "application"):
-        modules = _imported_modules(path)
-        assert not any(
-            m.startswith(_FORBIDDEN_FOR_APPLICATION) for m in modules
-        ), path.name
+    assert _layer_problems("application", application_violations) == []
+
+
+def test_infrastructure_and_shared_never_import_the_ui_or_qt():
+    # The GPL and LGPL boundary the LICENSE draws: only fulcrum.ui is Qt.
+    for layer in ("infrastructure", "shared"):
+        assert _layer_problems(layer, ui_import_violations) == [], layer
 
 
 def _installer_sources():
@@ -105,45 +89,13 @@ def test_the_installer_decisions_touch_no_side_effects():
 # these tests the claim was held by the documents alone, so a new outbound call
 # would have passed. The scope is everything a user installs: the package, the
 # setup program and the composition root. The exemption is asserted whole, so
-# it can neither widen nor outlive its purpose. What this cannot see: a
-# connection a library opens through a module not listed here.
-_NETWORK_ROOTS = {
-    "socket",
-    "ssl",
-    "http",
-    "smtplib",
-    "imaplib",
-    "poplib",
-    "ftplib",
-    "telnetlib",
-    "xmlrpc",
-    "requests",
-    "httpx",
-    "aiohttp",
-    "urllib3",
-    "websocket",
-    "websockets",
-}
-# Matched as prefixes: the Qt names cover every WebEngine module at once.
-_NETWORK_PREFIXES = (
-    "urllib.request",
-    "urllib.error",
-    "PySide6.QtNetwork",
-    "PySide6.QtWebEngine",
-    "PySide6.QtWebSockets",
-)
+# it can neither widen nor outlive its purpose. The module list lives in
+# layer_rules; what it cannot see is a connection a library opens through a
+# module not listed there.
 _UPDATE_CHECK = _PKG / "infrastructure" / "github_release_source.py"
 _UPDATE_CHECK_GRANTS = {"urllib.request"}
-
-
-def _is_network_module(module):
-    return module.split(".")[0] in _NETWORK_ROOTS or module.startswith(
-        _NETWORK_PREFIXES
-    )
-
-
-def _network_imports(path):
-    return {m for m in _imported_modules(path) if _is_network_module(m)}
+_is_network_module = is_network_module
+_network_imports = network_imports
 
 
 def _shipped_sources():

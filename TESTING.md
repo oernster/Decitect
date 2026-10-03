@@ -46,7 +46,7 @@ The tests mirror the package, one area per layer:
 | `tests/installer` | unit tests of the Windows installer's decisions, deploying real zips into a temp directory | temp files |
 | `tests/scripts` | smoke tests of the three analysis scripts at the repo root | reads examples |
 | `tests/structural` | an AST scan that enforces the architectural invariants | reads source |
-| `tests/ui` | Qt tests on a real `QApplication` (pytest-qt's `qapp`) that never show a window: the update check and the donate button | none |
+| `tests/ui` | Qt tests on a real `QApplication` (pytest-qt's `qapp`) that never show a window: the update check, the donate button, the plan import's failure message and the launch message after a damaged autosave | temp files |
 
 ## Coverage scope
 
@@ -81,25 +81,43 @@ clearing the wrong directory reports success either way.
 ## Structural invariants
 
 `tests/structural/test_architecture.py` is part of the suite, not a separate
-check. It fails the build if the domain imports I/O or an outer layer; if the
-application imports infrastructure or the UI; if any module exceeds 400
+check. It fails the build if the domain imports anything beyond an allowlist
+of pure standard-library modules and itself; if the domain calls an I/O or
+dynamic-code builtin such as `open` or `__import__`; if the application
+imports infrastructure, the UI or Qt; if infrastructure or shared imports
+the UI or Qt; if any module exceeds 400
 lines, the test modules and the installer included (an oversized test file
 hides structure the same way an oversized source file does); if anything
 under `installer/` imports from the `fulcrum` package, which would drag the
 whole application into the setup binary; or if `installer_logic.py` or
 `installer_scripts.py` reaches for the registry, a subprocess, the
 environment or Qt; or if anything shipped but the update check imports a
-networking module. The architectural rules are therefore tested, not merely
+networking module. Relative imports are resolved against the file's own
+package before any rule reads them, so `from ..ui import x` is seen as the
+import of `fulcrum.ui` it is.
+
+The rules live in `tests/structural/layer_rules.py`, one checker per rule
+taking one file, so `tests/structural/test_layer_plants.py` can run each
+rule over a planted violation in a temporary directory and assert it
+fails: the relative imports, Qt, I/O modules and builtins that once passed
+the old denylist unseen. A rule that never meets a violation proves
+nothing about its reach; these do. What the network rule still cannot see
+is a connection a library opens through a module its list does not name.
+Within that limit the architectural rules are tested, not merely
 documented.
 
 ## Verifying the UI
 
-`tests/ui` holds two behaviours that matter beyond their pixels. An update
+`tests/ui` holds four behaviours that matter beyond their pixels. An update
 check whose controller is deleted before its answer arrives drops the answer
 rather than raising on the worker thread. The donate button sits immediately
 left of the theme toggle, in the row and in the focus ring alike, asks the
 desktop for its one address and says so when the desktop refuses; the
 `fulcrum.ui.links` seam is replaced in those tests, so no browser ever opens.
+A plan file that will not read or replay produces one warning (through an
+injected callable, so no dialog opens) and leaves the session as it was.
+The launch message after a damaged autosave says whether the organisation
+or only its move record was lost and where the file was kept.
 No UI test shows a window. Set `QT_QPA_PLATFORM=offscreen` to run the suite
 with no display at all.
 

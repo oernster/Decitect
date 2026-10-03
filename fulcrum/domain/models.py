@@ -10,13 +10,21 @@ from dataclasses import dataclass
 from enum import Enum
 
 from fulcrum.domain.errors import InvalidOrgStateError, UnknownTeamError
+from fulcrum.domain.field_checks import (
+    require_finite,
+    require_flag,
+    require_optional_text,
+    require_text,
+    require_tuple_of,
+    require_whole,
+)
 
 # Bounds for the incentive-skew value. 0 means local incentives are fully
 # aligned with the system outcome; 1 means they pull entirely against it.
 _MIN_SKEW: float = 0.0
 _MAX_SKEW: float = 1.0
 
-# A team's size in atomic units: 1 is a single base team, and collapsing teams
+# A team's size in atomic units: 1 is a single base team; collapsing teams
 # together grows it. It is the cognitive-load proxy the simulator penalises once
 # a unit grows past the comfortable band.
 _MIN_TEAM_SIZE: int = 1
@@ -30,7 +38,7 @@ DEFAULT_HEADCOUNT: int = 8
 _MIN_HEADCOUNT: int = 1
 
 # The vocabulary of group tiers offered when modelling an org, largest first.
-# A grouping can be any of these or a custom label, and they nest to any depth;
+# A grouping can be any of these or a custom label. Groupings nest to any depth;
 # a generated hierarchy aligns its leaves to the smallest tier and reads up
 # toward the company, so a shallow org uses the lower tiers and only a deep one
 # reaches Company. The category is descriptive: it names what a grouping is, it
@@ -67,6 +75,14 @@ class Team:
     headcount: int = DEFAULT_HEADCOUNT
 
     def __post_init__(self) -> None:
+        require_text(self.id, "team id")
+        require_text(self.name, "team name")
+        require_flag(self.has_local_authority, "has_local_authority")
+        require_finite(self.incentive_skew, "incentive_skew")
+        require_optional_text(self.domain_id, "team domain_id")
+        require_whole(self.size, "team size")
+        require_text(self.owner, "team owner")
+        require_whole(self.headcount, "team headcount")
         if not self.id:
             raise InvalidOrgStateError("team id must be a non-empty string")
         if not self.name:
@@ -152,6 +168,9 @@ class Dependency:
     propagation_delay: int = 0
 
     def __post_init__(self) -> None:
+        require_text(self.upstream, "dependency upstream")
+        require_text(self.downstream, "dependency downstream")
+        require_whole(self.propagation_delay, "propagation_delay")
         if not self.upstream or not self.downstream:
             raise InvalidOrgStateError("dependency endpoints must be non-empty")
         if self.upstream == self.downstream:
@@ -182,6 +201,8 @@ class AuthorityClaim:
     subject: str
 
     def __post_init__(self) -> None:
+        require_text(self.claimant, "claimant")
+        require_text(self.subject, "claim subject")
         if not self.claimant or not self.subject:
             raise InvalidOrgStateError("claim endpoints must be non-empty")
         if self.claimant == self.subject:
@@ -209,6 +230,12 @@ class Domain:
     headcount: int = 0
 
     def __post_init__(self) -> None:
+        require_text(self.id, "domain id")
+        require_text(self.name, "domain name")
+        require_optional_text(self.parent_id, "domain parent_id")
+        require_text(self.lead, "domain lead")
+        require_text(self.category, "domain category")
+        require_whole(self.headcount, "domain headcount")
         if not self.id:
             raise InvalidOrgStateError("domain id must be a non-empty string")
         if not self.name:
@@ -229,11 +256,26 @@ class OrgState:
     claims: tuple[AuthorityClaim, ...] = ()
 
     def __post_init__(self) -> None:
+        require_tuple_of(self.teams, Team, "teams")
+        require_tuple_of(self.dependencies, Dependency, "dependencies")
+        require_tuple_of(self.domains, Domain, "domains")
+        require_tuple_of(self.claims, AuthorityClaim, "claims")
+        require_whole(self.workload, "workload")
+        if not isinstance(self.origin, Origin):
+            raise InvalidOrgStateError("origin must be an Origin")
         if not self.teams:
             raise InvalidOrgStateError("an org state needs at least one team")
         ids = [t.id for t in self.teams]
         if len(ids) != len(set(ids)):
             raise InvalidOrgStateError("team ids must be unique")
+        # Teams and units share one endpoint namespace (an edge may name
+        # either), so an id held by both would merge two nodes into one: a
+        # frame would map the team's edges onto the unit and drop them.
+        shared = set(ids) & {d.id for d in self.domains}
+        if shared:
+            raise InvalidOrgStateError(
+                f"an id may name a team or a unit, not both: {sorted(shared)}"
+            )
         # A dependency endpoint may be a team or a whole domain: an edge
         # between units (or across levels) is a fact about the level where
         # those units are the actors, projected into whichever scored frame
