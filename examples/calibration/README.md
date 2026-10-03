@@ -13,14 +13,14 @@ are held to lived outcomes rather than to taste.
 2. Model the structure as it stood at the time: teams with real headcounts
    and honest `has_local_authority`, dependencies with their real waiting
    times, the domain hierarchy (a shared roof is a claim that a real
-   arbitrating owner existed), and any second reporting lines or chapters
+   arbitrating owner existed); model any second reporting lines or chapters
    as claims.
 3. Set the `calibration` block: a short label, the expected band and one
    sentence on what actually happened. The band should be written before
    looking at the score; it is the claim under test.
-4. Run `python calibrate.py`. A MISS is information either way: the model
-   is mispricing that shape, or the model disagrees with the memory and
-   the disagreement is worth examining.
+4. Run `python calibrate.py`. A MISS is information either way. Either the
+   model is mispricing that shape or it disagrees with the memory; that
+   disagreement is worth examining.
 
 Sizes worth covering: a handful of small organisations (under 150 people),
 several mid-sized (150 to 2,000) and at least a few large ones, with both
@@ -43,7 +43,7 @@ founder with eighteen squads across three tribes escalating to them
 matrixed enterprise of about six thousand people whose unit and sub-unit
 leadership is claimed by the matrix on a delayed dependency chain (the
 documented-collapse shape). Every case is a drillable hierarchy whose leaf
-teams hold three to eight people with varied sizes. The enterprise case is
+teams hold two to eight people with varied sizes. The enterprise case is
 written by `generate_matrixed_enterprise.py` at the repository root
 (deterministic and seeded), so change that script and rerun it rather than
 editing the JSON by hand. Replace or outnumber them with real cases as

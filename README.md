@@ -165,8 +165,9 @@ A short tour and the books behind it are at <https://ernster.dev/fulcrum/>.
   network is silent; the manual check reports every outcome and ignores the
   skip.
 - Help built in: About, both licence texts, a decision glossary, a background
-  page on the Decision Architecture books, a page grounding every number in
-  the model and a definition behind every signal. Long help content reads
+  page on the Decision Architecture books and a definition behind every
+  signal, plus a page grounding every number in the model behind the
+  header's golden provenance mark. Long help content reads
   itself down gently, holds at the end and rewinds; it yields the moment you
   scroll by hand and resumes where you stopped. Every surface that can
   overflow reads itself the same way, the guide's move list included.

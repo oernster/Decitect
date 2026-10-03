@@ -610,6 +610,18 @@ downloaded beforehand.
 - **Costs:** every file the app loads beside its code is listed in the build
   scripts by hand.
 
+### The build tools are held to chosen versions
+
+The linter is pinned to one release and the packaged builds refuse to start
+on a compiler older than the one they are written against, saying which
+version they found.
+
+- **Rather than:** whatever release happens to be installed.
+- **Gains:** a fresh setup lints and compiles exactly as the release did; a
+  build never ships from a compiler nobody chose.
+- **Costs:** moving to a newer linter or compiler is a deliberate piece of
+  work, with its new findings cleared in the same change.
+
 ### Installed for one user, without administrator rights
 
 On Windows the setup program installs into the user's own folders and

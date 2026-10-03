@@ -31,8 +31,10 @@ python main.py
 `requirements.txt` is the single runtime dependency (PySide6).
 `requirements-dev.txt` adds the tooling: pytest with pytest-cov and pytest-qt,
 Pillow for the icons and the site images, plus black, flake8 and ruff. It also
-includes Nuitka, which the packaged Windows and macOS builds (buildexe.py,
-buildinstaller.py and builddmg.py) use.
+includes Nuitka 4.2.1 or later, which the packaged Windows and macOS builds
+(buildexe.py, buildinstaller.py and builddmg.py) use. Each of those three
+scripts checks the installed Nuitka before compiling and stops, naming the
+version it found and the install command, when Nuitka is missing or older.
 
 ## Project layout
 
