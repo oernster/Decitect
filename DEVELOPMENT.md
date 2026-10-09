@@ -143,8 +143,9 @@ Flatpak artefacts only.
 
 The site is hand-written HTML in `docs/`, served from `main` `/docs`: `index`,
 `tool` (with `vocabulary` and `play`), `why`, `model` (with `weights`,
-`assumptions` and `testing`) and `download`, sharing `styles.css`. Edit the
-pages directly. Versions sit between `<!--VERSION-->` delimiters. This stamps
+`assumptions` and `testing`), `download` and `404`, sharing `styles.css`, with
+`robots.txt`, `sitemap.xml` and `site.webmanifest` beside them. Edit the pages
+directly. Versions sit between `<!--VERSION-->` delimiters. This stamps
 them and the stylesheet's content hash:
 
 ```

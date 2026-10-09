@@ -1,0 +1,20 @@
+{
+  "name": "Decitect: Decision Architecture Organisational Software",
+  "short_name": "Decitect",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#0d0f12",
+  "theme_color": "#0d0f12",
+  "icons": [
+    {
+      "src": "/assets/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/decitect.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ]
+}

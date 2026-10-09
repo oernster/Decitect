@@ -3,31 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>What grounds the score: the model behind Decitect's number</title>
-<meta name="description" content="Where Decitect's scoring weights come from: a hand-tuned evaluation function with every coefficient published, what determinism does and does not buy, the assumptions the model rests on, where it is expected to be wrong and the external test that would falsify it.">
+<title>What grounds Decitect's score: the model explained</title>
+<meta name="description" content="A hand-tuned evaluation function, not a fitted model: every coefficient published, what determinism buys and what it does not.">
 <meta name="author" content="Oliver Ernster">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0d0f12">
 <link rel="canonical" href="https://decitect.com/model.html">
+<meta property="og:locale" content="en_GB">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Decitect">
-<meta property="og:title" content="What grounds the score: the model behind Decitect's number">
-<meta property="og:description" content="Every coefficient in Decitect's scoring function, published with its provenance: what is theory-derived, what is engineering judgement, what would falsify the model and how robust the results are to the exact weights.">
+<meta property="og:title" content="What grounds Decitect's score: the model explained">
+<meta property="og:description" content="A hand-tuned evaluation function, not a fitted model: every coefficient published, what determinism buys and what it does not.">
 <meta property="og:url" content="https://decitect.com/model.html">
 <meta property="og:image" content="https://decitect.com/assets/screenshots/play-board.png">
+<meta property="og:image:width" content="3439">
+<meta property="og:image:height" content="1389">
 <meta property="og:image:alt" content="The Decitect board scoring an organisation&#x27;s structure">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="What grounds the score: the model behind Decitect's number">
-<meta name="twitter:description" content="Every coefficient in Decitect's scoring function, published with its provenance: what is theory-derived, what is engineering judgement and what would falsify the model.">
+<meta name="twitter:title" content="What grounds Decitect's score: the model explained">
+<meta name="twitter:description" content="A hand-tuned evaluation function, not a fitted model: every coefficient published, what determinism buys and what it does not.">
 <meta name="twitter:image" content="https://decitect.com/assets/screenshots/play-board.png">
+<meta name="twitter:image:alt" content="The Decitect board scoring an organisation&#x27;s structure">
 <link rel="icon" type="image/png" href="assets/decitect.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
 <link rel="stylesheet" href="styles.css?v=d6adc8a072">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Decitect", "item": "https://decitect.com/"}, {"@type": "ListItem", "position": 2, "name": "What grounds Decitect's score: the model explained", "item": "https://decitect.com/model.html"}]}</script>
 </head>
 <body>
 <header class="nav">
   <div class="container nav-inner">
     <a class="brand" href="./">
-      <img src="assets/decitect.png" alt="Decitect icon">Decitect</a>
+      <img width="256" height="256" src="assets/decitect.png" alt="Decitect icon">Decitect</a>
     <nav class="nav-links">
       <a href="tool.html">The tool</a>
       <a href="why.html">Why</a>
@@ -42,7 +49,7 @@
   <section id="kind">
     <div class="container prose">
       <div class="eyebrow">The claim</div>
-      <h2 class="section-title">What kind of model this is</h2>
+      <h1 class="section-title">What kind of model this is</h1>
       <p>Decitect implements a hand-tuned evaluation function: an expert prior encoded as
         arithmetic, derived from the Decision Architecture series and 28 years of practice across
         defence, fintech, telecoms and startups. It is not a statistical model fitted to

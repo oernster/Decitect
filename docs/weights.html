@@ -3,31 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Where the weights come from: every coefficient in Decitect's score</title>
-<meta name="description" content="Every coefficient in Decitect's scoring function in one table: what it does, the mechanism source in the books and whether its magnitude is engineering judgement or a constraint enforced in code.">
+<title>Decitect scoring weights: every coefficient explained</title>
+<meta name="description" content="Every coefficient in Decitect's scoring function: what it does, its source in the Decision Architecture books and where its magnitude comes from.">
 <meta name="author" content="Oliver Ernster">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0d0f12">
 <link rel="canonical" href="https://decitect.com/weights.html">
+<meta property="og:locale" content="en_GB">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Decitect">
-<meta property="og:title" content="Where the weights come from: every coefficient in Decitect's score">
-<meta property="og:description" content="Every coefficient in Decitect's scoring function in one table: what it does, the mechanism source in the books and whether its magnitude is engineering judgement or a constraint enforced in code.">
+<meta property="og:title" content="Decitect scoring weights: every coefficient explained">
+<meta property="og:description" content="Every coefficient in Decitect's scoring function: what it does, its source in the Decision Architecture books and where its magnitude comes from.">
 <meta property="og:url" content="https://decitect.com/weights.html">
 <meta property="og:image" content="https://decitect.com/assets/screenshots/play-board.png">
+<meta property="og:image:width" content="3439">
+<meta property="og:image:height" content="1389">
 <meta property="og:image:alt" content="The Decitect board scoring an organisation&#x27;s structure">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Where the weights come from: every coefficient in Decitect's score">
-<meta name="twitter:description" content="Every coefficient in Decitect's scoring function in one table: what it does, the mechanism source in the books and whether its magnitude is engineering judgement or a constraint enforced in code.">
+<meta name="twitter:title" content="Decitect scoring weights: every coefficient explained">
+<meta name="twitter:description" content="Every coefficient in Decitect's scoring function: what it does, its source in the Decision Architecture books and where its magnitude comes from.">
 <meta name="twitter:image" content="https://decitect.com/assets/screenshots/play-board.png">
+<meta name="twitter:image:alt" content="The Decitect board scoring an organisation&#x27;s structure">
 <link rel="icon" type="image/png" href="assets/decitect.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
 <link rel="stylesheet" href="styles.css?v=d6adc8a072">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Decitect", "item": "https://decitect.com/"}, {"@type": "ListItem", "position": 2, "name": "The model", "item": "https://decitect.com/model.html"}, {"@type": "ListItem", "position": 3, "name": "Decitect scoring weights: every coefficient explained", "item": "https://decitect.com/weights.html"}]}</script>
 </head>
 <body>
 <header class="nav">
   <div class="container nav-inner">
     <a class="brand" href="./">
-      <img src="assets/decitect.png" alt="Decitect icon">Decitect</a>
+      <img width="256" height="256" src="assets/decitect.png" alt="Decitect icon">Decitect</a>
     <nav class="nav-links">
       <a href="tool.html">The tool</a>
       <a href="why.html">Why</a>
@@ -45,7 +52,7 @@
   <section id="weights">
     <div class="container prose">
       <div class="eyebrow">Provenance</div>
-      <h2 class="section-title">Where the weights come from</h2>
+      <h1 class="section-title">Where the weights come from</h1>
       <p>The scoring function lives in one module,
         <a href="https://github.com/oernster/Decitect/blob/main/decitect/domain/simulation.py">decitect/domain/simulation.py</a>;
         every coefficient lives in one frozen dataclass, <code>SimulationParameters</code>.

@@ -3,31 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Assumptions and known limits: where Decitect's model can be wrong</title>
-<meta name="description" content="The assumptions built into Decitect's arithmetic, each with the specific way the output is wrong if it is false, then the places the model is expected to fail.">
+<title>Decitect's assumptions and known limits</title>
+<meta name="description" content="The assumptions built into Decitect's arithmetic (each with the way the output is wrong if it is false) and the places the model is expected to fail.">
 <meta name="author" content="Oliver Ernster">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0d0f12">
 <link rel="canonical" href="https://decitect.com/assumptions.html">
+<meta property="og:locale" content="en_GB">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Decitect">
-<meta property="og:title" content="Assumptions and known limits: where Decitect's model can be wrong">
-<meta property="og:description" content="The assumptions built into Decitect's arithmetic, each with the specific way the output is wrong if it is false, then the places the model is expected to fail.">
+<meta property="og:title" content="Decitect's assumptions and known limits">
+<meta property="og:description" content="The assumptions built into Decitect's arithmetic (each with the way the output is wrong if it is false) and the places the model is expected to fail.">
 <meta property="og:url" content="https://decitect.com/assumptions.html">
 <meta property="og:image" content="https://decitect.com/assets/screenshots/play-board.png">
+<meta property="og:image:width" content="3439">
+<meta property="og:image:height" content="1389">
 <meta property="og:image:alt" content="The Decitect board scoring an organisation&#x27;s structure">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Assumptions and known limits: where Decitect's model can be wrong">
-<meta name="twitter:description" content="The assumptions built into Decitect's arithmetic, each with the specific way the output is wrong if it is false, then the places the model is expected to fail.">
+<meta name="twitter:title" content="Decitect's assumptions and known limits">
+<meta name="twitter:description" content="The assumptions built into Decitect's arithmetic (each with the way the output is wrong if it is false) and the places the model is expected to fail.">
 <meta name="twitter:image" content="https://decitect.com/assets/screenshots/play-board.png">
+<meta name="twitter:image:alt" content="The Decitect board scoring an organisation&#x27;s structure">
 <link rel="icon" type="image/png" href="assets/decitect.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
 <link rel="stylesheet" href="styles.css?v=d6adc8a072">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Decitect", "item": "https://decitect.com/"}, {"@type": "ListItem", "position": 2, "name": "The model", "item": "https://decitect.com/model.html"}, {"@type": "ListItem", "position": 3, "name": "Decitect's assumptions and known limits", "item": "https://decitect.com/assumptions.html"}]}</script>
 </head>
 <body>
 <header class="nav">
   <div class="container nav-inner">
     <a class="brand" href="./">
-      <img src="assets/decitect.png" alt="Decitect icon">Decitect</a>
+      <img width="256" height="256" src="assets/decitect.png" alt="Decitect icon">Decitect</a>
     <nav class="nav-links">
       <a href="tool.html">The tool</a>
       <a href="why.html">Why</a>
@@ -45,7 +52,7 @@
   <section id="assumptions">
     <div class="container prose">
       <div class="eyebrow">Load-bearing</div>
-      <h2 class="section-title">Assumptions the model rests on</h2>
+      <h1 class="section-title">Assumptions the model rests on</h1>
       <p>Each of these is built into the arithmetic. If one is false, the output is wrong in the
         specific way stated.</p>
       <ol>
