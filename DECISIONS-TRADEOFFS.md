@@ -317,6 +317,27 @@ scored as one actor per root unit only when the player asks.
   what the headline means.
 - **Costs:** two numbers for the top of the organisation.
 
+### Claims follow their team into any frame
+
+A claim is about a team's decisions, so it applies wherever that team stands as
+a real node, including a unit's own teams in a higher frame. Rolled-up unit
+nodes carry no claims.
+
+- **Rather than:** pricing contest only in the team's own leaf frame.
+- **Gains:** a contested team is never offered a plain delegation that ignores
+  its claims.
+- **Costs:** none recorded.
+
+### Stabilise acts on its own frame
+
+A stabilise move thins only the edges its frame prices. An untargeted one keeps
+its old meaning, so saved plans replay unchanged.
+
+- **Rather than:** thinning every interface in the organisation.
+- **Gains:** guide lines in different frames do not repeat the same global
+  thinning.
+- **Costs:** two meanings for one move, kept for old plans.
+
 ### Every team sits in exactly one leaf frame
 
 Teams held directly by a unit that also holds sub-units get a composable row
@@ -644,9 +665,38 @@ import the application. It asks the user to close a running Decitect first.
 - **Rather than:** a generic installer.
 - **Gains:** its decisions are held at full coverage; the two binaries ship
   separately.
-- **Costs:** the name of the state folder is written down twice; a test holds
-  the two together, since an uninstaller clearing the wrong folder would
-  report success either way.
+- **Costs:** the name of the state folder (and of the folder the product kept
+  under its former name) is written down twice; a test holds each pair
+  together, since an uninstaller clearing the wrong folder would report
+  success either way.
+
+### A rename that loses nothing
+
+The product was renamed from Fulcrum. The first launch under the new name
+moves the old settings and session into place; if the move fails it keeps
+using the old folder rather than starting empty. The Windows setup finds an
+old install, names it and removes it only when asked, after the new install
+is complete, touching only what it can show belongs to the old install. The
+application's identity with Windows changed with the name.
+
+- **Rather than:** a clean start under the new name; leaving the old install
+  for the user to find and remove by hand.
+- **Gains:** nobody loses a session or a setting to the rename; an old install
+  does not linger beside the new one.
+- **Costs:** code that exists only to know the old name; on macOS and Linux the
+  old package is not removed for the user; a pinned Windows taskbar icon for
+  the old name has to be pinned again.
+
+### The product on its own domain
+
+The website lives at its own address rather than as a page under the author's
+portfolio site. The old addresses forward to the new one.
+
+- **Rather than:** staying a path beneath the portfolio site.
+- **Gains:** an address that names the product and outlives any change to the
+  portfolio.
+- **Costs:** the site carries its own crawler files; forwarding pages for the
+  old addresses have to be kept on the portfolio site.
 
 ### macOS builds are notarised or refused
 

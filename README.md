@@ -2,24 +2,18 @@
 
 **Decision Architecture Organisational Software**
 
-Decitect turns the Decision Architecture model into an engine you operate. You fix a
-failing organisation by choosing structural moves (delegate authority, stabilise
-interfaces, realign incentives, collapse a boundary or resolve contested
-ownership to a single accountable owner) and a deterministic model scores the
-result from 0 to 100. You can play generated levels, model your own organisation
-or ask for a guide to a stronger structure.
+Decitect turns the Decision Architecture model into an engine you operate. You
+fix a failing organisation with structural moves (delegate authority, stabilise
+interfaces, realign incentives, collapse a boundary, resolve contested
+ownership) and a deterministic model scores the result from 0 to 100.
 
-It is a local-first desktop app: everything runs on your machine and nothing
-about you or your organisations leaves it. The one call it makes to the
-network is an anonymous daily ask of GitHub's releases API for whether a
-newer Decitect exists; a failed check is silent.
+It is a local-first desktop app: nothing about you or your organisations leaves
+your machine. Its one network call is an anonymous daily ask of GitHub's
+releases API for a newer version; a failed check is silent. A short tour is at
+<https://decitect.com/>.
 
-A short tour and the books behind it are at <https://decitect.com/>.
-
-Decitect was called Fulcrum before 5.0.0. Nothing is lost in the rename: the
-first launch moves the old `~/.fulcrum` settings and session into
-`~/.decitect`; the Windows setup offers to remove an old Fulcrum install
-once the new one is in place.
+Decitect was previously called Fulcrum. The first launch moves `~/.fulcrum`
+into `~/.decitect`; the Windows setup offers to remove an old Fulcrum install.
 
 > **Commercial licences available.** Decitect is free and open source under
 > GPL-3.0, with its interface layer under LGPL-3.0. If those terms do not suit
@@ -30,160 +24,45 @@ once the new one is in place.
 
 ## Who it is for
 
-- Software architects, senior engineers and CTOs who want to reason about org
-  structure as a system of decisions rather than a headcount chart.
+- Software architects, senior engineers and CTOs who reason about org structure
+  as a system of decisions rather than a headcount chart.
 - Readers of the Decision Architecture series who want the model in their hands.
-- Anyone curious about why organisations slow down as they scale.
 
 ## Who it is not for
 
-- It is not an HR or performance-management tool.
-- It is not a project tracker or a roadmap planner.
-- It is not a cloud service; there is no account and no server.
+It is not an HR tool, a project tracker or a cloud service; there is no account
+and no server.
 
 ## Capabilities
 
-- Generated levels whose every leaf is cloned from a cluster template, each
-  resampled until a great move is reachable within ten greedy improving moves.
-  The resampling stops at 200 tries; the last sample is then used as it is.
-- "Model my organisation": a two-pane editor where the org tree you are
-  building is always visible as a structure. Start at any tier from the New
-  dropdown (a whole company down to a single team), add items inside a unit
-  and set what each one is with a Type dropdown (Company, Division,
-  Department, Domain, your own label or Team); units nest to any depth with
-  teams as the leaves. Rows drag like folders in a file manager: onto a unit
-  to move inside, between rows to reorder, Ctrl held to copy, with illegal
-  drops refused on the spot. An inspector edits the selected item, the footer
-  shows a live people-and-teams rollup and an empty unit carries a warning
-  badge on its own row that explains itself on hover. The dialog opens at
-  nearly the size of the app window and can be maximised, so a large
-  organisation gets a workspace to match.
-- Dependencies between any two items: team to team, unit to unit or across
-  levels (a division blocked on a single platform team). An edge counts in
-  whichever frame shows both its endpoints as nodes: it merges into the
-  drilled map's arrows and the aggregate scores while the flat team-level
-  score stays honest.
-- Matrix and dual-reporting structure, drawn honestly: an authority claim
-  records another actor (a team, a unit or an unmodelled label such as a
-  chapter lead) asserting the right to decide for a team. A claimed team is
-  contested, reads violet on the maps, carries its own watched signal and opens
-  its own repair moves: resolve the class to a single owner or downgrade a
-  claimant to an explicitly priced consulted dependency. Claims live in the
-  editor beside the dependency table and round-trip through JSON.
-- The board opens as the complete picture: every domain and team at once,
-  with a click on any domain drilling straight into that section on the
-  navigable map and a synthetic dashed Shell tier grouping a multi-company
-  top level without asserting a modelled roof. Hovering a section rings it
-  in green to show a click opens it. Every level of the map is
-  playable, the top level included: "Play this level" scores the top-level
-  units as one actor each, so dependencies between them are priced, then
-  "Score the whole org" returns to the complete picture.
-- Both maps zoom: corner + and - chips (or the + and - keys on the focused
-  map) step the view larger and smaller, with each drill level opening at
-  its own fit and zooming over it, so a wide level's small type is one
-  press from readable.
-- A live move record behind the central header button: every move to date,
-  earlier runs marked, each showing the organisation before and after it;
-  the record survives restarts and rides along in JSON export and import.
-- "Edit my org": reopen the current organisation in the same editor at any
-  time, whatever its origin (hand-modelled, JSON import, random generation or a
-  previous edit), change it and rescore. The current org autosaves, so the
-  model survives closing the app.
-- Leads and owners are never blank: every group and team gets a plausible name
-  from a built-in pool (overtype it in one motion or roll the dice for
-  another), across the editor and random generation.
-- Per-team headcount that rolls up through the domain hierarchy to a whole-org
-  total, so a 100k-person structure is as workable as a handful of teams. The
-  rolled-up population sets the scale at which each frame prices concentrated
-  authority (the prince band: forgiven up to the Dunbar horizon of 150 people,
-  priced progressively harder beyond 200); nothing else in the score reads it.
-- Three example org sets under `examples/`: a debt ladder that worsens with
-  scale, a well-designed reference set that stays healthy and a calibration
-  set (`examples/calibration/`, scored by `python calibrate.py`) whose cases
-  carry expected score bands drawn from known outcomes, so the coefficients
-  answer to lived experience rather than taste. Every calibration case is a
-  drillable hierarchy of small varied teams; the six-thousand-person
-  enterprise case is generated deterministically by
-  `generate_matrixed_enterprise.py`. The calibration cases are also
-  available in-app via Organisation | Open example organisation, each loading
-  onto the board ready to inspect, play and rework in the editor.
-- Signals to watch (handoff queue age, escalations, rework, influence without
-  authority, contested ownership, centre escalation load and unowned
-  interfaces), each carrying its own definition: hover for a gloss, click for
-  the full meaning.
-- Every move you play is marked where it landed: the nodes it acted on are
-  ringed on both maps; where the complete picture summarises a section,
-  the section holding those teams is ringed instead. At whole-org scale a
-  repair inside one unit moves the colours by hundredths, so the ring is what
-  makes a played move visible at all.
-- Structural moves scored from blunder to great. The Guide plans every level
-  of the organisation at once: a tree of frames where each leaf line is
-  priced in whole-org points (the composing badges sum to the headline and
-  a line that would cost the whole organisation is kept out of it, flagged
-  with its cost), the leaf
-  lines compose into an honest whole-org before and after and an aggregate
-  row is labelled as the view from that altitude (its gains overlap the leaf
-  repairs beneath it). Teams sitting directly inside a unit that also holds
-  sub-units get their own row, so every team counts. A toggle lets the org
-  grow, priced where the edges live: a whole-org growth line joins the tree
-  as its last composable row, frames whose real teams carry the load may
-  split them or add owners and a frame growth cannot improve says so. Every
-  step shows its before and after score and previews and plays in place.
-- Guide planning that uses the whole machine: on a large organisation the
-  heavy pricing spreads across every processor core, with one core left to
-  keep the interface painting, so an enterprise of thousands plans in
-  seconds rather than minutes. The parallel build is deterministic and
-  identical to the single-core one down to the last digit; small
-  organisations plan in-process because they finish faster than worker
-  processes take to start. Every planning bar (opening the guide, the
-  grow toggle, the replan after playing a guide move) carries a Cancel
-  button that stops the build (ending any worker processes it started, so
-  the cores are free again) within a fraction of a second, so a
-  machine without the cores for the pool is never trapped in a long
-  serial build.
-- Move history that survives closing the app: the session autosaves the
-  starting org, every move and the section you were drilled into, so the next
-  launch restores the position by replay and reopens where you left it rather
-  than at the whole organisation. Take a move back steps through earlier runs'
-  moves too, from the board or with Ctrl+Z, all the way to the original
-  organisation. A saved organisation that cannot be read is never written
-  over: it is kept aside under its own name and the app says where it went.
-  The same holds for a move record that will not read or replay: the
-  organisation is restored without it and the file as it was is kept aside.
-- Plan export as a self-contained HTML report, from the header's chart button
-  beside the move record and the provenance mark. It is written straight into
-  your Downloads folder under a name that never overwrites an earlier one and
-  then opened for reading; it covers the whole record with earlier runs
-  visually separated from the current one. The same plan exports as JSON you
-  can re-import to resume the organisation and the moves played on it; a plan
-  that will not read or replay is refused with a message naming the problem
-  (the first move that fails, where it is a move) and the current session
-  stays as it was. Every
-  move in the report is judged twice: against the whole organisation and
-  (where it acted inside one unit) within that unit's own frame, so a repair
-  played as good in a drilled section reads as good instead of vanishing into
-  whole-org neutrality.
-- Full keyboard navigation: the whole interface sits on one explicit focus ring,
-  so every control is reachable without a mouse.
-- Light and dark themes, switched from the header's sun/moon toggle and
-  remembered between runs; the whole interface follows, the organisation
-  map included, with the authority colours re-weighted per theme so green,
-  amber and violet keep their meaning on either surface (violet marks
-  contested ownership rather than red, so it stays distinct from the green
-  hover ring under red-green colour blindness).
-- An update check against GitHub's releases API: a few seconds after launch,
-  daily while running and on demand from Help, prompting with Download (the
-  right file for your platform), Skip This Version and Later. Only a published
-  release can prompt, a skipped version never prompts again and an unreachable
-  network is silent; the manual check reports every outcome and ignores the
-  skip.
-- Help built in: About, both licence texts, a decision glossary, a background
-  page on the Decision Architecture books and a definition behind every
-  signal, plus a page grounding every number in the model behind the
-  header's golden provenance mark. Long help content reads
-  itself down gently, holds at the end and rewinds; it yields the moment you
-  scroll by hand and resumes where you stopped. Every surface that can
-  overflow reads itself the same way, the guide's move list included.
+- **Model your organisation** in a two-pane editor: units nest to any depth with
+  teams as leaves, rows drag like folders, headcounts roll up and dependencies
+  join any two items, team or unit.
+- **Matrix and dual reporting** as authority claims: a claimed team is
+  contested, drawn violet and gets its own repair moves.
+- **Play generated levels** (each leaf seeded so a great move is reachable) or
+  open the bundled calibration organisations.
+- **The board** opens on the complete picture; click a section to drill in,
+  play any level and zoom either map.
+- **Moves graded from blunder to great**, each played move ringed on the maps
+  and kept in a move record that survives restarts. Take moves back with
+  Ctrl+Z, across runs.
+- **The guide** plans every level at once; leaf lines compose into an honest
+  whole-org before and after, with an optional growth line. Large
+  organisations plan deterministically across every core but one; every
+  planning bar can be cancelled.
+- **Prince band**: concentrated authority is priced by the population it
+  governs, forgiven up to 150 people and priced harder beyond 200.
+- **Seven signals to watch**, each with its own definition.
+- **Autosave** of the organisation, its moves and your focus; an unreadable save
+  is kept aside, never overwritten.
+- **Export** a self-contained HTML report to Downloads or JSON you can
+  re-import; every move is judged against the whole org and its own frame.
+- **Keyboard navigation** on one explicit focus ring; light and dark themes.
+- **Update check** a few seconds after launch and daily, with Download, Skip
+  This Version and Later.
+- **Help built in**: glossary, the books, signal definitions and a provenance
+  page for every number.
 
 ## Stack
 
@@ -194,7 +73,6 @@ once the new one is in place.
 | Persistence | Local JSON files |
 | Tests | pytest, 100% gate on domain, application, infrastructure, shared and the installer's decision layer |
 | Format and lint | black (line length 88), flake8, ruff |
-| Icons and images | Pillow (build time) |
 | Packaging | Nuitka (Windows and macOS), Flatpak (Linux) |
 | Site | hand-maintained static HTML under `docs/`, served on GitHub Pages |
 | Licence | model GPL-3.0, UI LGPL-3.0 |
@@ -219,55 +97,47 @@ pip install -r requirements.txt
 python main.py
 ```
 
-## Documentation
-
-- [Architecture](ARCHITECTURE.md): the layers, the invariants and the model,
-  with each invariant linked to the test that enforces it.
-- [Development](DEVELOPMENT.md): running from source, the quality gate
-  and the build scripts (icons, the Windows executable and installer, the macOS
-  disk image, the Linux Flatpak and the site).
-- [Testing](TESTING.md): how the suite is structured, how to run it and how to
-  read its result.
-- [Technical debt](TECH_DEBT.md): the standing reference to what is still open,
-  what is deliberately left and what only looks like debt.
-- [Decisions and trade-offs](DECISIONS-TRADEOFFS.md): the decisions Decitect
-  rests on, with what each one gains and what it costs.
-- [Pre-registration](PREREGISTRATION.md): the blind external validation
-  protocol, with its thresholds fixed before any organisation is scored.
-
 ## Test
 
 ```
 pytest
 ```
 
-The suite fails below 100% coverage on the gated layers. See [TESTING.md](TESTING.md).
+The suite fails below 100% coverage on the gated layers; see
+[TESTING.md](TESTING.md).
 
 ## Build
 
-The development builds for Windows, macOS and Linux (the icon set, the Windows
-executable and installer, the macOS disk image, the Linux Flatpak and the GitHub
-Pages site) are described in [DEVELOPMENT.md](DEVELOPMENT.md).
+Icons, the Windows executable and installer, the macOS disk image, the Linux
+Flatpak and the site: see [DEVELOPMENT.md](DEVELOPMENT.md).
+
+## Documentation
+
+- [ARCHITECTURE.md](ARCHITECTURE.md): layers, invariants and the model.
+- [DEVELOPMENT.md](DEVELOPMENT.md): working from source and the build scripts.
+- [TESTING.md](TESTING.md): the suite and how to read its result.
+- [TECH_DEBT.md](TECH_DEBT.md): what is still open, what is deliberately left
+  and what only looks like debt.
+- [DECISIONS-TRADEOFFS.md](DECISIONS-TRADEOFFS.md): the decisions Decitect rests
+  on, with their gains and costs.
+- [PREREGISTRATION.md](PREREGISTRATION.md): the blind external validation
+  protocol.
 
 ## Supporting the project
 
-Decitect is free and stays free. There is no paid tier, no licence key and no
-feature held back behind a donation. If it has saved you time or simply been
-useful, a donation supports its maintenance and continued development.
+Decitect is free and stays free: no paid tier, no licence key and no feature
+held back behind a donation. If it has been useful, a donation supports its
+maintenance. The same link sits in the app's header beside the theme toggle;
+pressing it hands the address to your browser.
 
-The same link sits in the app's header, just left of the light and dark
-toggle. Pressing it hands the address to your browser; Decitect itself sends
-nothing and opens no connection of its own.
-
-<a href="https://www.paypal.com/ncp/payment/X2U2V8TML89DE"><img src="docs/donate.png" alt="Donate to Decitect" width="120"></a>
+<a href="https://www.paypal.com/ncp/payment/4PRXS7C94A3HA"><img src="docs/donate.png" alt="Donate to Decitect" width="120"></a>
 
 ## Licence
 
 Dual-licensed by component: the model under GPL-3.0 and the user interface (the
 PySide6 layer) under LGPL-3.0. See [LICENSE](LICENSE) for the split, with the
 full texts in [LICENSE-GPL-3.0.txt](LICENSE-GPL-3.0.txt) and
-[LICENSE-LGPL-3.0.txt](LICENSE-LGPL-3.0.txt). The running app shows both under
-Help.
+[LICENSE-LGPL-3.0.txt](LICENSE-LGPL-3.0.txt).
 
 A commercial licence for my own code is also available, separately from the
 open-source licences: see

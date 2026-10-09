@@ -1,12 +1,11 @@
 # Decitect development
 
-This is the guide to working on Decitect from source: the environment, the
-quality gate and the build scripts. For the design see
-[ARCHITECTURE.md](ARCHITECTURE.md); for the test suite see [TESTING.md](TESTING.md).
+Working on Decitect from source. For the design see
+[ARCHITECTURE.md](ARCHITECTURE.md); for the suite see [TESTING.md](TESTING.md).
 
 ## Environment
 
-Decitect targets Python 3.11 or newer and is developed on 3.13.
+Python 3.11 or newer; developed on 3.13.
 
 Windows:
 
@@ -28,41 +27,33 @@ pip install -r requirements-dev.txt
 python main.py
 ```
 
-`requirements.txt` is the single runtime dependency (PySide6).
-`requirements-dev.txt` adds the tooling: pytest with pytest-cov and pytest-qt,
-Pillow for the icons and the site images, plus black, flake8 and ruff. It also
-includes Nuitka 4.2.1 or later, which the packaged Windows and macOS builds
-(buildexe.py, buildinstaller.py and builddmg.py) use. Each of those three
-scripts checks the installed Nuitka before compiling and stops, naming the
-version it found and the install command, when Nuitka is missing or older.
+`requirements.txt` holds the one runtime dependency, PySide6.
+`requirements-dev.txt` adds pytest (with pytest-cov and pytest-qt), Pillow,
+black, flake8, ruff and Nuitka 4.2.1 or later; the Nuitka builds stop with the
+install command when Nuitka is missing or older.
 
 ## Project layout
 
 ```
 decitect/
   domain/          pure model: org state, moves, scoring, frames, signals, books
-  application/     simulator seam, session, org draft, planner, org guide,
-                   guide worker pool, plan, glossary
-  infrastructure/  JSON serialization, plan export, HTML and SVG renderers
-  ui/              PySide6 board, map, editor and dialogs
+  application/     simulator seam, session, org draft, planner, guide and its
+                   worker pool, plan, glossary, update decision
+  infrastructure/  JSON, plan export, HTML and SVG renderers, autosave,
+                   settings, state directory, GitHub releases adapter
+  ui/              PySide6 board, maps, editor and dialogs
   shared/          asset discovery and text helpers (no Qt)
-installer/         the bespoke Windows installer, a second application layered
-                   the same way: logic decides, scripts build the command text,
-                   ops acts, lifecycle composes and the Qt modules present
-tests/             domain, application, infrastructure, shared, installer,
-                   scripts, structural and ui
-assets/            book covers, the generated header-button icons and the
-                   donate master (donate.png), which never ships itself
-examples/          reference org JSON: a debt ladder, a healthy reference and
-                   the calibration cases (examples/calibration)
-docs/              the GitHub Pages site (hand-maintained; donate.png is
-                   the mark every project site shares)
+installer/         the Windows setup program, layered like the app
+tests/             one area per layer plus installer, scripts, structural, ui
+assets/            book covers, header-button icons, the donate master
+examples/          reference organisations, including examples/calibration
+docs/              the GitHub Pages site (hand-maintained)
 main.py            the composition root
 ```
 
 ## Quality gate
 
-Run all four before pushing:
+Run all four from the repo root before pushing:
 
 ```
 pytest
@@ -71,68 +62,29 @@ flake8 .
 ruff check .
 ```
 
-Run them from the repo root so the installer and the build scripts are read
-too; `.flake8` carries the exclusions and `pyproject.toml` mirrors them for
-ruff, so the three tools see the same files at the same width.
-
-`ruff check .` is clean under the default rules of ruff 0.15.22, the version
-`requirements-dev.txt` pins. Ruff 0.16 widens its default selection and reports
-import-order findings this version does not; [TECH_DEBT.md](TECH_DEBT.md)
-records them.
-
-`pytest` enforces 100% coverage on the gated layers (domain, application,
-infrastructure, shared and the installer's pure modules). The structural
-tests in `tests/structural` enforce the architectural invariants: domain
-purity (an allowlist of pure standard-library modules, no I/O builtins),
-inward dependencies with relative imports resolved, Qt and the UI confined
-to `decitect/ui`, the 400-line module limit across source, tests and the
-installer, the installer importing nothing from the `decitect` package and
-its pure modules touching no registry, subprocess, environment or Qt. Each
-layer rule is proven to bite on a planted violation. Adding a feature means placing it in the right layer (the domain stays
-pure; the UI talks only to the application) or those tests fail. The detail
-is in [TESTING.md](TESTING.md).
+`.flake8` holds the exclusions and `pyproject.toml` mirrors them for ruff.
+`ruff check .` is clean under the pinned 0.15.22; 0.16 widens its defaults (see
+[TECH_DEBT.md](TECH_DEBT.md)). The structural tests in `tests/structural`
+enforce the layer rules, so a feature placed in the wrong layer fails the suite.
 
 ## Build scripts
 
-Each build step is a plain script, run with the venv active from the repo root.
-The Windows and macOS builds compile with Nuitka (in `requirements-dev.txt`); the
-Linux build is a source-based Flatpak. Build for the platform you are on: the
-executable and installer on Windows, the disk image on macOS and the Flatpak on
-Linux.
+Run each from the repo root with the venv active, on the platform it targets.
 
 ### Icons
 
 ```
 python generate_icons.py
-```
-
-Renders the multi-size PNG set and the multi-resolution `decitect.ico` from
-`decitect.png`, used for the window, the taskbar and the packaged executable.
-The electric-glow treatment (transparent keying, colour lift, halo) and a
-mass-based trim (the art is cropped to the box holding almost all of its
-ink, then squared with a thin margin, so the mark fills the taskbar tile)
-are part of the script, so the raw master stays untouched and every
-emitted icon carries the shipped look.
-
-```
 python generate_button_icons.py
 ```
 
-Draws the header-button icons (the org tree, the pencil and the guide's
-climbing arrow) deterministically into
-`assets/buttons` at the sizes the app loads, one variant per theme (dark
-strokes carry a `_light` suffix). Rerunning writes identical files; edit
-the script and rerun rather than editing the PNGs.
-
-The same script derives the donate mark from its master, `assets/donate.png`.
-The mark is a wide picture rather than an icon, so it skips the squaring the
-app icon takes: it is cropped to its artwork, then scaled by height alone to
-four times the height the header draws it at (`BUTTON_ICON_PX` in
-`decitect/ui/header_buttons.py`), so it stays crisp under display scaling; the
-render goes to `assets/buttons/donate.png` for the app. Replace the master and
-rerun; never hand-scale the render. The site's `docs/donate.png` is not
-generated: it is the small mark every project site shares byte for byte. The
-master itself is bundled by no build.
+`generate_icons.py` renders the PNG set and `decitect.ico` from the
+`decitect.png` master, applying the glow treatment and trim.
+`generate_button_icons.py` draws the header-button icons into `assets/buttons`
+(one variant per theme) and derives the app's donate mark from
+`assets/donate.png`, scaled to four times the header's icon height
+(`BUTTON_ICON_PX`). Both are deterministic: edit the script, never the PNGs. The
+site's `docs/donate.png` is the shared mark, not generated.
 
 ### Windows executable
 
@@ -140,19 +92,10 @@ master itself is bundled by no build.
 python buildexe.py
 ```
 
-Builds a self-contained Windows executable with Nuitka into
-`installer/payload/Decitect`, so an end user needs no system Python. The icon,
-the book covers, the header-button icons, the stepper arrows, the calibration
-examples, the `VERSION` file and the licence texts are bundled beside it so
-the app's asset discovery finds them. Set
-`DECITECT_DEBUG_CONSOLE=1` for a console-visible diagnostic build.
-
-On a large organisation the guide spawns worker processes (the pool in
-`decitect/application/org_guide_parallel.py`); `main.py` calls
-`multiprocessing.freeze_support()` so those workers behave inside the
-packaged executable, where each worker relaunches the executable itself.
-Seeing several `decitect.exe` processes during guide planning is the pool
-at work, not a fault.
+Builds a standalone executable with Nuitka into `installer/payload/Decitect`,
+with its assets, `VERSION` and licences beside it. `DECITECT_DEBUG_CONSOLE=1`
+gives a console build. `main.py` calls `multiprocessing.freeze_support()`, so
+several `decitect.exe` processes during guide planning are the worker pool.
 
 ### Windows installer
 
@@ -160,28 +103,13 @@ at work, not a fault.
 python buildinstaller.py
 ```
 
-Packages the standalone payload into a single-file installer
-(`dist-installer/DecitectSetup.exe`) that extracts to
-`%LOCALAPPDATA%\Programs\Decitect`, writes the uninstall entry and creates the
-desktop and Start Menu shortcuts. Run `buildexe.py` first.
-
-The installer under `installer/` is a second application, layered like one.
-`installer_logic.py` decides (where files go, how two versions compare, what
-the uninstall registration says, what a shortcut or a deferred delete asks
-Windows to do): it is pure, imports nothing beyond the stdlib and is held at
-100% coverage by `tests/installer`, as is `installer_legacy.py`, which decides
-what an install under the former name (Fulcrum) consists of and which of its
-shortcuts and sign-in entries are provably its own. `installer_ops.py` acts
-(registry, task list, PowerShell, Win32); `installer_startup.py` sets up the
-process (crash log, taskbar identity). `installer_lifecycle.py` composes
-them into install, repair and uninstall; an install with the old Fulcrum
-install found and its option left ticked retires that install last. `installer_bundle.py` reads the
-payload beside the binary; `installer_theme.py`, `installer_widgets.py`
-and `installer_window.py` are the Qt surface, outside the coverage gate as the
-app's own UI is. `app.py` is the entry point. Every module is inside the
-400-line cap, which the structural test now enforces over `installer/` too.
-Nothing under `installer/` may import from the `decitect` package: the two
-binaries are built and released separately.
+Run `buildexe.py` first. Produces `dist-installer/DecitectSetup.exe`, which
+installs per user to `%LOCALAPPDATA%\Programs\Decitect`, registers in the Apps
+list and creates shortcuts. In `installer/`, `installer_logic.py` and
+`installer_legacy.py` decide (the latter for an old Fulcrum install) and are
+gated at 100%; `installer_scripts.py` builds the command text; `installer_ops.py`
+and `installer_startup.py` act; `installer_lifecycle.py` composes; the Qt
+modules present; `app.py` is the entry point. Nothing there imports `decitect`.
 
 ### macOS disk image
 
@@ -189,112 +117,61 @@ binaries are built and released separately.
 python builddmg.py
 ```
 
-Compiles a standalone `Decitect.app` with Nuitka and packages it into
-`decitect.dmg`. Needs macOS with the Xcode command-line tools, Homebrew and
-`create-dmg`. The app and the disk image are always code signed (with the
-identity in `DEVELOPER_ID_APPLICATION` when it is set) and notarized.
-Notarization uses `APPLE_ID` and `APPLE_APP_PASSWORD` when both are set,
-refusing a password that is not app-specific before any build work; otherwise
-it uses the keychain profile `Decitect` (or the one `APPLE_KEYCHAIN_PROFILE`
-names). A missing or rejected credential stops the build at the notarization
-step. Only `ALLOW_UNNOTARIZED=1` skips notarization, for a local test build
-that must never be released. The
-`.icns` derives from the glow-treated icon set `generate_icons.py` emits
-(`decitect_1024.png` downwards), never from the raw `decitect.png` master, so
-run the icon generator first or the build warns and ships without a custom
-icon.
+Compiles `Decitect.app` with Nuitka into `decitect.dmg`. Needs Xcode
+command-line tools, Homebrew and `create-dmg`. Always signed (identity from
+`DEVELOPER_ID_APPLICATION` when set) and notarized, using `APPLE_ID` with an
+app-specific `APPLE_APP_PASSWORD` or else the keychain profile `Decitect` (or
+`APPLE_KEYCHAIN_PROFILE`). A missing or rejected credential stops the build;
+`ALLOW_UNNOTARIZED=1` skips notarization for a local build that must never ship.
+Run `generate_icons.py` first: the `.icns` comes from `decitect_1024.png` down.
 
 ### Linux Flatpak
 
 ```
 ./build_flatpak.sh
-```
-
-Builds Decitect as a Flatpak against the `org.freedesktop.Platform//25.08`
-runtime, installs it for the current user and writes a distributable
-`decitect.flatpak` bundle. The PySide6 wheels are pre-downloaded on the host then
-installed offline inside the sandbox, so the build needs no network. The
-manifest's finish-args grant `--share=network` at runtime, which the in-app
-update check needs: without it the sandbox blocks the socket and every check
-reports unreachable. Needs
-`flatpak` and `flatpak-builder` with the freedesktop 25.08 runtime and SDK. Pass
-`--no-bundle` to build and install without the distributable bundle.
-
-```
 ./clean_flatpak.sh
 ```
 
-Uninstalls the Flatpak for the current user and removes the Flatpak build
-artefacts (`decitect.flatpak`, the build and repo directories and the generated
-manifest). It leaves the Nuitka and macOS outputs untouched, so the build paths
-stay independent.
+Builds against `org.freedesktop.Platform//25.08` from pre-downloaded wheels, so
+the build is offline, installs for the current user and writes
+`decitect.flatpak` (`--no-bundle` skips the bundle). The sandbox grants
+`--share=network` for the update check. Needs `flatpak` and `flatpak-builder`
+with the 25.08 runtime and SDK. `clean_flatpak.sh` uninstalls it and removes the
+Flatpak artefacts only.
 
 ### GitHub Pages site
 
-The site under `docs/` is hand-maintained static HTML, served from the
-`main` branch `/docs` folder: `index.html` plus `tool.html` (with its two
-detail pages, `vocabulary.html` and `play.html`), `why.html`, `model.html`
-(with `weights.html`, `assumptions.html` and `testing.html`) and
-`download.html`, sharing one `styles.css`. Edit the pages
-directly. There is no generator: the site is authored, not built, so nothing
-can overwrite it. Version numbers in the pages sit between `<!--VERSION-->`
-delimiters and are stamped from the `VERSION` file (the Windows builds run
-this automatically; the macOS and Linux builds deliberately do not):
+The site is hand-written HTML in `docs/`, served from `main` `/docs`: `index`,
+`tool` (with `vocabulary` and `play`), `why`, `model` (with `weights`,
+`assumptions` and `testing`) and `download`, sharing `styles.css`. Edit the
+pages directly. Versions sit between `<!--VERSION-->` delimiters. This stamps
+them and the stylesheet's content hash:
 
 ```
 python stamp_version.py
 ```
 
-It also versions the pages' stylesheet and script links by content
-(`styles.css?v=<hash>`), so a browser never pairs a new page with a cached
-old stylesheet.
+The Windows builds stamp automatically; the macOS and Linux builds do not.
+Screenshots in `docs/assets/screenshots/` are captured from the running app.
 
-The images under `docs/assets/` are committed alongside the pages: the
-play-by-play screenshots in `docs/assets/screenshots/` are captured from the
-running app; the book covers in `docs/assets/books/` are web-sized copies
-of the masters in `assets/books/`.
-
-### Sensitivity sweep
+### Analysis scripts
 
 ```
 python sensitivity.py
-```
-
-Re-scores the ten example archetypes with every scoring coefficient perturbed
-by 0.8 and 1.2 (the three composite penalty shares renormalised to keep their
-enforced sum) and checks that the published qualitative conclusions still
-hold, both canonical blunders staying negative included. Deterministic, no
-randomness; exits non-zero if any conclusion fails. The site's model page
-(`docs/model.html`) publishes its result.
-
-### Calibration harness
-
-```
 python calibrate.py
 ```
 
-Scores the organisations in `examples/calibration/` against the expected
-bands their `calibration` blocks declare, printing the penalty decomposition
-beside each verdict and exiting non-zero when any case lands outside its
-band. Cases are modelled with outcome knowledge (see the directory's README
-and PREREGISTRATION.md: they are permanently ineligible for the blind
-validation set); add new ones from `TEMPLATE.json`. The matrixed-enterprise
-case is written by `generate_matrixed_enterprise.py` (deterministic and
-seeded); change that script and rerun it rather than editing its JSON by
-hand.
-
-All three scripts carry smoke tests in `tests/scripts`, so the suite fails if
-the sweep loses a conclusion, a calibration case drifts outside its band or
-the committed matrixed-enterprise JSON stops matching what the generator
-produces. They stay outside the coverage gate: the tests assert they run,
-exit zero and emit the shape their reader depends on.
+`sensitivity.py` re-scores the ten archetypes with every coefficient scaled by
+0.8 and 1.2, then jointly; it exits non-zero if a published conclusion fails.
+`calibrate.py` scores `examples/calibration/` against each case's expected band.
+Calibration cases are modelled with outcome knowledge, so they can never join
+the blind validation set (PREREGISTRATION.md); add one from `TEMPLATE.json`.
+`generate_matrixed_enterprise.py` writes the large case; rerun it rather than
+editing its JSON. All three are smoke-tested in `tests/scripts`.
 
 ## Conventions
 
-- No magic numbers: domain values come from data, configuration or named
-  constants such as those in `SimulationParameters`.
-- Frozen dataclasses in the domain; constructor injection only; one composition
-  root in `main.py`.
+- No magic numbers: values come from data, configuration or named constants.
+- Frozen dataclasses in the domain; constructor injection; one composition root.
 - `black` line length 88; no em dashes anywhere.
-- UI sizes go through `ui_scale.px(...)` so the interface scales to the screen.
-  Verify UI changes on a real window, not only offscreen.
+- UI sizes go through `ui_scale.px(...)`; verify UI changes on a real window.

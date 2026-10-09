@@ -1,81 +1,155 @@
 # Decitect architecture
 
-Decitect turns the Decision Architecture model into a deterministic engine and
-wraps it in a local-first PySide6 desktop app. The architecture is invariant
-first: every rule below but the last is enforced by a test, not by convention.
+Decitect is a deterministic Decision Architecture engine inside a local-first
+PySide6 desktop app. Every invariant below but the last is enforced by a test.
 
 ## Invariants
 
 | Invariant | Enforced by |
 |---|---|
-| The domain is pure: standard library only, no I/O, no frameworks, no wall-clock reads. The rule is an allowlist of pure-computation stdlib modules plus the domain itself (`DOMAIN_STDLIB` in `tests/structural/layer_rules.py`), relative imports are resolved against the file's package before matching and the I/O and dynamic-code builtins (`open`, `__import__`, `eval`, `exec`, `compile`, `input`, `print`, `breakpoint`) are refused. | `tests/structural/test_architecture.py::test_domain_imports_no_io_or_outer_layers` |
-| Dependencies point inward: the application never imports infrastructure, the UI or Qt, relative imports included. | `tests/structural/test_architecture.py::test_application_does_not_import_infrastructure_or_ui` |
-| Only the UI is Qt: infrastructure and shared never import `decitect.ui` or PySide6 (the GPL and LGPL boundary the LICENSE draws). | `tests/structural/test_architecture.py::test_infrastructure_and_shared_never_import_the_ui_or_qt` |
-| Each layer rule above bites: a planted violating file (the relative imports, Qt, I/O modules and builtins an audit used to pass the old denylist) fails it. | `tests/structural/test_layer_plants.py` |
-| No module in the package, the tests or the installer exceeds 400 lines. The repo-root build and analysis scripts are outside the cap. | `tests/structural/test_architecture.py::test_modules_stay_under_the_line_limit` |
-| The update check is the only network code. Nothing in the package, the installer or `main.py` imports a networking module (`socket`, `http`, `asyncio`, `urllib.request`, a third-party HTTP client, Qt's network or web-engine modules) except `infrastructure/github_release_source.py`, which may import `urllib.request` and nothing else networked. | `tests/structural/test_architecture.py::test_only_the_update_check_reaches_the_network` and `::test_the_update_check_exemption_is_exact` |
+| The domain is pure: an allowlist of pure-computation stdlib modules (`DOMAIN_STDLIB` in `tests/structural/layer_rules.py`) plus itself, with relative imports resolved first; the I/O and dynamic-code builtins (`open`, `__import__`, `eval`, `exec`, `compile`, `input`, `print`, `breakpoint`) refused. | `tests/structural/test_architecture.py::test_domain_imports_no_io_or_outer_layers` |
+| Dependencies point inward: the application never imports infrastructure, the UI or Qt. | `tests/structural/test_architecture.py::test_application_does_not_import_infrastructure_or_ui` |
+| Only the UI is Qt: infrastructure and shared never import `decitect.ui` or PySide6 (the GPL and LGPL boundary). | `tests/structural/test_architecture.py::test_infrastructure_and_shared_never_import_the_ui_or_qt` |
+| Each layer rule above fails on a planted violation. | `tests/structural/test_layer_plants.py` |
+| No module in the package, the tests or the installer exceeds 400 lines; the repo-root build and analysis scripts are exempt. | `tests/structural/test_architecture.py::test_modules_stay_under_the_line_limit` |
+| The update check is the only network code: nothing in the package, the installer or `main.py` imports a networking module except `infrastructure/github_release_source.py`, which may import `urllib.request` alone. | `tests/structural/test_architecture.py::test_only_the_update_check_reaches_the_network` and `::test_the_update_check_exemption_is_exact` |
 | The installer imports nothing from the `decitect` package. | `tests/structural/test_architecture.py::test_the_installer_stays_standalone` |
-| The installer's decision modules touch no registry, subprocess, environment or Qt. | `tests/structural/test_architecture.py::test_the_installer_decisions_touch_no_side_effects` |
-| The domain, application, infrastructure, shared text helpers and the installer's decision modules are covered 100%. | `--cov-fail-under=100` in `pyproject.toml` with `.coveragerc` |
-| One explicit composition root. | Convention, not a test: `main.py` is the only place concrete infrastructure is constructed. |
+| The installer's decision modules (`installer_logic.py`, `installer_legacy.py`, `installer_scripts.py`) touch no registry, subprocess, environment or Qt. | `tests/structural/test_architecture.py::test_the_installer_decisions_touch_no_side_effects` |
+| The domain, application, infrastructure, shared text helpers and installer decision modules are covered 100%. | `--cov-fail-under=100` in `pyproject.toml` with `.coveragerc` |
+| One explicit composition root. | Convention, not a test: `main.py` alone constructs concrete infrastructure. |
 
 ## Layers
 
 UI to Application to Domain, with Infrastructure pointing in to the same Domain.
-A small Shared module holds framework-free helpers.
 
-- **Domain** (`decitect/domain`): value objects (`OrgState`, `Team`, `Dependency`, `Domain`, `AuthorityClaim`), the recursive domain hierarchy with its headcount roll-ups and its scoring frames (a focused section; the top level played as rolled-up root units), structural `Move`s (the vocabulary in `move_base`, the structural handlers in `moves`, the claim moves in `moves_claims`), the deterministic scoring model (`evaluate`, including contested ownership, with a one-pass population table in `populations` so pricing stays live at any organisation size), the lagging-indicator signals with their display formatting and the reference data for the books. A dependency endpoint may be a team or a whole domain; each frame prices the edges whose endpoints both appear as its nodes. A claim's subject is always a team; its claimant may be a team, a unit or an unmodelled label. Frozen dataclasses, tuples over lists, validation in `__post_init__`: every field's type is checked as well as its range (`field_checks`), because an organisation arrives from files as often as from the editor and NaN passes every comparison, so a range check alone once let a NaN team score a perfect 100. Counts are whole numbers no larger than 2^53, the largest a double holds exactly; far beyond it the scoring arithmetic overflowed to NaN; `evaluate` refuses a non-finite result rather than clamping it. Team ids and unit ids share one endpoint namespace, so no id may name both. Pure.
-- **Application** (`decitect/application`): the `Simulator` Protocol seam and a `DeterministicSimulator`, the `GameSession` (position, focus frame, history), the off-thread scope analysis, the blueprint intake compiler and its inverse (`org_to_blueprint`, the round-trip editing seam), the editable org draft behind the editor (`org_draft` with its serialisation, conversion and claim mixins and the `org_draft_nodes` vocabulary), the shared lead-and-owner name pool, the solvable level generator, the improvement planner and the whole-hierarchy org guide built on it (a plan for every frame, whose leaf lines compose into an honest whole-org headline), the drill-down map model, the plan report builder (each move judged against the whole organisation; where its targets all sit inside one unit's subtree it is also judged within that unit's own frame, recovered from the stored move and scored exactly as a drilled section), the glossary (definitions plus the `short_help` tooltip source, with the move-classification bands rendered from the engine's own thresholds), the book showcase and the update check's offer decision (`update_service`: dotted-integer version compare where anything unparseable is not-newer, skip handling by exact tag equality and platform asset selection by filename suffix, over the `ReleaseSource` Protocol with its carriers in `update_info`). DTOs cross the boundary.
-- **Infrastructure** (`decitect/infrastructure`): the shared JSON serialization for org states and moves, the plan repository and exporter (atomic writes), the current-org autosave (`FileOrgStore`, restoring the last session on launch), the example library (`FileExampleLibrary`, offering the bundled calibration organisations in-app), the settings store (`FileSettingsStore`, persisting the chosen theme and the update check's skipped version atomically in one file and degrading to defaults when unreadable), the GitHub releases adapter (`GitHubReleaseSource`: one stdlib-urllib GET of the `releases/latest` endpoint with a 5 second timeout and an injected opener, so tests never touch the network; that endpoint returns only published, non-draft, non-prerelease releases, so a tag pushed mid-development can never prompt; every failure mode collapses to None), the HTML and SVG renderers, the system clock and the state directory (`state_dir`: the one home of the per-user `~/.decitect` name, plus `resolve_state_dir`, which the composition root calls once before either store opens a file so a `~/.fulcrum` left by a release from before the rename is moved into place; a move that fails answers the old directory, so a launch never starts empty over a session it could not move). Implements the application Protocols and owns all I/O.
-- **UI** (`decitect/ui`): PySide6 widgets and dialogs (the board with its composed scope presenter, the board's map pane stacking the complete picture (the board's face, ringing the section a click would drill into) over the navigable org map, both zoomable from corner chips or the + and - keys with each drill level zooming over its own fit, the two-pane organisation editor with its tree and inspector panes and node-level dependency table, the hierarchy guide (a two-pane tree of every frame's line, computed on a worker thread), the glossary, the book background, the provenance page, the signal definitions and the about/licence dialogs, whose long content reads itself down through a shared auto-scroller that yields to any manual scroll; every scrollable help surface carries it on the same constants, so no dialog sets its own pace) plus three thin controllers the main window delegates to (`org_intake` for everything that replaces the session, `plan_files` for plan import and export, `update_check` for the update check: a 3 second launch trigger, a daily re-check and the manual Help entry, with the one blocking call on a worker thread whose result signal is connected to a bound method so delivery is queued back onto the UI thread, where the Download / Skip This Version / Later prompt runs; an answer whose controller has been deleted is dropped rather than raised on the worker thread, as `tests/ui/test_update_check_after_close.py` holds), a client of the application only. A `ui_scale` factor set once at startup keeps the whole interface sized to the screen. The interface carries a light and a dark theme from two palette pairs: `theme_palettes` feeds the stylesheet builder in `theme`, `map_palette` colours the graphics-scene maps and the header's sun/moon toggle persists the choice through the application's `SettingsStore` port, with the themed header icons re-dressed on switch. The header row itself is built by `header_tray`, which owns the order the buttons are drawn in and hands the main window the same order for its focus ring. Not every colour lives in those two modules: a few widgets keep a fixed accent of their own and the HTML and SVG exporters (`plan_html`, `svg_map`) carry their own colours. This is the only LGPL-3.0 component; the model and the rest of the project are GPL-3.0 (see LICENSE).
-- **Shared** (`decitect/shared`): runtime asset discovery (icon, licences, book covers, header-button icons, stepper arrows and the bundled calibration examples) and small pure text helpers (`count_noun`), with no Qt dependency.
+- **Domain** (`decitect/domain`): frozen value objects (`OrgState`, `Team`,
+  `Dependency`, `Domain`, `AuthorityClaim`), the domain hierarchy and its
+  scoring frames, structural `Move`s, the scoring model (`evaluate`), the
+  signals and the books' reference data. Every field is type-checked as well as
+  range-checked (`field_checks`), since organisations arrive from files and NaN
+  passes every comparison; `evaluate` refuses a non-finite result. Counts are
+  capped at 2^53. Team and unit ids share one namespace.
+- **Application** (`decitect/application`): the `Simulator` seam, the
+  `GameSession`, off-thread scope analysis, the blueprint intake and its inverse
+  (the round-trip editing seam), the editor's org draft, the name pool, the
+  level generator, the planner and the whole-hierarchy guide with its worker
+  pool, the map model, the plan report builder, the glossary and the update
+  check's offer decision (`update_service`). DTOs cross the boundary.
+- **Infrastructure** (`decitect/infrastructure`): JSON serialization, the plan
+  repository and exporter, the session autosave (`FileOrgStore`), the settings
+  store, the example library, the HTML and SVG renderers, the clock, the GitHub
+  releases adapter (one urllib GET of `releases/latest`, 5 second timeout,
+  injected opener; every failure is None) and `state_dir`, the one home of the
+  `~/.decitect` name, whose `resolve_state_dir` moves a pre-rename `~/.fulcrum`
+  into place and answers the old folder if the move fails. All atomic writes;
+  all I/O lives here.
+- **UI** (`decitect/ui`): the board, its two zoomable maps, the editor, the
+  guide, the help dialogs and three thin controllers (`org_intake`,
+  `plan_files`, `update_check`). Long help content scrolls itself through one
+  shared auto-scroller. `ui_scale` sizes everything to the screen;
+  `theme_palettes`, `theme` and `map_palette` carry the light and dark themes;
+  `header_tray` owns the header buttons and their focus order. The update
+  check's blocking call runs on a worker thread and delivers to a bound method,
+  dropping an answer whose controller is gone
+  (`tests/ui/test_update_check_after_close.py`). This is the only LGPL-3.0
+  component.
+- **Shared** (`decitect/shared`): asset discovery and pure text helpers, no Qt.
 
 ## Execution flow
 
-`main.py` builds the services (simulator, plan exporter, clock, org store), injects them into `MainWindow` and starts the Qt loop. On launch the window restores the autosaved session when one exists and generates a fresh org otherwise; every session change, every played or taken-back move and the window close write the session (the starting org plus the full move history) back through the injected `OrgStore`. A restored session is rebuilt by replaying its moves from the starting org, which refills the undo stack, so taking a move back works across runs; the replayed moves are marked as the prior record, which is how the exported report separates earlier runs from the current one. A file the store cannot read is moved aside before anything can be saved over it; a file whose organisation reads but whose move record will not parse or replay is moved aside the same way and the organisation restores alone, with the window naming where the file went. JSON shape errors (a list or null where an object belongs, a field of the wrong type) raise the domain's own error, so the autosave and the plan import each handle one failure kind; a plan import reads and replays inside one guard and names the first move that will not replay. Replacing the organisation (a new random org, a fresh model, an import or an edit) starts a fresh session, so the record always belongs to the organisation it was played on. A `GameSession` holds the current `OrgState`, the focus frame and a snapshot stack, so a played move can be taken back; playing a move translates it from the focused frame onto the real teams then calls the pure `apply_move`; the board reads score, signals and move valuations off-thread from the injected simulator. Drilling on the map focuses a section as its own frame; "Play this level" focuses the top level as rolled-up root units, while the unfocused headline score stays the flat team-level truth. The editor itself is a pure function of an `OrgBlueprint`: fresh models seed a starter draft and "Edit my org" serialises the live org back to a blueprint, so hand-modelled, imported, generated and previously edited orgs are all equally editable.
+`main.py` resolves the state directory once, builds the services (simulator,
+plan exporter, clock, example library, org and settings stores on that
+directory, update service), injects them into `MainWindow` and starts the Qt
+loop. The window restores the autosaved session by replaying its moves from the
+starting organisation, which refills the undo stack across runs; otherwise it
+generates a fresh organisation. Every change writes the session back. An
+unreadable file is moved aside before anything can be saved over it; a readable
+organisation with an unreadable move record restores alone. Replacing the
+organisation starts a fresh session. A played move is translated from the
+focused frame onto the real teams and applied by the pure `apply_move`; scoring
+and move valuation run off-thread. The editor works on an `OrgBlueprint`, so any
+live organisation can be edited.
 
 ## The model
 
-Each team has a resolution capacity that falls when it lacks local authority, when it is coupled, when its incentives are skewed and when it grows past a comfortable size. Effective arrivals rise with propagation delay. Demand travels along dependencies: each team waiting on an upstream lands `dependent_demand_weight` of the frame's workload on the upstream's queue, authority notwithstanding, so an empowered hub that dozens of teams wait on saturates exactly as a deciding centre does while a light fan-out stays free within capacity headroom. Three bounded penalties (system backlog, the share of teams that cannot decide cleanly and mean incentive skew) compose into a 0..100 score, then two gentle further penalties apply: the influence-without-authority gap (a team many others depend on cannot decide locally) and contested ownership. A claim is another actor asserting the right to decide for a team; every decision class already has a structural owner (either the team itself or the line it escalates to), so any standing claim makes its subject contested. Contest is charged three ways, mirroring authority: the team's capacity takes the scaled contest price (its full flat `contested_penalty` up to the prince band, then deepened in proportion to the scaled escalation price, with the flat ratio validated so contest costs strictly more than clean escalation at every scale), a contested team counts in the escalation share and the whole score divides by one plus `contested_weight` per standing claim. The watched signals (handoff queue age, escalations, rework, influence without authority and contested ownership) read the same state. A move's value is the score delta, classified from blunder to great against fixed bands; the bands are absolute within each frame, which is why an aggregate scope can honestly offer nothing better than neutral and the board then points the player deeper. Every coefficient lives in `SimulationParameters`, so there are no hidden constants. Headcount enters the score through exactly one door, the prince band (`authority_scale`): each team carries a people count that rolls up through the hierarchy, every scoring frame carries its real population on its nodes and each escalating team is priced at the population of its resolution neighbourhood, the nearest enclosing unit whose subtree holds a clean authority (falling back to the whole frame). Up to the Dunbar horizon (150 people) the authority charges cost `prince_attenuation` of their flat price, the price rises linearly to parity across the band to 200, then grows with the log of the population and caps at `prince_survivor_ceiling`, so concentration at scale is a graded penalty and never a prohibition. `escalation_load_share` of each escalating team's workload lands on its resolving authorities' queues, deliberately unattenuated by the band (the band forgives friction, never bandwidth), so a saturated centre registers as latency. Contested ownership is never attenuated by scale, only amplified. Distribution is priced as well as concentration: a dependency between two clean sovereigns sharing no enclosing domain is an unowned interface (no roof exists to arbitrate its conflicts) and pushes its endpoints toward the cannot-decide-cleanly share at the frame's factor, weighted by `unowned_interface_weight`, so a roofless sovereign network fragments at scale while any shared unit owns the edge. The influence divisor reads the per-team mean rather than the absolute load, so one overloaded hub costs a proportionate slice of a large organisation. A structure holding no concentration, no claims and no unowned interfaces scores identically at every population.
+Each team has a resolution capacity that falls when it lacks local authority,
+is coupled, has skewed incentives or grows past a comfortable size; propagation
+delay inflates its arrivals. Each team waiting on an upstream lands
+`dependent_demand_weight` of the frame's workload on the upstream's queue, so a
+hub saturates as a deciding centre does. Three bounded penalties (system
+backlog, the share of teams that cannot decide cleanly, mean incentive skew)
+compose into a 0..100 score, then two gentle divisors apply: influence without
+authority and contested ownership.
 
-Dependencies follow one projection rule across every view and frame: an edge (authored between teams, between whole units or across levels) maps each endpoint to the node representing it in the current frame. Edges internal to one node vanish, edges crossing the frame boundary drop and a frame prices exactly the edges whose endpoints both stand as its nodes. A unit-level edge therefore counts at the levels where those units are the actors and is never expanded into synthetic team queues.
+A claim is another actor asserting the right to decide for a team. Every
+decision class already has a structural owner, so any standing claim makes the
+team contested: its capacity takes the contest price, it counts in the
+escalation share and the score divides by one plus `contested_weight` per
+claim. Contest is never attenuated by scale.
 
-## Design decisions
+Headcount enters only through the prince band (`authority_scale`): each
+escalating team is priced at the population of the nearest enclosing unit
+holding a clean authority. Up to 150 people the authority charges cost
+`prince_attenuation` of their flat price, rising to parity by 200, then growing
+with the log of the population to `prince_survivor_ceiling`.
+`escalation_load_share` of each escalating team's workload lands on its
+resolving authorities, unattenuated, so a saturated centre registers as
+latency. A dependency between two clean sovereigns with no shared roof is an
+unowned interface, weighted by `unowned_interface_weight`. A structure with no
+concentration, claims or unowned interfaces scores identically at every size.
 
-| Decision | Rationale |
-|---|---|
-| Python + PySide6, not Go + React | A visualisation-heavy desktop tool is PySide6 home turf and the compute is bounded. The simulator sits behind a Protocol so a faster kernel stays a reversible, deferred choice. |
-| The donate button takes a seat in the header tray | The window already has a tray of icon buttons and no footer, so a whole band of chrome carrying one control would cost more than it buys. The button sits immediately left of the theme toggle, in the row and in the focus ring alike, because it belongs to nothing else on screen. As a member of the tray it is drawn at the tray's own picture height (`BUTTON_ICON_PX`), not a subordinate fraction of it; the wide mark keeps its aspect, so its icon size is that height by the render's own width. Its one address is `DONATE_URL` beside the rest of the identity in `decitect/version.py`, handed to the desktop through the `links` seam: the application never fetches the page, so the local-first guarantee is untouched by the button existing. The picture carries no meaning on its own, so the tooltip says the browser opens. The window has no status bar, so a desktop that refuses says so through the same information box the presentation export already uses, naming the address. The window holds the tray: a signal connected to a method of a plain object does not keep that object alive, measured when a test pressing an unheld tray saw no call. Conformance: `tests/ui/test_donate_button.py`. |
-| Total-system latency, not accumulated queue | Bounded and stable, so adding a saturated approval gate is robustly harmful rather than a mean-dilution artifact. |
-| New effects as gentle multiplicative terms | The cognitive-load and influence-without-authority terms are zero in the benign case, so they never disturb an existing position and only bite where the gap is real. |
-| JSON plans, not CSV | Matches the nested shape of an org and the move sequence played on it. |
-| Greedy planner | The move set is small, so a greedy best line is explainable and fast, like a chess engine's principal variation. |
-| Generated levels resampled until solvable | Every leaf is cloned from a cluster template that was resampled until a great move is reachable within ten greedy improving moves, the way a puzzle generator verifies a solution before shipping. The resampling stops at 200 tries and then uses the last sample as it is, so the great move is sought per cluster rather than proven. |
-| Frame projection for unit-level dependencies | An edge between units is a fact about the level where those units act. Projecting it into frames where both endpoints are nodes prices it exactly there, without inventing team queues (cartesian expansion would inflate coupling) and without a separate interface object. |
-| Classification bands absolute per frame | The same physical move reads larger the deeper the focus, which is the model's move-locality result. Scaling the bands would stamp "great" on negligible summit deltas; instead the bands stay fixed and the board tells the player that value lives deeper. |
-| The top level as an explicit frame, not the default | Root units roll into one actor each only when the player asks (Play this level), so dependencies between roots are priced without changing what the headline flat score means. |
-| Concentration priced by scale (the prince band) | Machiavelli holds both positions and scale reconciles them: The Prince (concentrated authority governs the small state well) and the Discourses (the durable large state is a republic). The hinge is the light-cone axiom, not preference: below the Dunbar horizon one centre's light cone covers the whole organisation, so a founder-autocrat at 30 people scores well while the identical structure at 30,000 scores badly. Each scoring frame is priced at its own population so a Dunbar-sized pocket inside a conglomerate may stay princely while the frames above it demand a republic. The amplification saturates (survivorship: rare princes persist at scale) and contest is never forgiven at any size. Escalation is priced at its resolution distance (the nearest enclosing unit holding a clean authority) and sheds `escalation_load_share` of its workload onto that unit's authorities, so a federation of empowered pockets reads well at any size while a saturated centre queues and prices itself. The conformance suites (`tests/domain/test_authority_scale.py`, claims C1 to C10 on the band itself; `tests/domain/test_resolution_conformance.py`, claims C11 to C17 on resolution, load and fragmentation) pin each half of the claim, so the scale dependency is structural and checkable rather than an asserted preference. |
-| Frames carry their roof | A focused frame once dropped its enclosing domains, so a drilled section's sovereign-to-sovereign edges read as roofless fragmentation in-frame while the whole-org score priced the identical edges as roofed: one fact at two prices. A fully roofed section showed dozens of phantom unowned interfaces. Every focused frame (leaf section, aggregate unit, direct-teams row) now keeps its subtree's domain rows with the root cut loose (`_frame_domains` / `_parent_roof` in `hierarchy.py`), so in-frame pricing agrees with the whole organisation. The top-level frame stays roofless deliberately: nothing above the top level is modelled, which is also why it offers no moves. Conformance: `tests/domain/test_hierarchy.py` (frames keep roofs and domain ids). |
-| Dependency concentration prices itself | The escalation machinery priced authority concentration while a fully empowered dependency hub rode free: a five-person team that thirty-four teams wait on read as healthy because demand only travelled along escalation lines, never along dependencies (the shipped matrixed-enterprise sample exposed the gap once its section was delegated). `dependent_demand_weight` routes a fraction of the frame's workload from each dependent onto its upstream's queue, authority notwithstanding; the imbalance floor keeps a light fan-out free, so the cost begins where the queue does. Held at or below `escalation_load_share` (enforced in code): waiting on a supplier may never cost more than resolving through an authority. Conformance: `tests/domain/test_simulation.py` (concentration vs disjoint pairs, monotone fan-out, distributed fan-out free). |
-| Any standing claim is contest | The first cut counted a team's own authority as its only structural claimant; the sensitivity sweep falsified it: the matrix-overlay blunder read positive on escalation-heavy archetypes because it barely contested anyone while diluting every penalty share. The structural owner (either the team or the line it escalates to) is always claimant one, so a standing claim always makes two; resolving in favour of a claimant clears the claims outright rather than leaving one standing. |
-| Claims follow their subject wherever it stands as a real node | Contest is a fact about a team's decision class, so it projects into any frame where that team is a node: leaf frames and a mixed unit's direct teams standing in an aggregate frame alike. Rolled unit nodes stay claimless; they are synthetic and carry no decision class of their own. |
-| Contest priced, not simulated | Reconciliation traffic between claimants is not synthesised as dependency edges (that would recreate the cartesian-expansion problem frame projection rejects); the capacity cut, the escalation share and the per-claim divisor carry the cost instead. |
-| Stabilise is frame-scoped | A stabilise move carries its frame's node ids and thins only the edges that frame prices; an untargeted move keeps the legacy thin-everything meaning so saved plans replay unchanged. Without the scoping, hierarchy-guide lines would re-apply the global thinning once per leaf. |
-| The guide plans every frame; only leaf lines compose | Sibling leaf frames are disjoint, so their lines apply to the real org without collision and the headline is the real flat score after playing them all. Aggregate rows are shown as the view from that altitude and never composed, since their gains overlap the leaf repairs beneath them: the move-locality result, made visible. |
-| A leaf line composes only when it pays its way | The whole-org score carries per-team means (escalation share, rework, the latency ratio), so a line that reads clean on its frame's scale (collapsing healthy teams) can raise the weight of every problem elsewhere and cost the org. Applied-alone worth (the org_delta badge) does not decide it: once the sibling lines repair their frames the same line can turn positive, so dropping by badge sign would cost the headline real points. Composition therefore prices each line marginally against the composed position and drops the worst net-harmful line until every survivor helps; a dropped row keeps its frame line and badge, flagged as not composing with its cost. Leaves stay planned in their own frames: the whole-org check lives where whole-org authority lives, at composition. |
-| Every team sits in exactly one leaf frame | A team held directly by a unit whose child units also hold teams used to vanish from every frame: aggregate frames rolled only child domains and no leaf contained it, so its repairs never reached the headline. Mixed units now give their direct teams a composable "Teams directly in" leaf row (as does the top level for loose teams), with the teams also standing as real nodes in the unit's aggregate view. |
-| The guide's heavy pricing runs on a worker pool | The guard prices each leaf line independently and a growth step valuates independent candidates: pure-Python compute the interpreter lock would serialise on threads, so a large organisation gets a process pool (`org_guide_parallel.py`) behind the `GuideWorkerPool` seam. Every task prices exactly what the serial loop prices and results reassemble in submission order, so the guide is bit-identical with and without the pool. Small organisations stay serial (a pool costs more to spawn than their whole build) and a pool that breaks mid-build degrades to in-process pricing rather than failing. Conformance: `tests/application/test_org_guide_parallel.py` (pooled equals serial, byte for byte). |
-| Guide builds cancel cooperatively | A cancelled check rides into the planner, the guard and the pool, is consulted at every step, valuation chunk and progress tick and raises `GuideBuildCancelled` to unwind the build; the pool waits for results in short slices so the request lands even while workers are still spawning and is released without waiting for stragglers; a build that unwinds terminates its workers rather than leaving them to finish chunks nobody will read, so cancelling frees the cores as well as the bar (`tests/application/test_org_guide_pool_release.py`). The busy dialog closes only through its own dismiss path (Qt routes `close()` through `reject()`, so a swallowed reject would otherwise silently disable programmatic close); user closes and Escape route to cancellation instead. Conformance: `tests/application/test_org_guide_cancel.py` (a never-fired check leaves the build byte-identical; a fired one stops it). |
-| Growth is priced where the edges are visible | A leaf frame drops the cross-boundary edges a split relieves, so growth there is rare and local. With growth allowed the guide adds two honest surfaces: a whole-org growth line planned against the real organisation from the position after the leaf repairs, appended as the tree's last composable row (its org points are growth's worth on top of the other lines); the other is growth moves inside aggregate frames for the real teams standing in them (a loose team at the top level), since an aggregate frame is where cross-unit edges are priced. Rolled unit nodes are synthetic and never grow as one act. |
+A move's value is its score delta, classified from blunder to great against
+fixed bands in every frame. Every coefficient lives in `SimulationParameters`.
+
+Dependencies follow one projection rule: each endpoint maps to the node
+representing it in the current frame; edges inside one node vanish and edges
+crossing the frame drop.
+
+## Conformance suites
+
+The decisions behind the model are recorded with their trade-offs in
+[DECISIONS-TRADEOFFS.md](DECISIONS-TRADEOFFS.md). These suites pin them:
+
+- `tests/domain/test_authority_scale.py`: the prince band (claims C1 to C10).
+- `tests/domain/test_resolution_conformance.py`: resolution, load and
+  fragmentation (claims C11 to C17).
+- `tests/domain/test_hierarchy.py`: focused frames keep their roof.
+- `tests/domain/test_simulation.py`: dependency concentration prices itself.
+- `tests/application/test_org_guide_parallel.py`: the pooled guide equals the
+  serial one byte for byte.
+- `tests/application/test_org_guide_cancel.py` and
+  `test_org_guide_pool_release.py`: cancelling stops the build and frees its
+  workers.
+- `tests/ui/test_donate_button.py`: the donate button's place, address and
+  refusal message.
 
 ## Tooling
 
-The development builds are plain scripts, not a framework: `generate_icons.py` (the app icon set), `generate_button_icons.py` (the header-button icons plus the donate mark, cropped to its artwork from the `assets/donate.png` master and scaled by height to four times the tray's picture height, then written to `assets/buttons`), `buildexe.py` and `buildinstaller.py` (the standalone executable and the Windows installer, via Nuitka), `builddmg.py` (the macOS disk image), `build_flatpak.sh` and `clean_flatpak.sh` (the Linux Flatpak) and `stamp_version.py` (stamps the version from `VERSION` into the static docs). The GitHub Pages site under `docs/` is hand-maintained and no generator writes there; its donate mark is the small copy every project site shares byte for byte. Deterministic checks ride beside the builds: `sensitivity.py` (the coefficient sweep), `calibrate.py` (the calibration bands) and `generate_matrixed_enterprise.py` (regenerates the large calibration case from its seed); all three are smoke-tested by the suite. See [DEVELOPMENT.md](DEVELOPMENT.md).
+The builds are plain scripts: `generate_icons.py`, `generate_button_icons.py`,
+`buildexe.py`, `buildinstaller.py`, `builddmg.py`, `build_flatpak.sh`,
+`clean_flatpak.sh` and `stamp_version.py`. The site under `docs/` is
+hand-maintained. `sensitivity.py`, `calibrate.py` and
+`generate_matrixed_enterprise.py` are smoke-tested by the suite. See
+[DEVELOPMENT.md](DEVELOPMENT.md).
 
-The Windows installer under `installer/` is not a build script but a second application, layered the same way this one is: `installer_logic.py` decides, `installer_legacy.py` decides what an install left under the product's former name (Fulcrum) consists of and what of it is provably its own, `installer_scripts.py` builds the exact command text those decisions are carried out with, `installer_ops.py` acts on Windows, `installer_startup.py` sets up the process (crash log, taskbar identity), `installer_lifecycle.py` composes them and the Qt modules present. An old Fulcrum install is offered for removal by name on the install screen and retired only after the new install is complete; a shortcut or sign-in entry is removed only when it points inside the old install directory. The old `~/.fulcrum` is left for the application to adopt. Its decision layer is inside the coverage gate at 100%, its whole tree is inside the 400-line cap and a structural test forbids it importing from the `decitect` package, since the two binaries are built and released separately.
+The Windows installer under `installer/` is a second application, layered the
+same way: `installer_logic.py` and `installer_legacy.py` decide,
+`installer_scripts.py` builds the command text, `installer_ops.py` and
+`installer_startup.py` act, `installer_lifecycle.py` composes and the Qt modules
+present. `installer_legacy.py` covers an install left under the former name
+(Fulcrum): it is offered for removal by name and retired after the new install
+is complete, removing a shortcut or sign-in entry only when it points inside the
+old install directory.
 
-Because that separation forbids sharing a constant, the installer and the application each write down the name of the per-user state directory, along with the former name's directory an uninstall must also clear. `tests/installer/test_state_dir.py` holds both pairs together by comparing the paths both sides compute, since the drift is otherwise silent: an uninstaller that clears the wrong directory reports success either way.
+The installer and the application each write down the state directory's name
+and the former name's directory, since the installer may not import the app.
+`tests/installer/test_state_dir.py` holds both pairs together.
 
 ## Quality
 
-`black` (line length 88) and `flake8` run clean, as does `ruff check` under the default rules of ruff 0.15.22, the version `requirements-dev.txt` pins (ruff 0.16 widens its defaults; see [TECH_DEBT.md](TECH_DEBT.md)); `pytest` enforces 100% coverage on the gated surface. UI, `main.py`, resource discovery, the application Protocol definitions, the version module and the installer's Qt and side-effect modules are excluded as composition or framework glue. The structural tests enforce the invariants above, over the tests and the installer as well as the application source. See [TESTING.md](TESTING.md).
+`black` (88) and `flake8` run clean, as does `ruff check` under ruff 0.15.22,
+the pinned version (0.16 widens its defaults; see [TECH_DEBT.md](TECH_DEBT.md)).
+`pytest` enforces 100% coverage on the gated surface; the UI, `main.py`,
+resource discovery, the Protocol definitions, the version module and the
+installer's Qt and side-effect modules are excluded. See
+[TESTING.md](TESTING.md).

@@ -21,7 +21,7 @@ from decitect.version import DONATE_URL
 
 # Written out in full on purpose: a typo in the payment address must fail
 # here rather than send a supporter to a page that is not the author's.
-DECITECT_DONATE_URL = "https://www.paypal.com/ncp/payment/X2U2V8TML89DE"
+DECITECT_DONATE_URL = "https://www.paypal.com/ncp/payment/4PRXS7C94A3HA"
 
 
 def _nothing() -> None:

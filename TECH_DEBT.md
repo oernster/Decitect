@@ -12,7 +12,7 @@ It is small and the contract is honest (the docstring says the composition root 
 
 **Blocked on an owner decision.** 23 of the 57 UI modules import `ui_scale` directly and everything sized flows through them; the UI is outside the coverage gate, so threading an injected value object through them is a wide, behaviour-neutral edit whose only verification is by eye on a real window. The direction is settled; the appetite for that edit (and when to spend it) is not. It stays open until the owner says to spend it.
 
-## 2. The UI layer is 8498 lines with no coverage and some of it is not UI
+## 2. The UI layer is 8517 lines with no coverage and some of it is not UI
 
 `.coveragerc` omits `*/ui/*` wholesale, which `TESTING.md` documents as deliberate. For painting, layout and Qt wiring that is correct and matches every other project here.
 
@@ -28,20 +28,20 @@ It has not been run against a real Nuitka standalone build. Under freezing, each
 
 ## 4. Ruff has never been run against this repository beyond its default rules
 
-With ruff 0.15.22 (the repo venv's), `ruff check .` passes clean and exits zero; that is ruff's default selection (E4, E7, E9 and F) doing very little work. `requirements-dev.txt` pins `ruff==0.15.22`, so a fresh install runs the same rules. Moving the pin to 0.16 is its own piece of work: ruff 0.16.0 widens its default selection and the same command reports 10 findings and exits 1 (nine `I001` unsorted import blocks and one `UP035`, all auto-fixable), across `main_window.py`, `complete_map_painter.py`, `github_release_source.py`, four installer modules and three test modules, which would be cleared in the commit that moves the pin.
+With ruff 0.15.22 (the repo venv's), `ruff check .` passes clean and exits zero; that is ruff's default selection (E4, E7, E9 and F) doing very little work. `requirements-dev.txt` pins `ruff==0.15.22`, so a fresh install runs the same rules. Moving the pin to 0.16 is its own piece of work: ruff 0.16.0 widens its default selection and the same command reports 11 findings and exits 1 (nine `I001` unsorted import blocks, one `UP035` and one `SIM117`, all auto-fixable), across `main_window.py`, `complete_map_painter.py`, `github_release_source.py`, four installer modules and four test modules, which would be cleared in the commit that moves the pin.
 
-Run with `--select ALL` under ruff 0.15.22 the repository reports **4813 findings**, of which 321 are auto-fixable with `--fix` and a further 912 sit behind `--unsafe-fixes`. The largest families:
+Run with `--select ALL` under ruff 0.15.22 the repository reports **5336 findings**, of which 336 are auto-fixable with `--fix` and a further 1023 sit behind `--unsafe-fixes`. The largest families:
 
 | Rule | Count | What it is |
 |---|---|---|
-| `S101` | 1263 | `assert` (every assertion in the suite; noise, not debt) |
-| `ANN001`, `ANN201`, `ANN202` | 1122 | missing type annotations |
-| `D1xx`, `D4xx` | 918 | missing and non-imperative docstrings |
-| `COM812` | 282 | missing trailing comma (auto-fixable) |
-| `FBT003` | 262 | boolean positional argument in a call |
-| `TC001`, `TC002`, `TC003` | 154 | imports that could move under `TYPE_CHECKING` |
+| `S101` | 1368 | `assert` (every assertion in the suite; noise, not debt) |
+| `ANN001`, `ANN201`, `ANN202` | 1318 | missing type annotations |
+| `D1xx`, `D4xx` | 1012 | missing and non-imperative docstrings |
+| `COM812` | 293 | missing trailing comma (auto-fixable) |
+| `FBT003` | 285 | boolean positional argument in a call |
+| `TC001`, `TC002`, `TC003` | 156 | imports that could move under `TYPE_CHECKING` |
 | `T201` | 107 | `print` (the analysis and build scripts, by design) |
-| `PLR2004` | 88 | magic value in a comparison |
+| `PLR2004` | 89 | magic value in a comparison |
 
 Two findings matter more than the counts. `DTZ` (naive datetime) is **zero**: every timestamp in the repo is timezone-aware, so the correctness risk that family exists to catch is absent. `PLR2004` is the family that touches the repo's own no-magic-numbers rule and is the one worth reading properly.
 
@@ -50,10 +50,6 @@ Clearing this means one dedicated commit per rule family, each with the gate gre
 **`RUF100` must not be enabled until the families its noqa comments name are enabled.** It judges `# noqa` against the currently selected rules only, so with a partial `select` it reports five false positives and its fix would delete the five `# noqa: BLE001` markers that record deliberate broad handlers: four in the installer and one in the update check's worker.
 
 `pyproject.toml` carries a `[tool.ruff]` block that mirrors `.flake8` (line length and exclusions) so the two tools read the same files with the same width. It deliberately sets no `select`.
-
-## 5. `installer_ops.py` sits in the danger band at 386 lines
-
-The structural test holds every installer module to the 400-line cap, which `installer/installer_ops.py` meets. It does not check the band below the cap: a module between 381 and 399 lines is one edit from failing, so the house rule is to lift a cohesive slice and bring it to 350 or below rather than shave a line at a time. The module acts on Windows (registry, task list, PowerShell, Win32) and sits outside the coverage gate, so the split is behaviour-preserving but verified only by an installer build and a real install, repair and uninstall.
 
 ---
 
@@ -75,5 +71,5 @@ These look like candidates but are correct as they stand; changing them would re
 - **The coverage omissions of the installer's Qt and side-effect modules** (`app.py`, `installer_bundle.py`, `installer_lifecycle.py`, `installer_ops.py`, `installer_startup.py`, `installer_theme.py`, `installer_widgets.py`, `installer_window.py`). The decisions were lifted into `installer_logic.py` and the command text it produces into `installer_scripts.py`, both gated at 100%; what remains is widgets, a registry and subprocess edge plus the composition that wires them. Testing `installer_ops.py` would mean writing to the real HKCU hive.
 - **`docs/` being hand-maintained with no generator.** The generator that used to write `docs/index.html` was retired because it had diverged: it emitted a single page with no navigation while the live site carries nine further hand-written pages. The site is authored, not built. Do not reintroduce a generator without teaching it the whole page set.
 - **`VERSION` as the only real version string, with `stamp_version.py` writing the delimited tokens into the `docs/` site.** The apparent duplication is generated, not maintained. No documentation outside the site carries version data.
-- **Only `buildexe.py` and `buildinstaller.py` calling `stamp_version.main()`.** `builddmg.py` and `build_flatpak.sh` read `VERSION` for their own metadata and deliberately do not stamp, which reads like an omission and is not one. The two surfaces are separate and each is already correct. The **application** takes its version at runtime: `decitect/version.py` reads the `VERSION` file, every delivery script stages that file into the bundle, so Help then About reports the right number on Windows, macOS and Linux alike. This is verified, not assumed: a `python3 builddmg.py` DMG and a cleaned `build_flatpak.sh` Flatpak both show the current version. The **site** is a set of committed files under `docs/`, published from `main` rather than from any build, so it is stamped when the version is bumped and the documentation pass runs; `stamp_version.py` is idempotent. Adding the stamper to the macOS and Linux scripts would be actively worse: it would rewrite tracked files mid-build on a machine that is not the one making the release commit, leaving a dirty tree there and no benefit anywhere.
+- **Only `buildexe.py` and `buildinstaller.py` calling `stamp_version.main()`.** `builddmg.py` and `build_flatpak.sh` deliberately do not stamp. The app reads `VERSION` at runtime and every build bundles it, so About is right on every platform. The site is committed files published from `main`, stamped when the version is bumped. Stamping from the macOS and Linux builds would rewrite tracked files on a machine that is not making the release commit.
 - **The 48 tracked PNGs.** Each image has one source and the copies are generated from it. `generate_icons.py` emits the app icon set and its provenance kin from `decitect.png`; `generate_button_icons.py` draws the header icons and writes the app's render of the donate mark from `assets/donate.png` (the site's copy is the shared mark, not generated); the book covers keep web-sized copies under `docs/`; the stepper arrows and the site screenshots are single files. This is the single-master rule working, not asset sprawl.

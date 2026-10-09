@@ -22,7 +22,7 @@ APP_APPUSERMODELID: str = "uk.codecrafter.decitect"
 # Where the donate button sends a browser. The only address the application
 # knows; it is handed to the desktop rather than fetched, so nothing here ever
 # opens a connection of its own.
-DONATE_URL: str = "https://www.paypal.com/ncp/payment/X2U2V8TML89DE"
+DONATE_URL: str = "https://www.paypal.com/ncp/payment/4PRXS7C94A3HA"
 
 # Single source of truth for the version: the VERSION file in the repo root.
 _VERSION_FILE = Path(__file__).resolve().parents[1] / "VERSION"

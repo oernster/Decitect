@@ -27,9 +27,9 @@ interfaces, routed dependent demand (each team waiting on an upstream lands
 `dependent_demand_weight` of the frame's workload on the upstream's queue,
 so dependency concentration prices itself as authority concentration does)
 and the proportional influence and claim divisors, together with
-the conformance suites (`tests/domain/test_authority_scale.py`, claims C1 to
-C10, and `tests/domain/test_resolution_conformance.py`, claims C11 to C17)
-that pin its behaviour. Any change to a coefficient or to the scoring
+the conformance suites that pin its behaviour
+(`tests/domain/test_authority_scale.py` holding claims C1 to C10;
+`tests/domain/test_resolution_conformance.py` holding claims C11 to C17). Any change to a coefficient or to the scoring
 mechanics after deposit constitutes a new model and requires a fresh
 registration; results under a changed model cannot be reported against this
 one. Earlier drafts of this protocol described the pre-4.0.0 flat-priced
@@ -43,8 +43,8 @@ The repository carries a calibration harness (`calibrate.py` with
 outcomes, including cases drawn from the author's lived experience. They
 exist to form and tune the prior and are therefore permanently ineligible
 for the validation set: a case that has appeared in the calibration
-directory, or whose organisation the author has modelled with outcome
-knowledge, is excluded from case assembly under the blinding rule below.
+directory or whose organisation the author has modelled with outcome
+knowledge is excluded from case assembly under the blinding rule below.
 
 ## Design
 
