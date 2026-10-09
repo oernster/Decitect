@@ -49,7 +49,7 @@ DA_SERIES: tuple[BookEntry, ...] = (
         title="Relativistic Decision Architecture",
         cover_filename="_cover_relativistic_da_architecture.png",
         blurb="The geometry of decision systems",
-        amazon_uk_url="https://www.amazon.co.uk/dp/B0GT7D4P8G",
+        amazon_uk_url="https://www.amazon.co.uk/dp/B0H8HTM8H3",
     ),
 )
 
@@ -60,5 +60,5 @@ COMPLETE_SERIES_EDITION: BookEntry = BookEntry(
     title="Decision Architecture Series",
     cover_filename="hardback_cover.png",
     blurb="All four volumes combined into a single hardback reference edition",
-    amazon_uk_url="https://www.amazon.co.uk/dp/B0GTMVV8T5",
+    amazon_uk_url="https://www.amazon.co.uk/dp/B0H8HVZKY1",
 )
