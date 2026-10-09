@@ -83,7 +83,7 @@ RUN_SUBKEY = r"Software\Microsoft\Windows\CurrentVersion\Run"
 RUN_VALUE = "Decitect"
 
 # The app registers its notification name and icon under this Application User
-# Model ID at startup so Windows can brand its toasts, and the uninstall flow
+# Model ID at startup so Windows can brand its toasts; the uninstall flow
 # removes it. Must match the app's APP_APPUSERMODELID.
 APP_AUMID = "uk.codecrafter.decitect"
 AUMID_CLASSES_SUBKEY = r"Software\Classes\AppUserModelId"
@@ -144,7 +144,7 @@ def licence_candidates(file_name: str, root: Path) -> tuple[Path, ...]:
 
 
 def first_readable_text(candidates: tuple[Path, ...], fallback: str) -> str:
-    """Return the first candidate that reads, or the fallback when none do."""
+    """Return the first candidate that reads; the fallback when none do."""
     for candidate in candidates:
         try:
             return candidate.read_text(encoding="utf-8")
@@ -163,7 +163,7 @@ def version_candidates(root: Path) -> tuple[Path, ...]:
 
 
 def first_version(candidates: tuple[Path, ...]) -> str:
-    """Return the first non-empty version text found, or an empty string."""
+    """Return the first non-empty version text found; an empty string otherwise."""
     for candidate in candidates:
         try:
             text = candidate.read_text(encoding="utf-8").strip()
@@ -199,7 +199,7 @@ def state_dir(home: Path) -> Path:
 
 
 def start_menu_link(appdata: str | None, name: str = APP_DISPLAY_NAME) -> Path | None:
-    """Return the per-user Start Menu shortcut path, or None when unavailable."""
+    """Return the per-user Start Menu shortcut path; None when unavailable."""
     if not appdata:
         return None
     programs = Path(appdata).joinpath(*_START_MENU_SUBPATH)
@@ -266,7 +266,7 @@ def primary_label(state: str, version: str) -> str:
 
 
 def dir_size_kb(path: Path) -> int | None:
-    """Return the total size of a directory in KiB, or None on error."""
+    """Return the total size of a directory in KiB; None on error."""
     try:
         total = sum(f.stat().st_size for f in path.rglob("*") if f.is_file())
     except OSError:
@@ -304,7 +304,7 @@ def uninstall_entry_values(
 
 
 def absolute_location(raw: str | None) -> Path | None:
-    """Return a registered install location, or None when it is unusable."""
+    """Return a registered install location; None when it is unusable."""
     if not raw:
         return None
     path = Path(raw)

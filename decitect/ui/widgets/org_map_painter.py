@@ -162,7 +162,7 @@ def draw_edges(scene: QGraphicsScene, edges, positions: dict) -> None:
     """Draw each dependency edge as an arrow, with a weight label when above one.
 
     The run is border to border rather than centre to centre, so no line is
-    painted across the inside of the box it leaves or the box it enters, and
+    painted across the inside of the box it leaves or the box it enters;
     the head sits exactly where the line meets the target for every approach
     angle rather than only for the horizontal and vertical ones.
     """

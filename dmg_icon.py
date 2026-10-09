@@ -3,7 +3,7 @@
 
 Split out of builddmg.py so each build module stays small. Contains the
 pure-Python PNG background compositor (no Pillow dependency at build time), the
-.icns generator, and the routine that embeds a custom volume icon into a
+.icns generator plus the routine that embeds a custom volume icon into a
 finished DMG.
 """
 

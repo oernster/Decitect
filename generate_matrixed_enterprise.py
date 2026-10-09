@@ -208,7 +208,7 @@ def _add_groups(case: _Case, unit, theme: str, sub: tuple, people: int) -> list:
     """Split an oversized sub-unit into led groups; return the leaf parents.
 
     One lead coordinating thirty-odd teams in a flat leaf is not a hierarchy,
-    it is a queue wearing one's clothes, and the case models a drillable
+    it is a queue wearing one's clothes; the case models a drillable
     organisation. So a sub-unit over the leaf cap divides into groups, each
     with its own lead and a handful of teams.
     """

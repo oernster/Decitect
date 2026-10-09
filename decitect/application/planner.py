@@ -108,7 +108,7 @@ class ImprovementPlanner:
                 moves = tuple(m for m in moves if move_filter(m))
             # Never repeat an identical move within one line: replaying a
             # partial repair (realign, stabilise) converges with diminishing
-            # gains, and a guide that names the same move three times reads
+            # gains; a guide that names the same move three times reads
             # as noise rather than a plan. Each repair appears once.
             moves = tuple(m for m in moves if (m.kind, m.targets) not in played)
             if not moves:

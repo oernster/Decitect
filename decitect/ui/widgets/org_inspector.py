@@ -177,7 +177,7 @@ class OrgInspectorPane(QWidget):
     # ------------------------------------------------------------- selection
 
     def set_node(self, node_id: str) -> None:
-        """Show the editor page for a node id, or the placeholder for ''."""
+        """Show the editor page for a node id; the placeholder for ''."""
         self._node = self._draft.find(node_id) if node_id else None
         self._loading = True
         if isinstance(self._node, ContainerDraft):

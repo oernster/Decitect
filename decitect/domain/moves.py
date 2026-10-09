@@ -29,7 +29,7 @@ from decitect.domain.moves_claims import (
 APPROVAL_GATE_DELAY: int = 3
 _APPROVAL_GATE_PREFIX: str = "approval"
 
-# Fraction of the original delay kept when interfaces are stabilised, and the
+# Fraction of the original delay kept when interfaces are stabilised; also the
 # fraction of incentive skew kept when incentives are realigned. Both pull a
 # value toward zero without forcing it there.
 STABILISE_RETENTION: float = 0.4
@@ -96,9 +96,9 @@ def _add_approval_layer(org: OrgState, move: Move) -> OrgState:
 
 
 def _stabilise_interfaces(org: OrgState, move: Move) -> OrgState:
-    """Thin the interfaces of one frame, or of everything when untargeted.
+    """Thin the interfaces of one frame; of everything when untargeted.
 
-    Targets are the frame's node ids (teams, or whole units standing as the
+    Targets are the frame's node ids (teams or whole units standing as the
     frame's actors); only a dependency crossing between two distinct targeted
     scopes is thinned, exactly the edges that frame prices. An untargeted
     move keeps the legacy meaning (every dependency), so saved plans replay

@@ -202,7 +202,7 @@ def scale_context(org: OrgState, params: SimulationParameters) -> ScaleContext:
     team, standing in for the line it escalates to. Its concentration
     charges are priced at that unit's population, so a pocket whose lead
     sits across the desk is forgiven whatever the whole organisation
-    weighs, and escalation_load_share of its workload lands on that unit's
+    weighs; escalation_load_share of its workload lands on that unit's
     clean authorities: the singularity is a queue and it prices itself.
     The shed load is never attenuated by the prince band (the band forgives
     friction, not bandwidth) and it follows the wiring: an escalating team

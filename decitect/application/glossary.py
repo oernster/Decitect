@@ -92,7 +92,7 @@ _CONCEPTS: tuple[ConceptEntry, ...] = (
             "One item waiting on another before it can proceed: team on "
             "team, unit on unit or across levels (a division blocked on a "
             "single platform team). Each dependency is a boundary work must "
-            "cross, and a place delay collects; a unit-level dependency "
+            "cross and a place delay collects; a unit-level dependency "
             "counts in the frames where both its endpoints appear as nodes."
         ),
         short_help=(
@@ -203,7 +203,7 @@ _CONCEPTS: tuple[ConceptEntry, ...] = (
             "A claim is another actor asserting the right to decide for a "
             "team: a second reporting line, a functional chapter, a matrix "
             "overlay. Every decision class already has a structural owner "
-            "(the team itself, or the line it escalates to), so any standing "
+            "(the team itself or the line it escalates to), so any standing "
             "claim makes the team contested: who decides must be settled "
             "before anything can be decided, which is slower than clean "
             "escalation and produces conflicting decisions."
@@ -222,7 +222,7 @@ _CONCEPTS: tuple[ConceptEntry, ...] = (
             "Concentrated authority is priced by scale. Up to about 150 "
             "people (the Dunbar horizon) one decisive founder works: "
             "escalating to them is a conversation, so concentration costs "
-            "little. From 150 to 200 the price rises to its full rate, and "
+            "little. From 150 to 200 the price rises to its full rate; "
             "beyond that it grows with the size of the organisation, capped "
             "so that the rare founder who scales command is penalised, "
             "never ruled out. Machiavelli both ways: the Prince for the "

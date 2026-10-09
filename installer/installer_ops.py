@@ -2,7 +2,7 @@
 
 Every function here carries out a decision taken in installer_logic.py. The
 split is what makes the installer testable: the decisions are pure and
-covered by the suite, and this module is the thin, untested edge where the
+covered by the suite; this module is the thin, untested edge where the
 Windows registry, the task list, PowerShell and the Win32 API are touched.
 Keep it thin. Anything that chooses rather than acts belongs next door.
 
@@ -43,7 +43,7 @@ def _registry_kind(winreg, kind: str):
 
 
 def read_registry_str(key: str, name: str) -> str | None:
-    """Return an HKCU string value, or None when the key or value is absent."""
+    """Return an HKCU string value; None when the key or value is absent."""
     import winreg
 
     try:
@@ -150,7 +150,7 @@ def state_dir() -> Path:
 
 
 def start_menu_link() -> Path | None:
-    """Return the per-user Start Menu shortcut path, or None when unavailable."""
+    """Return the per-user Start Menu shortcut path; None when unavailable."""
     return logic.start_menu_link(os.environ.get(logic.ENV_APPDATA))
 
 

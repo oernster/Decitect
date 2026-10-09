@@ -67,7 +67,7 @@ _STEPS_SHARE = 3
 _TREE_PANE_W = 340
 _STEPS_PANE_W = 640
 # The dialog opens at most of the app window (or screen), like the org
-# editor: a hierarchy needs the room, and both panes then fit without
+# editor: a hierarchy needs the room; both panes then fit without
 # horizontal scrolling.
 _PARENT_FILL = 0.85
 _SCREEN_FILL = 0.80
@@ -179,7 +179,7 @@ class OrgGuideDialog(NeutralDialog):
                 self._toggle.setChecked(False)
                 return
             # The grown guide builds off-thread behind its own progress
-            # dialog; set_growth_guide re-renders when it lands, and the
+            # dialog; set_growth_guide re-renders when it lands; the
             # fixed view stands until then.
             self._grow_planner(self)
             return
@@ -193,7 +193,7 @@ class OrgGuideDialog(NeutralDialog):
     def growth_cancelled(self) -> None:
         """The requested grown guide is not coming; release the toggle.
 
-        Unchecking re-renders the fixed view, and the next toggle-on
+        Unchecking re-renders the fixed view; the next toggle-on
         simply asks the grow planner again.
         """
         self._toggle.setChecked(False)

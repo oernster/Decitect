@@ -35,7 +35,7 @@ _SCORE_DECIMALS = SCORE_DECIMALS
 _SKEW_DECIMALS = 2
 _AFFECTED_CAP = 8
 # Fill most of the screen (the 13in laptop is the floor) so the before/after
-# maps are large, but cap it on big monitors so the dialog stays sensible.
+# maps are large; cap it on big monitors so the dialog stays sensible.
 _SCREEN_FRACTION = 0.9
 _MAX_DIALOG_W = 1400
 _MAX_DIALOG_H = 1000

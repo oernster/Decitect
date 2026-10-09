@@ -76,7 +76,7 @@ UNLINK_DELAY_SECONDS = 0.15
 
 
 def read_version() -> str:
-    """Return the project version from the VERSION file, or a safe default."""
+    """Return the project version from the VERSION file; a safe default otherwise."""
     try:
         version = VERSION_FILE.read_text(encoding="utf-8").strip()
     except OSError:

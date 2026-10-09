@@ -83,7 +83,7 @@ def _crosses(segment: QLineF, rect: QRectF) -> bool:
 def direct_is_clear(source: QRectF, target: QRectF, rects: dict[str, QRectF]) -> bool:
     """Whether the centre line touches no box beyond the endpoints' own.
 
-    Only a box that contains a whole endpoint box (itself, or an ancestor:
+    Only a box that contains a whole endpoint box (itself or an ancestor:
     the nesting means an edge must cross its own container borders) is
     excused; anything else can veto the line. Containing just the endpoint
     POINT is not enough, since a child box can contain its parent's centre

@@ -2,7 +2,7 @@
 
 Cancellation is cooperative: a cancelled check rides into the planner
 and the builder, is consulted at every step, valuation chunk and
-progress tick, and a true answer abandons the build by raising
+progress tick; a true answer abandons the build by raising
 GuideBuildCancelled. A check that never fires must leave the build
 byte-identical to one never asked.
 """

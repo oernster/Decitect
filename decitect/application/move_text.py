@@ -165,7 +165,7 @@ def describe_position_change(before: OrgState, after: OrgState) -> str:
 
     Computed from the positions rather than the move, so the record can
     always state the delta even where the map's encoding cannot show it (an
-    incentive realignment, or a delegation inside a division that stays
+    incentive realignment or a delegation inside a division that stays
     contested throughout). Team-level changes are located by the unit they
     happened in, so the line points at the box that moved rather than at an
     organisation-wide total no box displays.

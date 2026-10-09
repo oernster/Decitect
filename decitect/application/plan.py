@@ -96,7 +96,7 @@ def _ancestry(org: OrgState, domain_id: str) -> tuple[str, ...]:
 
 
 def _local_frame(org: OrgState, targets: tuple[str, ...]) -> str | None:
-    """The deepest domain whose subtree holds every target, or None.
+    """The deepest domain whose subtree holds every target; None otherwise.
 
     A team target is located by its domain; a frame-node target (a scoped
     stabilise names the frame's child units) is located as that domain
@@ -163,7 +163,7 @@ def _attribute(org: OrgState, move: Move) -> tuple[str | None, str, str]:
 
 
 def _best_easing(signals_before, signals_after):
-    """The biggest easing the reader can actually see, or None.
+    """The biggest easing the reader can actually see; None otherwise.
 
     A signal only counts when its displayed value changes: a drop that
     rounds away at display precision must never be reported as a fall

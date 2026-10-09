@@ -72,7 +72,7 @@ def guard_leaf_lines(
     Each pass composes the surviving lines, prices every line marginally
     (the headline with it minus the headline without it) and marks the
     single worst negative line as not composing, then reprices: marginals
-    interact, so lines are dropped one at a time, worst first, and the
+    interact, so lines are dropped one at a time, worst first; the
     order is deterministic. The loop ends when every survivor helps.
 
     Pricing a line replays every other line against the whole organisation,

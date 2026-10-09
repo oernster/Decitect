@@ -43,7 +43,7 @@ _HUE_MAX = 360
 _CHANNEL_MAX = 255
 
 # The master carries wide margins that read as padding in the taskbar and
-# title bar, and its raw alpha bounds are held open by sparse streak tails,
+# title bar; its raw alpha bounds are held open by sparse streak tails,
 # so the trim keys on alpha MASS instead: crop to the box holding this share
 # of the ink, pad by the margin, then square. The letterbox cap bounds how
 # much taller than the ink the square may go; the wide axis centre-crops to

@@ -52,7 +52,7 @@ class OrgSizePicker(NeutralDialog):
 
     @classmethod
     def choose(cls, parent=None) -> OrgSizeBand | None:
-        """Show the picker; return the chosen band, or None if cancelled."""
+        """Show the picker; return the chosen band; None if cancelled."""
         dialog = cls(parent)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             return dialog.selected_band()

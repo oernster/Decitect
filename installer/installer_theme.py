@@ -35,7 +35,7 @@ BUTTON_GAP = 10
 # --- Decitect amber palette ---------------------------------------------------
 # Named colour tokens for the installer surfaces, text and controls. Every
 # QPushButton carries a transparent 2px border by default so the green hover
-# border does not reflow the layout, and the hover reaction is gated on
+# border does not reflow the layout; the hover reaction is gated on
 # :enabled so disabled buttons stay muted with no border change.
 _BACKGROUND = "#0d0f12"
 _SURFACE = "#1a1e24"

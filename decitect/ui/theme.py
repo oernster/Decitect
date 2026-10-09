@@ -40,7 +40,7 @@ def _ui_font_family() -> str:
 
 
 def _arrow_image(filename: str) -> str:
-    """A QSS image value for a stepper arrow, or 'none' if it is not bundled."""
+    """A QSS image value for a stepper arrow; 'none' if it is not bundled."""
     path = find_data_file(filename)
     if path is None:
         return "none"

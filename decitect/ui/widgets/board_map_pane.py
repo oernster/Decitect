@@ -33,7 +33,7 @@ _ZOOM_MARGIN_PX = 10
 class BoardMapPane(QStackedWidget):
     """Switches between the complete picture and the drill map."""
 
-    # Re-emitted from the drill map: the domain now in focus, or None.
+    # Re-emitted from the drill map: the domain now in focus; None at the top.
     drilled = Signal(object)
 
     def __init__(

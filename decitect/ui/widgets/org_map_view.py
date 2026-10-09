@@ -2,10 +2,10 @@
 
 At the top level it shows the root domains (each a box aggregating its subtree)
 plus any unassigned teams; clicking a domain or pressing Enter on the keyboard
-cursor drills into it, and the back chip or Backspace climbs out. A node's border
+cursor drills into it; the back chip or Backspace climbs out. A node's border
 runs from amber (no local authority) to teal (fully authoritative); inter-node
-dependencies are drawn as arrows. Hovering a drillable domain or the back chip, or
-moving the keyboard cursor onto a domain, rings it to show it can be opened; each
+dependencies are drawn as arrows. Hovering a drillable domain or the back chip (or
+moving the keyboard cursor onto a domain) rings it to show it can be opened; each
 level is fit to the panel, with + and - stepping a per-level zoom over that fit.
 Scene painting and the ring live in org_map_painter; this view owns
 navigation, hit-testing and the overlay state.

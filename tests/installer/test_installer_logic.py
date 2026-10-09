@@ -2,7 +2,7 @@
 
 The installer is a second application shipped inside the first, so its
 decisions are gated exactly like the app's application layer: everything
-here is pure, and the Windows side effects that carry the decisions out
+here is pure; the Windows side effects that carry the decisions out
 (installer_ops.py) stay outside the gate with the Qt surface.
 """
 
@@ -112,7 +112,7 @@ def test_the_install_path_falls_back_to_the_home_directory(tmp_path):
 
 def test_the_state_directory_sits_in_the_home_directory(tmp_path):
     # Not under LocalAppData: the application writes its settings and its
-    # session autosave to a dot-directory in the user's home, and the
+    # session autosave to a dot-directory in the user's home; the
     # uninstaller has to remove that one or its offer to remove saved games
     # is a false statement.
     home = tmp_path / "home"

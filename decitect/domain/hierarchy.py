@@ -364,13 +364,13 @@ def boundary_dependencies(org: OrgState, domain_id: str) -> tuple[Dependency, ..
 
 
 def headcount_in_domain(org: OrgState, domain_id: str) -> int:
-    """People in a domain's subtree: its units' populations, or its team sizes."""
+    """People in a domain's subtree: its units' populations, else its team sizes."""
     ids = domain_subtree_ids(org, domain_id)
     unit_total = sum(domain.headcount for domain in org.domains if domain.id in ids)
     return unit_total or sum(team.headcount for team in teams_in_domain(org, domain_id))
 
 
 def total_headcount(org: OrgState) -> int:
-    """Total people: the units' populations, or team sizes if units carry none."""
+    """Total people: the units' populations, else team sizes if units carry none."""
     unit_total = sum(domain.headcount for domain in org.domains)
     return unit_total or sum(team.headcount for team in org.teams)

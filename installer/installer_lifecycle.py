@@ -4,7 +4,7 @@ Each function here is a composition: it asks installer_logic what should
 happen and installer_ops to make it happen, in the order that leaves a
 working machine at every point. The order matters. Files are deployed
 before the uninstaller is registered, so a registration always points at
-something that exists, and the install directory is removed last on
+something that exists; the install directory is removed last on
 uninstall, so a failure part way through still leaves the app findable.
 
 British spelling is used in comments. No em dashes appear anywhere.

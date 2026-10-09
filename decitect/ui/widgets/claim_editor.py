@@ -1,6 +1,6 @@
 """A table widget for authority claims on the org's teams.
 
-Each row picks a claimant (any team or unit, or an unmodelled label kept as
+Each row picks a claimant (any team or unit; an unmodelled label kept as
 a literal entry) and the team whose decisions it claims, which is how
 matrix and dual-reporting structure is drawn. Legality comes from an
 injected callback (the draft's can_claim), so the rule lives in the gated

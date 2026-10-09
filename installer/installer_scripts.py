@@ -1,4 +1,4 @@
-"""The command text the installer asks Windows to run, and how to read it back.
+"""The command text the installer asks Windows to run and how to read it back.
 
 Separate from installer_logic because this is not a decision: it is the exact
 string handed to PowerShell or matched against tasklist output. Building it

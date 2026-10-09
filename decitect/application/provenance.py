@@ -63,7 +63,7 @@ def fragility_text() -> str:
         "Fragility, stated plainly. The qualitative conclusions do not "
         "depend on the exact values: a published sensitivity sweep "
         "(sensitivity.py) perturbs every coefficient by 0.8 and 1.2 and "
-        "re-scores the ten example archetypes, and all five conclusions "
+        "re-scores the ten example archetypes; all five conclusions "
         "(both archetype orderings, the typical-versus-well-designed gap "
         "and both blunders staying negative) survive every perturbed "
         "configuration and 100% of 1,000 joint draws. The calibration "

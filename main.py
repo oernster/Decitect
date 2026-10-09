@@ -91,7 +91,7 @@ def main() -> int:
 
 if __name__ == "__main__":
     # The guide's worker pool spawns processes; in a frozen build each
-    # worker relaunches this executable, and freeze_support must run
+    # worker relaunches this executable, so freeze_support must run
     # before anything else so a worker never starts a second app.
     multiprocessing.freeze_support()
     sys.exit(main())

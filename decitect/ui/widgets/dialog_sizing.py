@@ -12,7 +12,7 @@ from PySide6.QtGui import QGuiApplication
 
 
 def initial_size(parent, parent_fill: float, screen_fill: float) -> QSize:
-    """Most of the parent window's size, or the screen's when parentless."""
+    """Most of the parent window's size; the screen's when parentless."""
     if parent is not None:
         base = parent.window().size()
         return QSize(

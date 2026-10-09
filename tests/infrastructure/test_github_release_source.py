@@ -40,7 +40,7 @@ class FakeResponse:
 
 
 class FakeOpener:
-    """Records the request and returns a canned response, or raises."""
+    """Records the request and returns a canned response (or raises)."""
 
     def __init__(self, body=None, error=None):
         self._body = body

@@ -189,7 +189,7 @@ class OrgDraft(DraftClaims, DraftConversions, DraftSerialisation):
     # --------------------------------------------------------------- queries
 
     def find(self, node_id: str):
-        """The node with this id, or None."""
+        """The node with this id; None when there is none."""
         for node in self._walk():
             if node.id == node_id:
                 return node
@@ -272,7 +272,7 @@ class OrgDraft(DraftClaims, DraftConversions, DraftSerialisation):
         )
 
     def blocking_reason(self) -> str | None:
-        """Why OK must stay disabled, or None when the draft is acceptable."""
+        """Why OK must stay disabled; None when the draft is acceptable."""
         team_count, people = self.totals()
         if team_count == 0:
             return "Add at least one team; an organisation needs one to score."

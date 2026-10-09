@@ -4,7 +4,7 @@ The left pane is the org tree: the structure being built, visible as a
 structure. The right pane is the inspector for the selected node. The footer
 carries the live rollup, the warnings and the OK gating. The dialog is a pure
 function of an OrgBlueprint: seeded fresh for a new model or populated from
-the current org for round-trip editing, and it serialises back to the same
+the current org for round-trip editing; it serialises back to the same
 blueprint shape either way.
 """
 

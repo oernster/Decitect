@@ -8,11 +8,11 @@ the standard import shape plus a "calibration" block:
         "label": "Fintech scale-up, 2019",
         "expected_min": 40,
         "expected_max": 70,
-        "note": "shipped, but every quarter ended in a crunch"
+        "note": "shipped but every quarter ended in a crunch"
     }
 
 The runner scores every case with the default coefficients, prints the
-score beside the expected band and the penalty decomposition, and exits
+score beside the expected band and the penalty decomposition, then exits
 non-zero when any case lands outside its band. It is deterministic: same
 files, same numbers.
 

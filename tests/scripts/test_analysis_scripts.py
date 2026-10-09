@@ -3,7 +3,7 @@
 These are development instruments rather than shipped surface, so they sit
 outside the coverage gate. They are not outside the suite: `calibrate.py` is
 the tool that says whether the scoring model still lands its calibration
-cases inside their expected bands, and a silently broken calibrator reports
+cases inside their expected bands; a silently broken calibrator reports
 success. Each test asserts the script runs, exits zero and emits the shape
 its reader depends on.
 

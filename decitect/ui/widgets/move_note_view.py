@@ -1,8 +1,8 @@
 """A scrollable, height-stable note shown under the org map.
 
 The note area is fixed to the height of the tallest move note at the current
-width (so changing its text never reflows the board) but capped to a few lines,
-and it scrolls when a note is taller than the cap. On a short screen the capped
+width (so changing its text never reflows the board) but capped to a few lines;
+it scrolls when a note is taller than the cap. On a short screen the capped
 height keeps the map visible while the full note stays reachable by scrolling.
 """
 
@@ -41,7 +41,7 @@ class MoveNoteView(QScrollArea):
         self.setFixedHeight(ui_scale.px(_MIN_HEIGHT))
 
     def show_last_move(self, session) -> None:
-        """Say what the record's last move was, or nothing without one.
+        """Say what the record's last move was; nothing without one.
 
         The note says exactly what it explains: with history persisting
         across runs, the last move is not necessarily one just played,

@@ -1,4 +1,4 @@
-"""Where an edge meets a box, and the arrow head that sits there.
+"""Where an edge meets a box and the arrow head that sits there.
 
 Shared by both map painters so a dependency is drawn the same way on the
 drill map and on the complete picture. A centre-to-centre line drawn without

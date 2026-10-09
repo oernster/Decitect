@@ -44,7 +44,7 @@ class CompleteMapView(QGraphicsView):
 
     As the board's default view it is also an entry point: clicking any
     domain emits domain_clicked so the board can drill straight into that
-    section, and Enter or Down asks for the drill map (drill_requested),
+    section; Enter or Down asks for the drill map (drill_requested),
     where the full keyboard cursor lives. Hovering a drillable section rings
     it to show a click opens it.
     """
@@ -190,7 +190,7 @@ class CompleteMapView(QGraphicsView):
         scene_painter.restore()
 
     def _domain_at(self, scene_pos) -> str | None:
-        """The deepest (smallest) domain under the point, or None."""
+        """The deepest (smallest) domain under the point; None otherwise."""
         best: str | None = None
         best_area = None
         for ident, rect in self._domain_rects.items():

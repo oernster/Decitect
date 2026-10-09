@@ -11,7 +11,7 @@ the full lifecycle the author's other installers offer:
   appears as an installed program with a working Uninstall action.
 - Uninstall (also runnable headlessly via ``--uninstall``, which is how the
   registered UninstallString re-invokes a copy of this installer).
-- Optional desktop and Start Menu shortcuts, and optional launch at sign-in.
+- Optional desktop and Start Menu shortcuts plus optional launch at sign-in.
 
 It never needs administrator rights: it deploys to
 ``%LOCALAPPDATA%\\Programs\\Decitect`` and registers under HKCU. It is
@@ -20,9 +20,9 @@ dependency-light: process detection uses ``tasklist``, version comparison is a
 plain tuple compare and shortcuts are written through the Windows scripting
 host, so the onefile build pulls in nothing beyond PySide6 and the stdlib.
 
-The installer is a second application, and it is layered like one:
+The installer is a second application, layered like one:
 
-- ``installer_logic`` decides (pure, and covered by the test suite at 100%).
+- ``installer_logic`` decides (pure; covered by the test suite at 100%).
 - ``installer_ops`` acts (registry, processes, shortcuts, shell-outs).
 - ``installer_lifecycle`` composes the two into install, repair and uninstall.
 - ``installer_bundle`` reads the payload beside this binary.
@@ -88,7 +88,7 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
 
 
 def main() -> int:
-    """Run the installer GUI, or the uninstall flow when so invoked."""
+    """Run the installer GUI; the uninstall flow when so invoked."""
     startup.install_crash_logging()
     startup.set_app_user_model_id()
     args = _parse_args(sys.argv[1:])

@@ -99,7 +99,7 @@ class Plan:
 class SessionSnapshot:
     """A session as persisted: replaying moves from initial_org yields org.
 
-    org is stored too so a reader that cannot replay (an older build, or a
+    org is stored too so a reader that cannot replay (an older build or a
     replay that no longer applies) still has the current organisation.
 
     focused_on carries the drilled section, so a session reopens where it was
@@ -134,7 +134,7 @@ class PlanStep:
 
     historic marks a move carried over from an earlier run of the app, so
     the report can separate the current run's work from the record. local
-    is the move's verdict within its own frame, or None for an org-wide
+    is the move's verdict within its own frame; None for an org-wide
     act with no frame of its own.
     """
 

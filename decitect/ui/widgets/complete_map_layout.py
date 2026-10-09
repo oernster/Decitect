@@ -39,7 +39,7 @@ SUMMARY_H = HEADER_H + PAD
 # enclosing tier labelled Shell. Presentation only: it is never part of the
 # OrgState, so it cannot become a scoring roof the user did not declare and
 # it is not a drill target; its dashed border marks it as unmodelled. A real
-# governing tier (a Board above companies, or one within a company) is
+# governing tier (a Board above companies or one within a company) is
 # modelled as a unit with a custom label, which nests anywhere.
 SHELL_ID = "\x00shell"
 SHELL_LABEL = "Shell"
@@ -47,7 +47,7 @@ SHELL_DETAIL = "holds the top-level entities · not part of the modelled structu
 
 
 class Box:
-    """A laid-out node: a team leaf, or a domain holding positioned children."""
+    """A laid-out node: a team leaf; a domain holding positioned children."""
 
     __slots__ = ("children", "h", "ident", "kind", "w")
 
@@ -83,7 +83,7 @@ def is_summary(domain: Domain, summarize: bool) -> bool:
 
 
 def measure(org: OrgState, kind: str, ident: str, summarize: bool) -> Box:
-    """Size one node and, recursively, everything inside it."""
+    """Size one node plus, recursively, everything inside it."""
     if kind == KIND_TEAM:
         return Box(KIND_TEAM, ident, TEAM_W, TEAM_H, [])
     domain = next(d for d in org.domains if d.id == ident)
@@ -112,7 +112,7 @@ def _shell_box(boxes: list[Box]) -> Box:
 
 
 def skipped_wrapper_id(org: OrgState, summarize: bool) -> str | None:
-    """The lone root whose wrapper box the picture skips, or None.
+    """The lone root whose wrapper box the picture skips; None otherwise.
 
     A single root domain holding everything (one Company and nothing loose
     beside it) would draw as one huge box that says nothing, so the picture

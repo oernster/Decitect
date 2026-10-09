@@ -24,7 +24,7 @@ def bundle_root() -> Path:
 
 
 def licence_text(file_name: str) -> str:
-    """Return a bundled licence text by file name, or a fallback if absent."""
+    """Return a bundled licence text by file name; a fallback if absent."""
     return logic.first_readable_text(
         logic.licence_candidates(file_name, bundle_root()),
         logic.LICENSE_FALLBACK,
@@ -32,7 +32,7 @@ def licence_text(file_name: str) -> str:
 
 
 def installer_licence_text() -> str:
-    """Return the installer-wrapper licence notice, or a fallback if absent."""
+    """Return the installer-wrapper licence notice; a fallback if absent."""
     return logic.first_readable_text(
         logic.licence_candidates(logic.INSTALLER_LICENSE_FILE_NAME, bundle_root()),
         logic.INSTALLER_LICENSE_FALLBACK,
@@ -40,12 +40,12 @@ def installer_licence_text() -> str:
 
 
 def app_version() -> str:
-    """Return the bundled application version, or an empty string if absent."""
+    """Return the bundled application version; an empty string if absent."""
     return logic.first_version(logic.version_candidates(bundle_root()))
 
 
 def app_icon() -> QIcon:
-    """Return the bundled application icon, or an empty icon when absent."""
+    """Return the bundled application icon; an empty icon when absent."""
     path = logic.payload_app_dir(bundle_root()) / logic.ICON_FILE_NAME
     if path.is_file():
         return QIcon(str(path))

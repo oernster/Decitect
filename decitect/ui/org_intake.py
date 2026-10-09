@@ -3,8 +3,8 @@
 Everything that replaces the current session with a new org lives here, split
 from the main window so each module stays within the structural line limit.
 "Model my organisation" starts fresh (confirming when that would discard user
-work); "Edit my org" reopens the current org in the same editor, whatever its
-origin, and rebuilds it with that origin preserved.
+work); "Edit my org" reopens the current org in the same editor (whatever its
+origin) and rebuilds it with that origin preserved.
 """
 
 from __future__ import annotations

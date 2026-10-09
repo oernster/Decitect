@@ -26,7 +26,7 @@ _TEXT_INSET = 12
 _LABEL_PT = 14
 _SUB_PT = 12
 # SVG inherits no font from a document it is embedded in when it is opened on
-# its own, and the width estimate below is only meaningful against a known
+# its own; the width estimate below is only meaningful against a known
 # face, so the report's own stack is stated here too.
 _FONT_STACK = "Segoe UI,Arial,sans-serif"
 # Advance widths as a fraction of the font size. Each is the WIDEST member of

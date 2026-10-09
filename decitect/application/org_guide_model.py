@@ -48,7 +48,7 @@ class GuideNode:
     on top of the other lines rather than applied alone.
     composes says whether the line enters the headline: the composition
     guard drops a leaf line that would cost the whole organisation more
-    than it gains once the other lines land, and compose_cost then holds
+    than it gains once the other lines land; compose_cost then holds
     that cost in whole-org points (zero while the line composes). The row
     stays the frame's own best line either way.
     growth_shortlist is nonzero only on a whole-org growth row planned for

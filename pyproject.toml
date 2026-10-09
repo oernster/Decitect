@@ -42,7 +42,7 @@ extend-exclude = [
 [tool.ruff.lint]
 # No "select" on purpose: the rule set stays at ruff's default until a family
 # is genuinely cleared, one dedicated commit at a time. See TECH_DEBT.md for
-# the wider baseline, and for why RUF100 must not be enabled before the
+# the wider baseline and for why RUF100 must not be enabled before the
 # families its noqa comments name are.
 
 [tool.pytest.ini_options]

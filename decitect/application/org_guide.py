@@ -85,7 +85,7 @@ _EMPTY_SCORE = 0.0
 # total is declared once, up front, from reserves that bound the open-ended
 # phases, so the reported fraction never decreases: a phase that overruns
 # its reserve holds the bar just short of full instead of growing the
-# total, and only the final snap reports complete.
+# total; only the final snap reports complete.
 ProgressCallback = Callable[[int, int], None]
 
 
@@ -266,7 +266,7 @@ class _Builder:
         # The reported fraction is monotone: work is clamped just short
         # of the declared total until the build finishes, so a phase that
         # overruns its reserve holds the bar steady instead of refilling
-        # it, and only the final snap reports complete.
+        # it; only the final snap reports complete.
         done = self._done if self._finished else min(self._done, self._total - 1)
         self._progress(done, self._total)
 

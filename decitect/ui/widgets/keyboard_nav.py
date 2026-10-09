@@ -6,7 +6,7 @@ map and the lists, wrapping at both ends. Right and Left are handled identically
 to Tab and Shift+Tab at the top of the filter, so the menu bar never falls back to
 its native left/right menu cycling. Down opens a highlighted menu; the toolkit
 then walks its items. The map keeps its own arrow keys for node navigation (so
-Right and Left are left to it; Tab still carries focus out), and Up and Down move
+Right and Left are left to it; Tab still carries focus out); Up and Down move
 within a focused list. Installed as an application event filter, active only while
 the main window is foreground.
 

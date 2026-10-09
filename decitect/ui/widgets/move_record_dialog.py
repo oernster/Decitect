@@ -1,7 +1,7 @@
 """The move record: every position to date, walked sequentially.
 
 The exportable HTML presentation's live sibling: the whole record (earlier
-runs included) as a list, and a position cursor over the full timeline from
+runs included) as a list plus a position cursor over the full timeline from
 the original organisation to the position after the latest move. The arrow
 buttons (or the list) step the cursor; the dialog opens at the latest
 position and carries its own keyboard focus ring.

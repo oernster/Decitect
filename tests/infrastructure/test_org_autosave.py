@@ -148,7 +148,7 @@ def test_a_clean_store_reports_nothing_preserved_and_is_not_sealed(tmp_path):
 
 def test_an_unreadable_file_is_kept_rather_than_overwritten(tmp_path):
     # The regression this guards: load fails, the app starts a fresh session
-    # and saves it, and the previous organisation is gone within seconds.
+    # and saves it; the previous organisation is gone within seconds.
     path = tmp_path / "last_org.json"
     path.write_text("not json", encoding="utf-8")
     store = FileOrgStore(path)

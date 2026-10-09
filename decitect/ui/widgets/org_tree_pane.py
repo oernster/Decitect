@@ -161,7 +161,7 @@ class OrgTreePane(QWidget):
             item.setFont(_COL_LABEL, font)
         actions = self._actions(node.id, is_container)
         # The row must never be shorter than the action buttons: an overlaid
-        # item widget is clipped to the row rect, and a too-short row slices
+        # item widget is clipped to the row rect; a too-short row slices
         # the bottom border off the buttons' ring. The explicit size hint
         # forces the row to fit the holder at any UI scale.
         item.setSizeHint(_COL_ACTIONS, actions.sizeHint())

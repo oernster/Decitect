@@ -84,7 +84,7 @@ class DraftConversions:
         return team
 
     def parent_of(self, node_id: str):
-        """The container holding a node, or None at the top level.
+        """The container holding a node; None at the top level.
 
         A node not at the top level always sits in some container's children,
         so the search below cannot fall through.

@@ -117,7 +117,7 @@ def test_enterprise_offers_good_repairs_but_no_knife_edge_great():
     # Before dependent demand was priced, this archetype's greedy path
     # opened a knife-edge great (+9.09 against the 9.0 threshold). Honest
     # hub pricing shaves that collapse below the line: the path still finds
-    # genuinely good repairs, and the great-move guarantee belongs to the
+    # genuinely good repairs; the great-move guarantee belongs to the
     # generated levels, which build_cluster_pool rejection-samples for.
     org = _enterprise()
     sim = DeterministicSimulator()

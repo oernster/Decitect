@@ -185,7 +185,7 @@ def test_move_orderings_are_sane():
     # Roofed under one company so the orderings isolate what they guard
     # (delegation beats escalation, approval layers cost): without a roof,
     # delegating both teams trades escalation for unowned-interface
-    # fragmentation while the hub keeps its routed dependent demand, and
+    # fragmentation while the hub keeps its routed dependent demand;
     # the delegation sliver legitimately vanishes.
     org = OrgState(
         teams=(

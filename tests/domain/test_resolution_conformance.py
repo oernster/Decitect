@@ -16,10 +16,10 @@ the mispricings the review found fails loudly:
   C13 Fragmentation is priced under no roof: a dependency between two
       clean sovereigns sharing no enclosing domain has nowhere to take a
       conflict, so a roofless sovereign network is priced with scale while
-      the same network under a common roof, and two founders across a
-      desk, stay cheap.
+      the same network under a common roof stays cheap, as do two
+      founders across a desk.
   C14 Influence is priced proportionally: one overloaded hub costs a
-      large organisation a slice of its score, never half of it, and the
+      large organisation a slice of its score, never half of it; the
       same hub costs a small organisation relatively more.
   C15 Claims are priced proportionally: a standing claim costs its share
       of the organisation it contests, never a flat tithe on the whole.

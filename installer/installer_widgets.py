@@ -3,7 +3,7 @@
 The auto-scroller is a standalone copy of the application's, so a licence
 opened in the installer reads itself at the same pace it does in the app.
 The dialogs are the two the lifecycle needs: the ask to close a running
-application, and the uninstall confirmation.
+application and the uninstall confirmation.
 
 British spelling is used in comments. No em dashes appear anywhere.
 """

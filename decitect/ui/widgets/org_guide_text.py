@@ -88,7 +88,7 @@ def frame_note_text(node: GuideNode) -> str:
     if node.is_leaf and not node.composes:
         return (
             f"This line scores {frame_climb(node)} on this level's own "
-            "0 to 100 scale, but it does not compose into the headline: "
+            "0 to 100 scale yet does not compose into the headline: "
             "played after the other leaf lines it would cost the whole "
             f"organisation {node.compose_cost:.{SCORE_DECIMALS}f} points, "
             "since merging this level's teams raises the weight of every "
@@ -142,7 +142,7 @@ def find_frame(tree: OrgGuide, frame_id: str | None) -> GuideNode | None:
 
 def same_lines(first: OrgGuide, second: OrgGuide) -> bool:
     """Whether every frame's line matches, aggregate rows included: growth
-    may change an aggregate line only (a split priced at the top level), and
+    may change an aggregate line only (a split priced at the top level);
     that must still count as growth improving a line."""
 
     def lines(tree: OrgGuide):

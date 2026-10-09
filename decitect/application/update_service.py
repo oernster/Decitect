@@ -60,7 +60,7 @@ def select_asset_url(assets: tuple[ReleaseAsset, ...], platform_key: str) -> str
 
 
 class UpdateService:
-    """Decides whether an update should be offered, and with which download."""
+    """Decides whether an update should be offered and with which download."""
 
     def __init__(
         self,

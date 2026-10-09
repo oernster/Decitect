@@ -63,7 +63,7 @@ def test_claims_on_returns_only_the_subjects_claims():
 
 
 def test_any_standing_claim_makes_a_team_contested():
-    # The structural owner (the team, or the line it escalates to) is always
+    # The structural owner (the team or the line it escalates to) is always
     # claimant one, so a claim contests a local decider and an escalating
     # team alike; only an unclaimed team is uncontested.
     org = OrgState(

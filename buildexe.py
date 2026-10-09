@@ -99,7 +99,7 @@ TRUTHY_VALUES = {"1", "true", "yes", "on"}
 
 
 def read_version() -> str:
-    """Return the project version from the VERSION file, or a safe default."""
+    """Return the project version from the VERSION file; a safe default otherwise."""
     try:
         version = VERSION_FILE.read_text(encoding="utf-8").strip()
     except OSError:
@@ -110,7 +110,7 @@ def read_version() -> str:
 def to_pe_version(version: str) -> str:
     """Normalise a semantic version into the 4-part numeric form Nuitka wants.
 
-    Non-numeric suffixes (for example a pre-release tag) are dropped, and the
+    Non-numeric suffixes (for example a pre-release tag) are dropped; the
     tuple is padded or truncated to exactly PE_VERSION_PARTS numeric segments.
     """
     numeric_parts: list[str] = []

@@ -136,7 +136,7 @@ class SimulationParameters:
             raise InvalidOrgStateError("unowned_interface_weight must not be negative")
         # Waiting on a supplier may never cost more than resolving through
         # an authority: a dependency is a lighter claim on the upstream
-        # than an escalation line, and the ordering keeps that meaning.
+        # than an escalation line; the ordering keeps that meaning.
         if not _ZERO <= self.dependent_demand_weight <= self.escalation_load_share:
             raise InvalidOrgStateError(
                 "dependent_demand_weight must be in [0, escalation_load_share]"

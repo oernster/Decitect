@@ -93,7 +93,7 @@ def _leaf(guide, label):
 # only the sibling's per-team shares (escalation and rework dilution),
 # beside a sibling frame whose own line may or may not repair it. Under
 # honest frame pricing the planner rarely authors such a line unaided,
-# but imported plans and future planners can, and the guard is the last
+# but imported plans and future planners can; the guard is the last
 # line of defence either way.
 def _guard_org():
     return OrgState(

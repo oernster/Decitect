@@ -196,7 +196,7 @@ class BoardView(QWidget):
 
         A newly modelled, generated or imported organisation arrives with no
         focus and so opens at the top. A restored one arrives focused on the
-        section it was left in, and forcing it back to the top here was what
+        section it was left in. Forcing it back to the top here was what
         made every launch start over from the whole organisation.
         """
         self._session = session

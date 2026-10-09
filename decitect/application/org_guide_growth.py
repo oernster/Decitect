@@ -92,13 +92,13 @@ def plan_growth_node(
     workers: GuideWorkerPool | None = None,
     cancelled: CancelledCheck | None = None,
 ) -> tuple[GuideNode | None, float]:
-    """The whole-org growth line, or None when growth gains nothing.
+    """The whole-org growth line; None when growth gains nothing.
 
     Planned from the composed position so every remaining edge is
     visible; returns the node plus the headline including its climb.
     Past the live-planning size the line is still planned, over the
     most coupled teams only (growth pays where the edges live) and
-    with fewer steps, and the node carries that scope so the guide
+    with fewer steps; the node carries that scope so the guide
     states it honestly.
     """
     planner, shortlist = _growth_scope(simulator, full_planner, composed)
@@ -113,7 +113,7 @@ def plan_growth_node(
     # A whole-org growth step valuates hundreds of candidates at
     # half-second whole-org scores; the planner pulses through them
     # against the reserve declared at build start. Growth usually
-    # stops early, and the final snap closes the shortfall.
+    # stops early; the final snap closes the shortfall.
     guide = planner.plan(composed, GROWTH_MOVE_KINDS, keep, tick, workers, cancelled)
     tick(1)
     if not guide.steps:

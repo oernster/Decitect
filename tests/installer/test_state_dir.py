@@ -2,7 +2,7 @@
 
 The installer is compiled separately and may not import the app, so the
 directory name is written down twice by necessity. That is exactly the
-condition under which two values drift, and the drift is silent: the
+condition under which two values drift. The drift is silent: the
 uninstaller offers to remove the user's settings and saved games, deletes a
 directory the app has never written and reports success. This test is the
 only thing holding the two literals together, so it asserts against the real

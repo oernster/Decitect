@@ -272,7 +272,7 @@ def test_progress_counts_direct_and_loose_rows():
 def test_progress_holds_short_of_full_through_an_overrunning_phase():
     # An open-ended phase (an extra guard pass, growth past its reserve)
     # can tick beyond the declared total: the report clamps just short of
-    # full instead of growing the total, so the bar never refills, and
+    # full instead of growing the total, so the bar never refills;
     # the finishing snap closes it.
     seen = []
     builder = _Builder(
