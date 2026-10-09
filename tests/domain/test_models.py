@@ -2,8 +2,8 @@
 
 import pytest
 
-from fulcrum.domain.errors import InvalidOrgStateError, UnknownTeamError
-from fulcrum.domain.models import (
+from decitect.domain.errors import InvalidOrgStateError, UnknownTeamError
+from decitect.domain.models import (
     DEFAULT_HEADCOUNT,
     Dependency,
     Domain,

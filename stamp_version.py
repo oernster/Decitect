@@ -2,7 +2,7 @@
 """Stamp the single-source version into static documentation files.
 
 The repository keeps exactly one real version string: the VERSION file in the
-project root. Python code reads it at runtime (fulcrum.version, the dynamic
+project root. Python code reads it at runtime (decitect.version, the dynamic
 pyproject metadata and the build scripts). Static files cannot read VERSION at
 render time, so they instead carry a delimited token:
 

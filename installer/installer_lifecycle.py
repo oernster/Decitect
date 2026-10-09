@@ -12,11 +12,14 @@ British spelling is used in comments. No em dashes appear anywhere.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import installer_bundle as bundle
+import installer_legacy as legacy
 import installer_logic as logic
 import installer_ops as ops
+import installer_scripts as scripts
 
 
 def _deploy(target: Path) -> Path:
@@ -36,13 +39,57 @@ def _register(install_dir: Path, uninstaller: Path) -> None:
     )
 
 
-def install(target: Path, *, desktop: bool, start_menu: bool, autostart: bool) -> Path:
-    """Run the full install/upgrade/reinstall: files, registry and shortcuts."""
+def install(
+    target: Path,
+    *,
+    desktop: bool,
+    start_menu: bool,
+    autostart: bool,
+    retire: legacy.LegacyInstall | None = None,
+) -> Path:
+    """Run the full install/upgrade/reinstall: files, registry and shortcuts.
+
+    An install under the former name, when the user chose to remove it, goes
+    last: the new install is complete before anything of the old one is
+    touched, so a failure part way still leaves a working application.
+    """
     exe_path = _deploy(target)
     _register(target, ops.copy_uninstaller(target))
     ops.apply_shortcuts(exe_path, desktop=desktop, start_menu=start_menu)
     ops.set_autostart(autostart, exe_path)
+    if retire is not None:
+        retire_legacy(retire)
     return exe_path
+
+
+def find_legacy() -> legacy.LegacyInstall | None:
+    """Return an install left under the product's former name, else None."""
+    return legacy.find_legacy(
+        ops.installed_version(legacy.LEGACY_UNINSTALL_KEY),
+        ops.installed_location(legacy.LEGACY_UNINSTALL_KEY),
+        legacy.default_location(os.environ.get(logic.ENV_LOCALAPPDATA), Path.home()),
+    )
+
+
+def retire_legacy(found: legacy.LegacyInstall) -> None:
+    """Remove an install under the former name, keeping the user's state.
+
+    A shortcut or sign-in entry is removed only when it points inside the
+    old install; one pointing anywhere else is not shown to be its own.
+    """
+    links = legacy.shortcut_links(os.environ.get(logic.ENV_APPDATA), Path.home())
+    for link in links:
+        if not link.exists():
+            continue
+        target = ops.run_powershell(scripts.shortcut_target_command(link))
+        if legacy.points_inside(target, found.location):
+            ops.remove_shortcut(link)
+    sign_in = ops.read_registry_str(logic.RUN_SUBKEY, legacy.LEGACY_RUN_VALUE)
+    if legacy.points_inside(sign_in, found.location):
+        ops.remove_autostart(legacy.LEGACY_RUN_VALUE)
+    ops.delete_key(legacy.toast_identity_key())
+    ops.delete_key(legacy.LEGACY_UNINSTALL_KEY)
+    ops.remove_install_dir(found.location)
 
 
 def repair(install_dir: Path) -> Path:

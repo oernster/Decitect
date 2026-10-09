@@ -2,7 +2,7 @@
 
 from random import Random
 
-from fulcrum.application.name_pool import NAME_POOL, NamePicker
+from decitect.application.name_pool import NAME_POOL, NamePicker
 
 _MIN_POOL = 200
 

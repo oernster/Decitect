@@ -30,6 +30,7 @@ from PySide6.QtWidgets import (
 )
 
 import installer_bundle as bundle
+import installer_legacy as legacy
 import installer_lifecycle as lifecycle
 import installer_logic as logic
 import installer_ops as ops
@@ -67,6 +68,12 @@ class InstallerWindow(QWidget):
         self._launch_on_finish = QCheckBox(f"Launch {APP_DISPLAY_NAME} when finished")
         self._autostart = QCheckBox(
             f"Start {APP_DISPLAY_NAME} when I sign in to Windows"
+        )
+        # An install under the former name is offered for removal, named
+        # exactly; the option exists only when there is something to remove.
+        self._legacy = lifecycle.find_legacy()
+        self._retire = QCheckBox(
+            legacy.option_text(self._legacy) if self._legacy else ""
         )
         self._status = QLabel("")
         self._status.setObjectName("StatusLine")
@@ -141,6 +148,9 @@ class InstallerWindow(QWidget):
         self._launch_on_finish.setChecked(True)
         layout.addWidget(self._launch_on_finish)
         layout.addWidget(self._autostart)
+        self._retire.setChecked(self._legacy is not None)
+        self._retire.setVisible(self._legacy is not None)
+        layout.addWidget(self._retire)
         layout.addWidget(self._status)
 
         layout.addStretch()
@@ -258,6 +268,13 @@ class InstallerWindow(QWidget):
         """Install, upgrade or reinstall, then optionally launch the app."""
         if not self._guard_not_running("installation"):
             return
+        retire = self._legacy if self._retire.isChecked() else None
+        if retire is not None and ops.is_app_running(legacy.LEGACY_EXE_NAME):
+            self._status.setText(
+                f"{legacy.LEGACY_APP_NAME} is still running. Close it, then "
+                "choose the install again."
+            )
+            return
         self._set_busy("Installing...")
         try:
             exe_path = lifecycle.install(
@@ -265,10 +282,15 @@ class InstallerWindow(QWidget):
                 desktop=self._desktop.isChecked(),
                 start_menu=self._start_menu.isChecked(),
                 autostart=self._autostart.isChecked(),
+                retire=retire,
             )
         except Exception as error:  # noqa: BLE001 - surfaced as a status message
             self._finish_error(f"Installation failed: {error}")
             return
+        if retire is not None:
+            self._legacy = None
+            self._retire.setChecked(False)
+            self._retire.setVisible(False)
         self._status.setText(f"Installed to {exe_path.parent}.")
         if self._launch_on_finish.isChecked():
             self._launch_and_front(exe_path)

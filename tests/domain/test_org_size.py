@@ -4,8 +4,8 @@ from itertools import pairwise
 
 import pytest
 
-from fulcrum.domain.errors import InvalidOrgStateError
-from fulcrum.domain.org_size import DEFAULT_BAND, ORG_SIZE_BANDS, OrgSizeBand
+from decitect.domain.errors import InvalidOrgStateError
+from decitect.domain.org_size import DEFAULT_BAND, ORG_SIZE_BANDS, OrgSizeBand
 
 
 def _band(**overrides):

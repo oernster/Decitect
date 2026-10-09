@@ -7,17 +7,17 @@ the whole organisation even after the sibling lines land (dropped).
 
 import pytest
 
-from fulcrum.application.org_guide import (
+from decitect.application.org_guide import (
     GuideNode,
     build_org_guide,
     compose_leaf_lines,
 )
-from fulcrum.application.org_guide_compose import guard_leaf_lines, replay_line
-from fulcrum.application.planner import Guide, GuideStep
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.domain.models import Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind
-from fulcrum.domain.simulation import MoveClassification, SimulationParameters
+from decitect.application.org_guide_compose import guard_leaf_lines, replay_line
+from decitect.application.planner import Guide, GuideStep
+from decitect.application.simulator import DeterministicSimulator
+from decitect.domain.models import Dependency, Domain, OrgState, Team
+from decitect.domain.moves import Move, MoveKind
+from decitect.domain.simulation import MoveClassification, SimulationParameters
 
 # Composition mechanics are pinned at flat authority pricing: attenuation 1
 # with amplification 0 makes the prince factor 1 at every scale, so these

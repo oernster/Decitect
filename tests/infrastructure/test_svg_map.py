@@ -2,8 +2,8 @@
 
 import re
 
-from fulcrum.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
-from fulcrum.infrastructure.svg_map import (
+from decitect.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
+from decitect.infrastructure.svg_map import (
     _LABEL_PT,
     _SUB_PT,
     _TEXT_INSET,
@@ -12,7 +12,7 @@ from fulcrum.infrastructure.svg_map import (
     render_overview_svg,
     text_width,
 )
-from fulcrum.application.map_model import build_level
+from decitect.application.map_model import build_level
 
 
 def _hierarchical():

@@ -1,8 +1,8 @@
 """Tests for the bulk population table."""
 
-from fulcrum.domain import hierarchy
-from fulcrum.domain.models import Domain, OrgState, Team
-from fulcrum.domain.populations import headcounts_by_domain
+from decitect.domain import hierarchy
+from decitect.domain.models import Domain, OrgState, Team
+from decitect.domain.populations import headcounts_by_domain
 
 
 def test_bulk_headcounts_match_the_per_domain_walk():

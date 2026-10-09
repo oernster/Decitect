@@ -1,7 +1,7 @@
 """Tests for authority claims in the shared JSON serialization."""
 
-from fulcrum.domain.models import AuthorityClaim, OrgState, Team
-from fulcrum.infrastructure.json_serialization import org_from_dict, org_to_dict
+from decitect.domain.models import AuthorityClaim, OrgState, Team
+from decitect.infrastructure.json_serialization import org_from_dict, org_to_dict
 
 
 def _org():

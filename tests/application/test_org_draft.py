@@ -7,15 +7,15 @@ test_org_draft_convert; the shared builders in org_draft_support.
 import pytest
 from org_draft_support import make_draft, make_imported_draft
 
-from fulcrum.application.dto import DependencySpec
-from fulcrum.application.org_draft_nodes import (
+from decitect.application.dto import DependencySpec
+from decitect.application.org_draft_nodes import (
     GREEK_SEQUENCE,
     can_nest,
     default_category_for_depth,
     retitle_for_category,
     sequence_token,
 )
-from fulcrum.domain.models import GROUP_CATEGORIES
+from decitect.domain.models import GROUP_CATEGORIES
 
 
 def test_default_category_deepens_then_saturates():

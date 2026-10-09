@@ -1,7 +1,7 @@
 """Tests for the book showcase assembled for the Help dialog."""
 
-from fulcrum.application.books import BookShowcase, build_book_showcase
-from fulcrum.domain.books import COMPLETE_SERIES_EDITION, DA_SERIES
+from decitect.application.books import BookShowcase, build_book_showcase
+from decitect.domain.books import COMPLETE_SERIES_EDITION, DA_SERIES
 
 
 def test_showcase_features_the_hardback_over_the_series():

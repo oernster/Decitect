@@ -3,38 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>What grounds the score: the model behind Fulcrum's number</title>
-<meta name="description" content="Where Fulcrum's scoring weights come from: a hand-tuned evaluation function with every coefficient published, what determinism does and does not buy, the assumptions the model rests on, where it is expected to be wrong and the external test that would falsify it.">
+<title>What grounds the score: the model behind Decitect's number</title>
+<meta name="description" content="Where Decitect's scoring weights come from: a hand-tuned evaluation function with every coefficient published, what determinism does and does not buy, the assumptions the model rests on, where it is expected to be wrong and the external test that would falsify it.">
 <meta name="author" content="Oliver Ernster">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0d0f12">
-<link rel="canonical" href="https://ernster.dev/fulcrum/model.html">
+<link rel="canonical" href="https://decitect.com/model.html">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Fulcrum">
-<meta property="og:title" content="What grounds the score: the model behind Fulcrum's number">
-<meta property="og:description" content="Every coefficient in Fulcrum's scoring function, published with its provenance: what is theory-derived, what is engineering judgement, what would falsify the model and how robust the results are to the exact weights.">
-<meta property="og:url" content="https://ernster.dev/fulcrum/model.html">
-<meta property="og:image" content="https://ernster.dev/fulcrum/assets/screenshots/play-board.png">
-<meta property="og:image:alt" content="The Fulcrum board scoring an organisation&#x27;s structure">
+<meta property="og:site_name" content="Decitect">
+<meta property="og:title" content="What grounds the score: the model behind Decitect's number">
+<meta property="og:description" content="Every coefficient in Decitect's scoring function, published with its provenance: what is theory-derived, what is engineering judgement, what would falsify the model and how robust the results are to the exact weights.">
+<meta property="og:url" content="https://decitect.com/model.html">
+<meta property="og:image" content="https://decitect.com/assets/screenshots/play-board.png">
+<meta property="og:image:alt" content="The Decitect board scoring an organisation&#x27;s structure">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="What grounds the score: the model behind Fulcrum's number">
-<meta name="twitter:description" content="Every coefficient in Fulcrum's scoring function, published with its provenance: what is theory-derived, what is engineering judgement and what would falsify the model.">
-<meta name="twitter:image" content="https://ernster.dev/fulcrum/assets/screenshots/play-board.png">
-<link rel="icon" type="image/png" href="assets/fulcrum.png">
-<link rel="stylesheet" href="styles.css?v=b3030a1f1d">
+<meta name="twitter:title" content="What grounds the score: the model behind Decitect's number">
+<meta name="twitter:description" content="Every coefficient in Decitect's scoring function, published with its provenance: what is theory-derived, what is engineering judgement and what would falsify the model.">
+<meta name="twitter:image" content="https://decitect.com/assets/screenshots/play-board.png">
+<link rel="icon" type="image/png" href="assets/decitect.png">
+<link rel="stylesheet" href="styles.css?v=d6adc8a072">
 </head>
 <body>
 <header class="nav">
   <div class="container nav-inner">
     <a class="brand" href="./">
-      <img src="assets/fulcrum.png" alt="Fulcrum icon">Fulcrum</a>
+      <img src="assets/decitect.png" alt="Decitect icon">Decitect</a>
     <nav class="nav-links">
       <a href="tool.html">The tool</a>
       <a href="why.html">Why</a>
       <a href="model.html">The model</a>
       <a href="why.html#books">The books</a>
       <a href="download.html">Download</a>
-      <a href="https://github.com/oernster/fulcrum">GitHub</a>
+      <a href="https://github.com/oernster/Decitect">GitHub</a>
     </nav>
   </div>
 </header>
@@ -43,7 +43,7 @@
     <div class="container prose">
       <div class="eyebrow">The claim</div>
       <h2 class="section-title">What kind of model this is</h2>
-      <p>Fulcrum implements a hand-tuned evaluation function: an expert prior encoded as
+      <p>Decitect implements a hand-tuned evaluation function: an expert prior encoded as
         arithmetic, derived from the Decision Architecture series and 28 years of practice across
         defence, fintech, telecoms and startups. It is not a statistical model fitted to
         organisational outcome data and it does not claim to be. There is no training set, no
@@ -51,7 +51,7 @@
       <p>The right comparison is a chess engine's classical evaluation. Stockfish's evaluation
         function was hand-tuned by strong players and engineers for years; nobody called it
         illegitimate, because the weights were published and could be argued with. That is the
-        standard these pages are built to meet. Every coefficient in Fulcrum's scoring function is
+        standard these pages are built to meet. Every coefficient in Decitect's scoring function is
         published in <a href="weights.html">Where the weights come from</a> with where it came from, so the argument can be had against the actual
         numbers rather than against an impression of them.</p>
     </div>
@@ -102,12 +102,12 @@
 <footer>
   <div class="container footer-inner">
     <div>
-      <strong>Fulcrum</strong>: Organisational Decision Architecture Simulation Tool<br>
-      (c) Oliver Ernster · Local-first · GPL-3.0 + LGPL-3.0 · v<!--VERSION-->4.6.0<!--/VERSION-->
+      <strong>Decitect</strong>: Decision Architecture Organisational Software<br>
+      (c) Oliver Ernster · Local-first · GPL-3.0 + LGPL-3.0 · v<!--VERSION-->5.0.0<!--/VERSION-->
     </div>
     <div class="footer-links">
-      <a href="https://github.com/oernster/fulcrum/releases">Releases</a>
-      <a href="https://github.com/oernster/fulcrum">GitHub</a>
+      <a href="https://github.com/oernster/Decitect/releases">Releases</a>
+      <a href="https://github.com/oernster/Decitect">GitHub</a>
       <a href="https://www.crankthecode.com/books">The books</a>
       <a href="https://www.crankthecode.com/">crankthecode.com</a>
       <a href="https://ernster.dev">More of my work</a>

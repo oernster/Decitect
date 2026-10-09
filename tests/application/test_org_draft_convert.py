@@ -2,7 +2,7 @@
 
 from org_draft_support import make_draft, make_imported_draft
 
-from fulcrum.application.org_draft_nodes import ContainerDraft, TeamDraft
+from decitect.application.org_draft_nodes import ContainerDraft, TeamDraft
 
 
 def test_set_category_retitles_and_guards_the_tier():

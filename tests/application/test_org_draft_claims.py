@@ -4,9 +4,9 @@ from random import Random
 
 from org_draft_support import make_blueprint, make_draft, make_imported_draft
 
-from fulcrum.application.dto import ClaimSpec, OrgBlueprint
-from fulcrum.application.name_pool import NamePicker
-from fulcrum.application.org_draft import OrgDraft
+from decitect.application.dto import ClaimSpec, OrgBlueprint
+from decitect.application.name_pool import NamePicker
+from decitect.application.org_draft import OrgDraft
 
 
 def _draft_with_two_teams():

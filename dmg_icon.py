@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""macOS icon generation and DMG volume-icon embedding for Fulcrum.
+"""macOS icon generation and DMG volume-icon embedding for Decitect.
 
 Split out of builddmg.py so each build module stays small. Contains the
 pure-Python PNG background compositor (no Pillow dependency at build time), the
@@ -18,8 +18,8 @@ from pathlib import Path
 
 from build_utils import run, section
 
-_ICONSET_NAME = "fulcrum.iconset"
-_ICNS_NAME = "fulcrum.icns"
+_ICONSET_NAME = "decitect.iconset"
+_ICNS_NAME = "decitect.icns"
 
 # 8-bit RGBA is colour-type 6 at bit-depth 8 in the PNG IHDR.
 _PNG_BIT_DEPTH = 8

@@ -46,9 +46,9 @@ from dataclasses import replace
 from itertools import pairwise
 from pathlib import Path
 
-from fulcrum.domain.models import Dependency, Domain, OrgState, Origin, Team
-from fulcrum.domain.moves import Move, MoveKind, apply_move
-from fulcrum.domain.simulation import (
+from decitect.domain.models import Dependency, Domain, OrgState, Origin, Team
+from decitect.domain.moves import Move, MoveKind, apply_move
+from decitect.domain.simulation import (
     DEFAULT_PARAMETERS,
     SimulationParameters,
     evaluate,

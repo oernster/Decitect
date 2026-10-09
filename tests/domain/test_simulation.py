@@ -2,10 +2,10 @@
 
 import pytest
 
-from fulcrum.domain.errors import InvalidOrgStateError
-from fulcrum.domain.models import Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind, apply_move
-from fulcrum.domain.simulation import (
+from decitect.domain.errors import InvalidOrgStateError
+from decitect.domain.models import Dependency, Domain, OrgState, Team
+from decitect.domain.moves import Move, MoveKind, apply_move
+from decitect.domain.simulation import (
     DEFAULT_PARAMETERS,
     ClassificationThresholds,
     MoveClassification,

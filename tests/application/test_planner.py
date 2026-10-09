@@ -1,9 +1,9 @@
 """Tests for the improvement planner (the guide / cheat feature)."""
 
-from fulcrum.application.planner import Guide, ImprovementPlanner
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.domain.models import Dependency, OrgState, Team
-from fulcrum.domain.moves import MoveKind
+from decitect.application.planner import Guide, ImprovementPlanner
+from decitect.application.simulator import DeterministicSimulator
+from decitect.domain.models import Dependency, OrgState, Team
+from decitect.domain.moves import MoveKind
 
 
 def _broken():

@@ -1,7 +1,7 @@
-Fulcrum Installer - Licence Notice
+Decitect Installer - Licence Notice
 ==================================
 
-This installer is a small convenience program that deploys Fulcrum to a
+This installer is a small convenience program that deploys Decitect to a
 per-user location on your PC, creates optional shortcuts and registers the
 application so it can be removed again from "Apps & features". It is not the
 application itself.
@@ -9,11 +9,11 @@ application itself.
 The Application
 --------------
 
-The bundled application, Fulcrum (Organisational Simulation Tool), is licensed under the GNU
+The bundled application, Decitect (Decision Architecture Organisational Software), is licensed under the GNU
 Lesser General Public License, version 3.0 (LGPL-3.0). The full text of that
 licence is provided alongside this installer in the LICENSE file and can also
 be viewed from the installer's "Licence" button. Your rights to use, study,
-share and modify Fulcrum are governed by that licence.
+share and modify Decitect are governed by that licence.
 
   Copyright (c) 2026 Oliver Ernster
 
@@ -24,7 +24,7 @@ The installer program (this setup executable and its user interface) is
 provided as-is, without warranty of any kind, express or implied, including
 but not limited to the warranties of merchantability, fitness for a particular
 purpose and non-infringement. Its sole purpose is to install, repair, upgrade
-and uninstall Fulcrum on a single user's Windows profile. It requires no
+and uninstall Decitect on a single user's Windows profile. It requires no
 administrator rights, makes no system-wide changes and writes only under the
 current user's account.
 
@@ -34,6 +34,6 @@ liability arising from, out of or in connection with the installer or its use.
 Removal
 -------
 
-You can remove Fulcrum at any time from Windows "Apps & features" or by running
+You can remove Decitect at any time from Windows "Apps & features" or by running
 this installer again and choosing Uninstall. Your saved games and settings are
 kept unless you explicitly ask for them to be removed.

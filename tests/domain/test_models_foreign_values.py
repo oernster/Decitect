@@ -10,17 +10,17 @@ import math
 
 import pytest
 
-from fulcrum.domain.errors import InvalidOrgStateError
-from fulcrum.domain.field_checks import MAX_COUNT
-from fulcrum.domain.models import (
+from decitect.domain.errors import InvalidOrgStateError
+from decitect.domain.field_checks import MAX_COUNT
+from decitect.domain.models import (
     AuthorityClaim,
     Dependency,
     Domain,
     OrgState,
     Team,
 )
-from fulcrum.domain.moves import Move, MoveKind, apply_move
-from fulcrum.domain.simulation import evaluate
+from decitect.domain.moves import Move, MoveKind, apply_move
+from decitect.domain.simulation import evaluate
 
 _NAN = float("nan")
 _INF = float("inf")

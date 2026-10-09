@@ -2,8 +2,8 @@
 
 import pytest
 
-from fulcrum.domain.models import AuthorityClaim, Dependency, OrgState, Team
-from fulcrum.domain.signals import (
+from decitect.domain.models import AuthorityClaim, Dependency, OrgState, Team
+from decitect.domain.signals import (
     CENTRE_LOAD,
     CONTESTED,
     ESCALATIONS,

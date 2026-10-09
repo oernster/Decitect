@@ -3,38 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Where the weights come from: every coefficient in Fulcrum's score</title>
-<meta name="description" content="Every coefficient in Fulcrum's scoring function in one table: what it does, the mechanism source in the books and whether its magnitude is engineering judgement or a constraint enforced in code.">
+<title>Where the weights come from: every coefficient in Decitect's score</title>
+<meta name="description" content="Every coefficient in Decitect's scoring function in one table: what it does, the mechanism source in the books and whether its magnitude is engineering judgement or a constraint enforced in code.">
 <meta name="author" content="Oliver Ernster">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0d0f12">
-<link rel="canonical" href="https://ernster.dev/fulcrum/weights.html">
+<link rel="canonical" href="https://decitect.com/weights.html">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Fulcrum">
-<meta property="og:title" content="Where the weights come from: every coefficient in Fulcrum's score">
-<meta property="og:description" content="Every coefficient in Fulcrum's scoring function in one table: what it does, the mechanism source in the books and whether its magnitude is engineering judgement or a constraint enforced in code.">
-<meta property="og:url" content="https://ernster.dev/fulcrum/weights.html">
-<meta property="og:image" content="https://ernster.dev/fulcrum/assets/screenshots/play-board.png">
-<meta property="og:image:alt" content="The Fulcrum board scoring an organisation&#x27;s structure">
+<meta property="og:site_name" content="Decitect">
+<meta property="og:title" content="Where the weights come from: every coefficient in Decitect's score">
+<meta property="og:description" content="Every coefficient in Decitect's scoring function in one table: what it does, the mechanism source in the books and whether its magnitude is engineering judgement or a constraint enforced in code.">
+<meta property="og:url" content="https://decitect.com/weights.html">
+<meta property="og:image" content="https://decitect.com/assets/screenshots/play-board.png">
+<meta property="og:image:alt" content="The Decitect board scoring an organisation&#x27;s structure">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Where the weights come from: every coefficient in Fulcrum's score">
-<meta name="twitter:description" content="Every coefficient in Fulcrum's scoring function in one table: what it does, the mechanism source in the books and whether its magnitude is engineering judgement or a constraint enforced in code.">
-<meta name="twitter:image" content="https://ernster.dev/fulcrum/assets/screenshots/play-board.png">
-<link rel="icon" type="image/png" href="assets/fulcrum.png">
-<link rel="stylesheet" href="styles.css?v=b3030a1f1d">
+<meta name="twitter:title" content="Where the weights come from: every coefficient in Decitect's score">
+<meta name="twitter:description" content="Every coefficient in Decitect's scoring function in one table: what it does, the mechanism source in the books and whether its magnitude is engineering judgement or a constraint enforced in code.">
+<meta name="twitter:image" content="https://decitect.com/assets/screenshots/play-board.png">
+<link rel="icon" type="image/png" href="assets/decitect.png">
+<link rel="stylesheet" href="styles.css?v=d6adc8a072">
 </head>
 <body>
 <header class="nav">
   <div class="container nav-inner">
     <a class="brand" href="./">
-      <img src="assets/fulcrum.png" alt="Fulcrum icon">Fulcrum</a>
+      <img src="assets/decitect.png" alt="Decitect icon">Decitect</a>
     <nav class="nav-links">
       <a href="tool.html">The tool</a>
       <a href="why.html">Why</a>
       <a href="model.html">The model</a>
       <a href="why.html#books">The books</a>
       <a href="download.html">Download</a>
-      <a href="https://github.com/oernster/fulcrum">GitHub</a>
+      <a href="https://github.com/oernster/Decitect">GitHub</a>
     </nav>
   </div>
 </header>
@@ -47,7 +47,7 @@
       <div class="eyebrow">Provenance</div>
       <h2 class="section-title">Where the weights come from</h2>
       <p>The scoring function lives in one module,
-        <a href="https://github.com/oernster/fulcrum/blob/main/fulcrum/domain/simulation.py">fulcrum/domain/simulation.py</a>;
+        <a href="https://github.com/oernster/Decitect/blob/main/decitect/domain/simulation.py">decitect/domain/simulation.py</a>;
         every coefficient lives in one frozen dataclass, <code>SimulationParameters</code>.
         There are no hidden constants: the table below is the complete set. The honest split is
         this: the <b>mechanisms</b> (what is penalised and why) come from the books; the
@@ -193,12 +193,12 @@
 <footer>
   <div class="container footer-inner">
     <div>
-      <strong>Fulcrum</strong>: Organisational Decision Architecture Simulation Tool<br>
-      (c) Oliver Ernster · Local-first · GPL-3.0 + LGPL-3.0 · v<!--VERSION-->4.6.0<!--/VERSION-->
+      <strong>Decitect</strong>: Decision Architecture Organisational Software<br>
+      (c) Oliver Ernster · Local-first · GPL-3.0 + LGPL-3.0 · v<!--VERSION-->5.0.0<!--/VERSION-->
     </div>
     <div class="footer-links">
-      <a href="https://github.com/oernster/fulcrum/releases">Releases</a>
-      <a href="https://github.com/oernster/fulcrum">GitHub</a>
+      <a href="https://github.com/oernster/Decitect/releases">Releases</a>
+      <a href="https://github.com/oernster/Decitect">GitHub</a>
       <a href="https://www.crankthecode.com/books">The books</a>
       <a href="https://www.crankthecode.com/">crankthecode.com</a>
       <a href="https://ernster.dev">More of my work</a>

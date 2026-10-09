@@ -2,8 +2,8 @@
 
 import pytest
 
-from fulcrum.application.update_info import ReleaseAsset, ReleaseInfo
-from fulcrum.application.update_service import (
+from decitect.application.update_info import ReleaseAsset, ReleaseInfo
+from decitect.application.update_service import (
     UpdateService,
     is_newer,
     platform_key_for,
@@ -11,9 +11,9 @@ from fulcrum.application.update_service import (
 )
 
 ASSETS = (
-    ReleaseAsset("FulcrumSetup.exe", "https://example.com/FulcrumSetup.exe"),
-    ReleaseAsset("fulcrum.dmg", "https://example.com/fulcrum.dmg"),
-    ReleaseAsset("fulcrum.flatpak", "https://example.com/fulcrum.flatpak"),
+    ReleaseAsset("DecitectSetup.exe", "https://example.com/DecitectSetup.exe"),
+    ReleaseAsset("decitect.dmg", "https://example.com/decitect.dmg"),
+    ReleaseAsset("decitect.flatpak", "https://example.com/decitect.flatpak"),
 )
 
 
@@ -28,7 +28,7 @@ class FakeReleaseSource:
 def release(version="v4.4.0", assets=ASSETS):
     return ReleaseInfo(
         version=version,
-        page_url="https://github.com/oernster/fulcrum/releases/latest",
+        page_url="https://github.com/oernster/Decitect/releases/latest",
         assets=assets,
     )
 
@@ -76,7 +76,7 @@ class TestCheck:
         assert status.update_available is True
         assert status.latest == "v4.4.0"
         assert status.current == "4.3.0"
-        assert status.download_url == "https://example.com/FulcrumSetup.exe"
+        assert status.download_url == "https://example.com/DecitectSetup.exe"
         assert status.page_url is not None
 
     def test_same_version_is_not_offered(self):
@@ -101,9 +101,9 @@ class TestCheck:
     @pytest.mark.parametrize(
         "platform_key,expected",
         [
-            ("windows", "https://example.com/FulcrumSetup.exe"),
-            ("macos", "https://example.com/fulcrum.dmg"),
-            ("linux", "https://example.com/fulcrum.flatpak"),
+            ("windows", "https://example.com/DecitectSetup.exe"),
+            ("macos", "https://example.com/decitect.dmg"),
+            ("linux", "https://example.com/decitect.flatpak"),
         ],
     )
     def test_platform_asset_selection(self, platform_key, expected):
@@ -122,7 +122,7 @@ class TestCheck:
 
 class TestSelectAssetUrl:
     def test_suffix_match_is_case_insensitive(self):
-        assets = (ReleaseAsset("FULCRUMSETUP.EXE", "https://x/setup"),)
+        assets = (ReleaseAsset("DECITECTSETUP.EXE", "https://x/setup"),)
         assert select_asset_url(assets, "windows") == "https://x/setup"
 
     def test_empty_assets(self):

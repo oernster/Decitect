@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pytest
 
-from fulcrum.domain.models import Dependency, Domain, OrgState, Origin, Team
-from fulcrum.domain.simulation import evaluate
+from decitect.domain.models import Dependency, Domain, OrgState, Origin, Team
+from decitect.domain.simulation import evaluate
 
 _EXAMPLES = Path(__file__).resolve().parents[2] / "examples"
 

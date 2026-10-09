@@ -1,9 +1,9 @@
 """Tests for plan file export and import."""
 
-from fulcrum.application.dto import Plan
-from fulcrum.domain.models import Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind
-from fulcrum.infrastructure.plan_repository import read_plan, write_html, write_plan
+from decitect.application.dto import Plan
+from decitect.domain.models import Dependency, Domain, OrgState, Team
+from decitect.domain.moves import Move, MoveKind
+from decitect.infrastructure.plan_repository import read_plan, write_html, write_plan
 
 
 def _plan():

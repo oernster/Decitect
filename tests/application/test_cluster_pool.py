@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from random import Random
 
-from fulcrum.application.cluster_pool import (
+from decitect.application.cluster_pool import (
     _BIG_TEAM_MAX,
     _BIG_TEAM_MIN,
     _POOL_SIZE_CAP,
@@ -21,17 +21,17 @@ from fulcrum.application.cluster_pool import (
     pick_workload,
     reaches_great_move,
 )
-from fulcrum.application.dto import (
+from decitect.application.dto import (
     DependencySpec,
     DomainSpec,
     MoveValuation,
     OrgBlueprint,
     TeamSpec,
 )
-from fulcrum.application.game_session import enumerate_moves
-from fulcrum.application.intake import build_org_state
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.domain.models import (
+from decitect.application.game_session import enumerate_moves
+from decitect.application.intake import build_org_state
+from decitect.application.simulator import DeterministicSimulator
+from decitect.domain.models import (
     DEFAULT_CATEGORY,
     DEFAULT_HEADCOUNT,
     Domain,
@@ -39,7 +39,7 @@ from fulcrum.domain.models import (
     Origin,
     Team,
 )
-from fulcrum.domain.simulation import DEFAULT_PARAMETERS, MoveClassification
+from decitect.domain.simulation import DEFAULT_PARAMETERS, MoveClassification
 
 _MIN_WORKLOAD = 6
 _MAX_WORKLOAD = 9

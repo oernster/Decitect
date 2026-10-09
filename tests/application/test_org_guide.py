@@ -2,8 +2,8 @@
 
 import pytest
 
-from fulcrum.application.game_session import MAX_PLAYABLE_TEAMS
-from fulcrum.application.org_guide import (
+from decitect.application.game_session import MAX_PLAYABLE_TEAMS
+from decitect.application.org_guide import (
     LOOSE_TEAMS_FRAME,
     LOOSE_TEAMS_LABEL,
     WHOLE_ORG_LABEL,
@@ -13,12 +13,12 @@ from fulcrum.application.org_guide import (
     compose_leaf_lines,
     direct_teams_frame,
 )
-from fulcrum.application.planner import Guide, GuideStep
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.domain.hierarchy import AGGREGATE_MOVE_KINDS, TOP_LEVEL_FOCUS
-from fulcrum.domain.models import Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind
-from fulcrum.domain.simulation import MoveClassification
+from decitect.application.planner import Guide, GuideStep
+from decitect.application.simulator import DeterministicSimulator
+from decitect.domain.hierarchy import AGGREGATE_MOVE_KINDS, TOP_LEVEL_FOCUS
+from decitect.domain.models import Dependency, Domain, OrgState, Team
+from decitect.domain.moves import Move, MoveKind
+from decitect.domain.simulation import MoveClassification
 
 _SIM = DeterministicSimulator()
 

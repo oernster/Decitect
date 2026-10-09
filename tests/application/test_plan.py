@@ -2,12 +2,12 @@
 
 from dataclasses import replace
 
-from fulcrum.application.plan import _best_easing, build_plan_report
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.domain.hierarchy import focused_suborg
-from fulcrum.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind, apply_move
-from fulcrum.domain.signals import ESCALATIONS, QUEUE_AGE, compute_signals
+from decitect.application.plan import _best_easing, build_plan_report
+from decitect.application.simulator import DeterministicSimulator
+from decitect.domain.hierarchy import focused_suborg
+from decitect.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
+from decitect.domain.moves import Move, MoveKind, apply_move
+from decitect.domain.signals import ESCALATIONS, QUEUE_AGE, compute_signals
 
 
 def _org():

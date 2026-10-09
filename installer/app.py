@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fulcrum installer: the entry point.
+"""Decitect installer: the entry point.
 
 A self-contained PySide6 installer compiled into a single executable by
 buildinstaller.py. It carries the built application bundle and the LICENCE as an
@@ -14,8 +14,8 @@ the full lifecycle the author's other installers offer:
 - Optional desktop and Start Menu shortcuts, and optional launch at sign-in.
 
 It never needs administrator rights: it deploys to
-``%LOCALAPPDATA%\\Programs\\Fulcrum`` and registers under HKCU. It is
-deliberately standalone (it imports nothing from the ``fulcrum`` package) and
+``%LOCALAPPDATA%\\Programs\\Decitect`` and registers under HKCU. It is
+deliberately standalone (it imports nothing from the ``decitect`` package) and
 dependency-light: process detection uses ``tasklist``, version comparison is a
 plain tuple compare and shortcuts are written through the Windows scripting
 host, so the onefile build pulls in nothing beyond PySide6 and the stdlib.
@@ -43,6 +43,7 @@ import installer_bundle as bundle
 import installer_lifecycle as lifecycle
 import installer_logic as logic
 import installer_ops as ops
+import installer_startup as startup
 import installer_theme as theme
 from installer_widgets import AppRunningDialog, UninstallDialog
 from installer_window import InstallerWindow
@@ -88,8 +89,8 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
 
 def main() -> int:
     """Run the installer GUI, or the uninstall flow when so invoked."""
-    ops.install_crash_logging()
-    ops.set_app_user_model_id()
+    startup.install_crash_logging()
+    startup.set_app_user_model_id()
     args = _parse_args(sys.argv[1:])
     if args.uninstall:
         return _run_uninstall_cli(args)

@@ -2,7 +2,7 @@
 
 import json
 
-from fulcrum.infrastructure.settings_store import (
+from decitect.infrastructure.settings_store import (
     FileSettingsStore,
     default_settings_path,
 )
@@ -78,4 +78,4 @@ def test_invalid_skipped_version_reads_as_none(tmp_path):
 def test_default_path_is_per_user():
     path = default_settings_path()
     assert path.name == "settings.json"
-    assert path.parent.name == ".fulcrum"
+    assert path.parent.name == ".decitect"

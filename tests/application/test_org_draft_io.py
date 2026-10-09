@@ -4,17 +4,17 @@ from random import Random
 
 from org_draft_support import make_blueprint, make_draft, make_imported_draft
 
-from fulcrum.application.dto import (
+from decitect.application.dto import (
     DependencySpec,
     DomainSpec,
     OrgBlueprint,
     TeamSpec,
 )
-from fulcrum.application.intake import build_org_state, org_to_blueprint
-from fulcrum.application.name_pool import NamePicker
-from fulcrum.application.org_draft import OrgDraft
-from fulcrum.application.org_draft_nodes import ContainerDraft, TeamDraft
-from fulcrum.domain.models import Origin
+from decitect.application.intake import build_org_state, org_to_blueprint
+from decitect.application.name_pool import NamePicker
+from decitect.application.org_draft import OrgDraft
+from decitect.application.org_draft_nodes import ContainerDraft, TeamDraft
+from decitect.domain.models import Origin
 
 
 def test_from_blueprint_rebuilds_the_tree_and_fills_blank_names():

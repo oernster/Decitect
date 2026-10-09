@@ -1,15 +1,15 @@
 """Tests for off-thread scope analysis."""
 
-from fulcrum.application.game_session import MAX_PLAYABLE_TEAMS, enumerate_moves
-from fulcrum.application.scope_analysis import (
+from decitect.application.game_session import MAX_PLAYABLE_TEAMS, enumerate_moves
+from decitect.application.scope_analysis import (
     active_org,
     analyze_scope,
     play_level_landing,
 )
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.domain.hierarchy import AGGREGATE_MOVE_KINDS, TOP_LEVEL_FOCUS
-from fulcrum.domain.models import Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import MoveKind
+from decitect.application.simulator import DeterministicSimulator
+from decitect.domain.hierarchy import AGGREGATE_MOVE_KINDS, TOP_LEVEL_FOCUS
+from decitect.domain.models import Dependency, Domain, OrgState, Team
+from decitect.domain.moves import MoveKind
 
 _SIM = DeterministicSimulator()
 

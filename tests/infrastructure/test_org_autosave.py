@@ -3,11 +3,11 @@
 import json
 from pathlib import Path
 
-from fulcrum.application.dto import SessionSnapshot
-from fulcrum.domain.models import OrgState, Origin, Team
-from fulcrum.domain.moves import Move, MoveKind, apply_move
-from fulcrum.infrastructure.json_serialization import org_to_dict
-from fulcrum.infrastructure.org_autosave import (
+from decitect.application.dto import SessionSnapshot
+from decitect.domain.models import OrgState, Origin, Team
+from decitect.domain.moves import Move, MoveKind, apply_move
+from decitect.infrastructure.json_serialization import org_to_dict
+from decitect.infrastructure.org_autosave import (
     _PRESERVE_ATTEMPTS,
     FileOrgStore,
     default_autosave_path,
@@ -210,7 +210,7 @@ def test_moving_a_file_reports_failure_instead_of_raising(tmp_path):
 
 def test_default_path_is_used_when_none_given(tmp_path, monkeypatch):
     monkeypatch.setattr(Path, "home", lambda: tmp_path)
-    assert default_autosave_path() == tmp_path / ".fulcrum" / "last_org.json"
+    assert default_autosave_path() == tmp_path / ".decitect" / "last_org.json"
     store = FileOrgStore()
     store.save(SessionSnapshot(_org(), (), _org()))
     assert store.load() == SessionSnapshot(_org(), (), _org())

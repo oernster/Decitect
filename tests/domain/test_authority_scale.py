@@ -32,15 +32,15 @@ from itertools import pairwise
 
 import pytest
 
-from fulcrum.domain.errors import InvalidOrgStateError
-from fulcrum.domain.hierarchy import (
+from decitect.domain.errors import InvalidOrgStateError
+from decitect.domain.hierarchy import (
     focused_suborg,
     top_level_section,
     total_headcount,
 )
-from fulcrum.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind, apply_move
-from fulcrum.domain.simulation import (
+from decitect.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
+from decitect.domain.moves import Move, MoveKind, apply_move
+from decitect.domain.simulation import (
     DEFAULT_PARAMETERS,
     MoveClassification,
     SimulationParameters,

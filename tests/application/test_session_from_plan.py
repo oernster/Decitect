@@ -3,10 +3,10 @@
 import pytest
 from session_support import FakeSimulator, flat_org
 
-from fulcrum.application.dto import Plan
-from fulcrum.application.game_session import session_from_plan
-from fulcrum.domain.errors import InvalidMoveError
-from fulcrum.domain.moves import Move, MoveKind
+from decitect.application.dto import Plan
+from decitect.application.game_session import session_from_plan
+from decitect.domain.errors import InvalidMoveError
+from decitect.domain.moves import Move, MoveKind
 
 _CREATED = "2026-10-03T00:00:00+00:00"
 

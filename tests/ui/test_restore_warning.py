@@ -4,7 +4,7 @@ a hand-written store."""
 
 from pathlib import Path
 
-from fulcrum.ui.main_window import MainWindow
+from decitect.ui.main_window import MainWindow
 
 _KEPT = Path("kept") / "last_org.json.unreadable"
 

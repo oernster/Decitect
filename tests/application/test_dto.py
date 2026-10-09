@@ -2,9 +2,9 @@
 
 import pytest
 
-from fulcrum.application.dto import MoveValuation
-from fulcrum.domain.moves import Move, MoveKind
-from fulcrum.domain.simulation import MoveClassification
+from decitect.application.dto import MoveValuation
+from decitect.domain.moves import Move, MoveKind
+from decitect.domain.simulation import MoveClassification
 
 
 def test_move_valuation_delta():

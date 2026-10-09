@@ -27,9 +27,9 @@ import random
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from fulcrum.domain.hierarchy import total_headcount
-from fulcrum.domain.simulation import DEFAULT_PARAMETERS, evaluate
-from fulcrum.infrastructure.json_serialization import org_from_dict
+from decitect.domain.hierarchy import total_headcount
+from decitect.domain.simulation import DEFAULT_PARAMETERS, evaluate
+from decitect.infrastructure.json_serialization import org_from_dict
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT_PATH = ROOT / "examples" / "calibration" / "matrixed-enterprise.json"

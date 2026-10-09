@@ -4,7 +4,7 @@ from dataclasses import FrozenInstanceError
 
 import pytest
 
-from fulcrum.domain.books import COMPLETE_SERIES_EDITION, DA_SERIES, BookEntry
+from decitect.domain.books import COMPLETE_SERIES_EDITION, DA_SERIES, BookEntry
 
 _AMAZON_PREFIX = "https://www.amazon.co.uk/dp/"
 _PNG_SUFFIX = ".png"

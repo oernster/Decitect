@@ -2,7 +2,7 @@
 
 One stylesheet and one set of geometry tokens, shared by the window and
 every dialog, so the installer looks like the application it installs
-without importing anything from the ``fulcrum`` package.
+without importing anything from the ``decitect`` package.
 
 British spelling is used in comments. No em dashes appear anywhere.
 """
@@ -32,7 +32,7 @@ SECTION_SPACING = 14
 HEADER_SPACING = 14
 BUTTON_GAP = 10
 
-# --- Fulcrum amber palette ---------------------------------------------------
+# --- Decitect amber palette ---------------------------------------------------
 # Named colour tokens for the installer surfaces, text and controls. Every
 # QPushButton carries a transparent 2px border by default so the green hover
 # border does not reflow the layout, and the hover reaction is gated on

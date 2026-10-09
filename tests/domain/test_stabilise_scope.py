@@ -2,10 +2,10 @@
 
 import pytest
 
-from fulcrum.domain.errors import UnknownTeamError
-from fulcrum.domain.hierarchy import TOP_LEVEL_FOCUS, translate_focused_move
-from fulcrum.domain.models import Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind, apply_move
+from decitect.domain.errors import UnknownTeamError
+from decitect.domain.hierarchy import TOP_LEVEL_FOCUS, translate_focused_move
+from decitect.domain.models import Dependency, Domain, OrgState, Team
+from decitect.domain.moves import Move, MoveKind, apply_move
 
 
 def _t(team_id, domain_id=None):

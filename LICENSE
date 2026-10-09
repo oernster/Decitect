@@ -1,16 +1,16 @@
-Fulcrum is distributed under two licences, split by component.
+Decitect is distributed under two licences, split by component.
 
 MODEL  ->  GNU General Public License v3.0 (GPL-3.0)
 
     Covers everything except the user interface: the decision-architecture
-    model and its supporting code. In the source tree that is fulcrum/domain,
-    fulcrum/application, fulcrum/infrastructure and fulcrum/shared, together
+    model and its supporting code. In the source tree that is decitect/domain,
+    decitect/application, decitect/infrastructure and decitect/shared, together
     with main.py, the build scripts and the tests.
     Full text: LICENSE-GPL-3.0.txt
 
 USER INTERFACE  ->  GNU Lesser General Public License v3.0 (LGPL-3.0)
 
-    Covers the PySide6 and Qt layer (fulcrum/ui), licensed under the LGPL to
+    Covers the PySide6 and Qt layer (decitect/ui), licensed under the LGPL to
     align with Qt's own licensing. Full text: LICENSE-LGPL-3.0.txt, which
     incorporates the terms of the GPL-3.0 in LICENSE-GPL-3.0.txt.
 

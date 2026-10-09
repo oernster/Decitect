@@ -1,7 +1,7 @@
-# Pre-registration: external validation of the Fulcrum structural score
+# Pre-registration: external validation of the Decitect structural score
 
 This document fixes the protocol and acceptance thresholds for the external,
-blind validation of Fulcrum's structural score before any outcome data is
+blind validation of Decitect's structural score before any outcome data is
 collected or any organisation is scored under it. It is written for deposit
 with the Open Science Framework (osf.io), so that the record of the bar being
 set in advance carries a timestamp the author cannot edit. No organisation has
@@ -9,7 +9,7 @@ been modelled or scored under this protocol at the time of writing.
 
 ## Hypothesis
 
-Fulcrum's deterministic structural score, computed from an organisation's
+Decitect's deterministic structural score, computed from an organisation's
 formal structure alone (teams, dependencies, authority placement, incentive
 skew), predicts independently documented structural outcomes better than
 chance: organisations with sustained delivery at scale score higher than
@@ -18,8 +18,8 @@ organisations with documented delivery collapse.
 ## Frozen model
 
 The model under test is the scoring function in
-`fulcrum/domain/simulation.py` with the default `SimulationParameters`
-published in `fulcrum/domain/parameters.py`, at the release tag named in the
+`decitect/domain/simulation.py` with the default `SimulationParameters`
+published in `decitect/domain/parameters.py`, at the release tag named in the
 registry deposit, which must be the 4.0.0 release or later. That model
 includes the scale-dependent authority pricing introduced in 4.0.0: the
 prince band, resolution neighbourhoods with escalation load, unowned
@@ -54,7 +54,7 @@ knowledge, is excluded from case assembly under the blinding rule below.
    outcome record for every case is fixed and archived before any modelling
    begins.
 2. **Blind modelling.** A modeller who does not know the outcome
-   classification builds each organisation's Fulcrum model from structural
+   classification builds each organisation's Decitect model from structural
    facts alone: the org chart, the dependency map and the authority placement
    as they stood at the time. The modeller has no access to the outcome
    record.
@@ -89,6 +89,6 @@ without the flagged cases.
 
 ## Reporting
 
-The result is published in the Fulcrum repository regardless of outcome,
+The result is published in the Decitect repository regardless of outcome,
 including the full case list, the archived outcome record, every model file
 and the analysis script, so the run is reproducible end to end.

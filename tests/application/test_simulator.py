@@ -1,9 +1,9 @@
 """Tests for the deterministic simulator."""
 
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.domain.models import Dependency, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind
-from fulcrum.domain.simulation import MoveClassification
+from decitect.application.simulator import DeterministicSimulator
+from decitect.domain.models import Dependency, OrgState, Team
+from decitect.domain.moves import Move, MoveKind
+from decitect.domain.simulation import MoveClassification
 
 
 def _org():

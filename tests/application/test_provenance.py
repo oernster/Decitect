@@ -2,12 +2,12 @@
 
 from dataclasses import fields, replace
 
-from fulcrum.application.provenance import (
+from decitect.application.provenance import (
     build_provenance,
     fragility_text,
     intro_text,
 )
-from fulcrum.domain.parameters import DEFAULT_PARAMETERS, DEFAULT_THRESHOLDS
+from decitect.domain.parameters import DEFAULT_PARAMETERS, DEFAULT_THRESHOLDS
 
 
 def test_every_simulation_parameter_is_accounted_for():

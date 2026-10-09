@@ -1,7 +1,7 @@
 """Tests for the org-map drill-level view model."""
 
-from fulcrum.application.map_model import build_level
-from fulcrum.domain.models import Dependency, Domain, OrgState, Team
+from decitect.application.map_model import build_level
+from decitect.domain.models import Dependency, Domain, OrgState, Team
 
 
 def _hierarchical():

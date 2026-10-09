@@ -1,4 +1,4 @@
-# Fulcrum testing
+# Decitect testing
 
 The suite is `pytest` with a hard 100% coverage gate on the layers that carry
 logic. For the design see [ARCHITECTURE.md](ARCHITECTURE.md); for the wider
@@ -52,8 +52,8 @@ The tests mirror the package, one area per layer:
 
 `.coveragerc` gates the domain, the application, the infrastructure, the
 shared text helpers and the installer's pure modules
-(`installer/installer_logic.py` and `installer/installer_scripts.py`) at
-100%. It omits the surfaces that are
+(`installer/installer_logic.py`, `installer/installer_legacy.py` and
+`installer/installer_scripts.py`) at 100%. It omits the surfaces that are
 composition or framework glue: the UI, `main.py`, the shared asset discovery,
 the application Protocol definitions, the version module,
 `generate_icons.py` plus the installer's Qt surface and side-effect modules.
@@ -62,19 +62,22 @@ rather than by the gate.
 
 The installer is gated because it is a second application, not a build
 recipe: a defect in its registry writes, path resolution, extraction or
-shortcut targets lands on a user's machine before Fulcrum ever starts. The
+shortcut targets lands on a user's machine before Decitect ever starts. The
 decisions live in `installer_logic.py` with no registry, no subprocess, no
 environment and no Qt, which is exactly what makes them testable; the
 exact command text those decisions are carried out with lives beside it in
 `installer_scripts.py` so it can be asserted character by character; the
-module that acts on them (`installer_ops.py`) stays outside the gate with the
-widgets. The analysis scripts at the repo root are outside the gate too but
+modules that act on them (`installer_ops.py` and `installer_startup.py`) stay
+outside the gate with the widgets. `installer_legacy.py` decides what an
+install under the former name (Fulcrum) consists of plus which of its
+shortcuts and sign-in entries are provably its own; it is gated the same way. The analysis scripts at the repo root are outside the gate too but
 not outside the suite: `tests/scripts` asserts each one runs and exits zero.
 
 One invariant cannot be reached from either side alone. The installer is
 compiled separately and may not import the application, so the name of the
-per-user state directory is necessarily written down twice.
-`tests/installer/test_state_dir.py` holds the two together by comparing the
+per-user state directory is necessarily written down twice, as is the former
+name's directory an uninstall also clears.
+`tests/installer/test_state_dir.py` holds both pairs together by comparing the
 paths both sides compute, because that drift is silent: an uninstaller
 clearing the wrong directory reports success either way.
 
@@ -88,13 +91,13 @@ imports infrastructure, the UI or Qt; if infrastructure or shared imports
 the UI or Qt; if any module exceeds 400
 lines, the test modules and the installer included (an oversized test file
 hides structure the same way an oversized source file does); if anything
-under `installer/` imports from the `fulcrum` package, which would drag the
+under `installer/` imports from the `decitect` package, which would drag the
 whole application into the setup binary; or if `installer_logic.py` or
 `installer_scripts.py` reaches for the registry, a subprocess, the
 environment or Qt; or if anything shipped but the update check imports a
 networking module. Relative imports are resolved against the file's own
 package before any rule reads them, so `from ..ui import x` is seen as the
-import of `fulcrum.ui` it is.
+import of `decitect.ui` it is.
 
 The rules live in `tests/structural/layer_rules.py`, one checker per rule
 taking one file, so `tests/structural/test_layer_plants.py` can run each
@@ -113,7 +116,7 @@ check whose controller is deleted before its answer arrives drops the answer
 rather than raising on the worker thread. The donate button sits immediately
 left of the theme toggle, in the row and in the focus ring alike, asks the
 desktop for its one address and says so when the desktop refuses; the
-`fulcrum.ui.links` seam is replaced in those tests, so no browser ever opens.
+`decitect.ui.links` seam is replaced in those tests, so no browser ever opens.
 A plan file that will not read or replay produces one warning (through an
 injected callable, so no dialog opens) and leaves the session as it was.
 The launch message after a damaged autosave says whether the organisation
@@ -136,7 +139,7 @@ resolves no font family at all and reports a flat one-em advance for every
 character, so `QFontMetrics` there will happily measure a string at roughly
 twice its real width. Nothing that needs true text metrics may be measured
 that way. The exported map's node sizing is the case in point: the advance
-table in `fulcrum/infrastructure/svg_map.py` was derived by measuring the
+table in `decitect/infrastructure/svg_map.py` was derived by measuring the
 real `segoeui.ttf` and `arial.ttf` files in both weights and taking the
 widest member of each character class, so the estimate is an upper bound by
 construction. `tests/infrastructure/test_svg_map.py` then checks the emitted

@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# build_flatpak.sh - Build Fulcrum as a Flatpak
+# build_flatpak.sh - Build Decitect as a Flatpak
 #
-# Uses org.freedesktop.Platform//25.08 (Python 3.13, glibc 2.42). Fulcrum is a
+# Uses org.freedesktop.Platform//25.08 (Python 3.13, glibc 2.42). Decitect is a
 # pure PySide6 desktop app: no native toolchains, no model downloads and no
 # network at runtime beyond the update check. Its single wheel set (PySide6 plus shiboken6) is pre-downloaded on
 # the host, then installed inside the sandbox from those local wheels with
 # --no-index, so the build itself is offline.
 #
 # Usage:
-#   ./build_flatpak.sh             - build, install locally plus produce fulcrum.flatpak
+#   ./build_flatpak.sh             - build, install locally plus produce decitect.flatpak
 #   ./build_flatpak.sh --no-bundle - build + install only (skip the distributable bundle)
 
 set -euo pipefail
@@ -16,17 +16,17 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/venv/bin/activate"
 
-APP_ID="uk.codecrafter.Fulcrum"
+APP_ID="uk.codecrafter.Decitect"
 APP_VERSION=$(tr -d '[:space:]' < VERSION)
-BUNDLE="fulcrum.flatpak"
+BUNDLE="decitect.flatpak"
 BUILD_DIR=".flatpak-build"
 REPO_DIR=".flatpak-repo"
 MANIFEST="${APP_ID}.yml"
 
 # Where the app source is staged inside the sandbox. The package directory and
-# main.py both live here; the launcher puts it on PYTHONPATH so "import fulcrum"
+# main.py both live here; the launcher puts it on PYTHONPATH so "import decitect"
 # resolves and the resource resolver finds the loose assets beside main.py.
-SHARE_DIR="fulcrum"
+SHARE_DIR="decitect"
 
 RUNTIME="org.freedesktop.Platform"
 SDK="org.freedesktop.Sdk"
@@ -119,10 +119,10 @@ echo "  $(ls .flatpak-wheels/ | wc -l) distributions ready"
 section "Writing packaging helpers"
 mkdir -p packaging
 
-# site-packages path matches the runtime's Python version. Fulcrum reads and
+# site-packages path matches the runtime's Python version. Decitect reads and
 # writes plan JSON and HTML files the user chooses, which the --filesystem=home
 # permission below makes reachable, so no user-dirs override env var is needed.
-cat > packaging/fulcrum-launcher.sh <<LAUNCHER
+cat > packaging/decitect-launcher.sh <<LAUNCHER
 #!/bin/sh
 export LD_LIBRARY_PATH="/app/lib\${LD_LIBRARY_PATH:+:\$LD_LIBRARY_PATH}"
 export PYTHONPATH="/app/share/${SHARE_DIR}:/app/lib/python${PYTHON_MM}/site-packages\${PYTHONPATH:+:\$PYTHONPATH}"
@@ -138,13 +138,13 @@ else
 fi
 exec python3 /app/share/${SHARE_DIR}/main.py "\$@"
 LAUNCHER
-chmod +x packaging/fulcrum-launcher.sh
+chmod +x packaging/decitect-launcher.sh
 
 cat > "packaging/${APP_ID}.desktop" <<DESKTOP
 [Desktop Entry]
-Name=Fulcrum
-Comment=Organisational Decision Architecture Simulation Tool
-Exec=fulcrum
+Name=Decitect
+Comment=Decision Architecture Organisational Software
+Exec=decitect
 Icon=${APP_ID}
 Terminal=false
 Type=Application
@@ -156,14 +156,14 @@ cat > "packaging/${APP_ID}.metainfo.xml" <<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
   <id>${APP_ID}</id>
-  <name>Fulcrum</name>
-  <summary>Organisational Decision Architecture Simulation Tool</summary>
+  <name>Decitect</name>
+  <summary>Decision Architecture Organisational Software</summary>
   <metadata_license>MIT</metadata_license>
   <project_license>GPL-3.0-only AND LGPL-3.0-only</project_license>
   <developer_name>Oliver Ernster</developer_name>
   <launchable type="desktop-id">${APP_ID}.desktop</launchable>
   <description>
-    <p>Fulcrum turns organisational structure into a scored model you operate. Each
+    <p>Decitect turns organisational structure into a scored model you operate. Each
     position is a set of teams, dependencies and authority boundaries that a
     deterministic structural model rates from 0 to 100. Structural moves such as
     delegating authority, stabilising interfaces and collapsing boundaries
@@ -174,7 +174,7 @@ cat > "packaging/${APP_ID}.metainfo.xml" <<XML
   <releases>
     <release version="${APP_VERSION}" date="$(date +%Y-%m-%d)"/>
   </releases>
-  <url type="homepage">https://ernster.dev/fulcrum/</url>
+  <url type="homepage">https://decitect.com/</url>
 </component>
 XML
 
@@ -189,7 +189,7 @@ runtime: ${RUNTIME}
 runtime-version: "${RUNTIME_VERSION}"
 sdk: ${SDK}
 
-command: fulcrum
+command: decitect
 
 build-options:
   strip: true
@@ -203,7 +203,7 @@ finish-args:
   - --socket=fallback-x11
   - --socket=wayland
   - --device=dri
-  # Fulcrum keeps its state under ~/.fulcrum (the last session's org autosave
+  # Decitect keeps its state under ~/.decitect (the last session's org autosave
   # and the settings file) and reads or writes user-chosen JSON for org import
   # and plan export/edit, so it needs home access. Its only network use is the
   # update check above.
@@ -225,13 +225,13 @@ modules:
       - type: file
         path: requirements.txt
 
-  # Fulcrum application source plus its runtime assets
-  - name: fulcrum
+  # Decitect application source plus its runtime assets
+  - name: decitect
     buildsystem: simple
     build-commands:
       - mkdir -p /app/share/${SHARE_DIR}
       - cp main.py VERSION LICENSE LICENSE-GPL-3.0.txt LICENSE-LGPL-3.0.txt /app/share/${SHARE_DIR}/
-      - cp -r fulcrum /app/share/${SHARE_DIR}/
+      - cp -r decitect /app/share/${SHARE_DIR}/
       # Book covers shown by Help > Book background, resolved at assets/books,
       # and the header-button icons (the donate mark among them) at assets/buttons.
       - cp -r assets /app/share/${SHARE_DIR}/
@@ -240,15 +240,15 @@ modules:
       - cp -r examples/calibration /app/share/${SHARE_DIR}/examples/
       # Loose assets the resource resolver looks for beside main.py: the window
       # and About icon, plus the amber spinbox arrows used by the theme.
-      - cp fulcrum.ico fulcrum.png fulcrum_256.png fulcrum_provenance_256.png spin_up.png spin_down.png /app/share/${SHARE_DIR}/
-      - install -Dm644 fulcrum_16.png  /app/share/icons/hicolor/16x16/apps/${APP_ID}.png
-      - install -Dm644 fulcrum_32.png  /app/share/icons/hicolor/32x32/apps/${APP_ID}.png
-      - install -Dm644 fulcrum_48.png  /app/share/icons/hicolor/48x48/apps/${APP_ID}.png
-      - install -Dm644 fulcrum_64.png  /app/share/icons/hicolor/64x64/apps/${APP_ID}.png
-      - install -Dm644 fulcrum_128.png /app/share/icons/hicolor/128x128/apps/${APP_ID}.png
-      - install -Dm644 fulcrum_256.png /app/share/icons/hicolor/256x256/apps/${APP_ID}.png
-      - install -Dm644 fulcrum_512.png /app/share/icons/hicolor/512x512/apps/${APP_ID}.png
-      - install -Dm755 packaging/fulcrum-launcher.sh /app/bin/fulcrum
+      - cp decitect.ico decitect.png decitect_256.png decitect_provenance_256.png spin_up.png spin_down.png /app/share/${SHARE_DIR}/
+      - install -Dm644 decitect_16.png  /app/share/icons/hicolor/16x16/apps/${APP_ID}.png
+      - install -Dm644 decitect_32.png  /app/share/icons/hicolor/32x32/apps/${APP_ID}.png
+      - install -Dm644 decitect_48.png  /app/share/icons/hicolor/48x48/apps/${APP_ID}.png
+      - install -Dm644 decitect_64.png  /app/share/icons/hicolor/64x64/apps/${APP_ID}.png
+      - install -Dm644 decitect_128.png /app/share/icons/hicolor/128x128/apps/${APP_ID}.png
+      - install -Dm644 decitect_256.png /app/share/icons/hicolor/256x256/apps/${APP_ID}.png
+      - install -Dm644 decitect_512.png /app/share/icons/hicolor/512x512/apps/${APP_ID}.png
+      - install -Dm755 packaging/decitect-launcher.sh /app/bin/decitect
       - install -Dm644 packaging/${APP_ID}.desktop /app/share/applications/${APP_ID}.desktop
       - install -Dm644 packaging/${APP_ID}.metainfo.xml /app/share/metainfo/${APP_ID}.metainfo.xml
       # Dual licence: the model is GPL-3.0 and the user interface is LGPL-3.0.
@@ -267,32 +267,32 @@ modules:
       - type: file
         path: LICENSE-LGPL-3.0.txt
       - type: file
-        path: fulcrum.ico
+        path: decitect.ico
       - type: file
-        path: fulcrum.png
+        path: decitect.png
       - type: file
-        path: fulcrum_16.png
+        path: decitect_16.png
       - type: file
-        path: fulcrum_32.png
+        path: decitect_32.png
       - type: file
-        path: fulcrum_48.png
+        path: decitect_48.png
       - type: file
-        path: fulcrum_64.png
+        path: decitect_64.png
       - type: file
-        path: fulcrum_128.png
+        path: decitect_128.png
       - type: file
-        path: fulcrum_256.png
+        path: decitect_256.png
       - type: file
-        path: fulcrum_512.png
+        path: decitect_512.png
       - type: file
         path: spin_up.png
       - type: file
         path: spin_down.png
       - type: file
-        path: fulcrum_provenance_256.png
+        path: decitect_provenance_256.png
       - type: dir
-        path: fulcrum
-        dest: fulcrum
+        path: decitect
+        dest: decitect
       # Only the calibration cases are shipped; they are what
       # find_examples_dir() resolves for File > Open example organisation.
       - type: dir

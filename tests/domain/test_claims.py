@@ -2,10 +2,10 @@
 
 import pytest
 
-from fulcrum.domain.errors import InvalidOrgStateError
-from fulcrum.domain.hierarchy import focused_suborg
-from fulcrum.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
-from fulcrum.domain.simulation import (
+from decitect.domain.errors import InvalidOrgStateError
+from decitect.domain.hierarchy import focused_suborg
+from decitect.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
+from decitect.domain.simulation import (
     SimulationParameters,
     claim_load,
     dependency_index,

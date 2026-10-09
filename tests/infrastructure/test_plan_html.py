@@ -1,10 +1,10 @@
 """Tests for the self-contained HTML plan report."""
 
-from fulcrum.application.plan import build_plan_report
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.domain.models import Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind, apply_move
-from fulcrum.infrastructure.plan_html import render_plan_html
+from decitect.application.plan import build_plan_report
+from decitect.application.simulator import DeterministicSimulator
+from decitect.domain.models import Dependency, Domain, OrgState, Team
+from decitect.domain.moves import Move, MoveKind, apply_move
+from decitect.infrastructure.plan_html import render_plan_html
 
 
 def _org():

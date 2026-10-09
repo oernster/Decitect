@@ -39,8 +39,8 @@ from itertools import pairwise
 
 import pytest
 
-from fulcrum.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
-from fulcrum.domain.simulation import DEFAULT_PARAMETERS, evaluate, scale_context
+from decitect.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
+from decitect.domain.simulation import DEFAULT_PARAMETERS, evaluate, scale_context
 
 _PARAMS = DEFAULT_PARAMETERS
 _WORKLOAD = 4

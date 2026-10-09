@@ -47,7 +47,7 @@ class AutoScroller(QObject):
     """Cycles a scrollable widget: down slowly, pause, rewind fast, repeat.
 
     A standalone copy of the application's scroller (the installer imports
-    nothing from the fulcrum package), carrying the same app-wide pace: the
+    nothing from the decitect package), carrying the same app-wide pace: the
     cycle holds still for a moment when the surface opens, reads down,
     holds at the bottom, rewinds fast, holds at the top and repeats. Any
     manual reading input (wheel, click, key, scrollbar or focus entering

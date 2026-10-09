@@ -4,7 +4,7 @@ Separate from installer_logic because this is not a decision: it is the exact
 string handed to PowerShell or matched against tasklist output. Building it
 here keeps it testable character by character while the module that runs it
 (installer_ops.py) stays a thin shell-out. Nothing here imports from the
-``fulcrum`` package and nothing here has a side effect.
+``decitect`` package and nothing here has a side effect.
 
 British spelling is used in comments. No em dashes appear anywhere.
 """
@@ -47,6 +47,15 @@ def deferred_delete_script(install_dir: Path) -> str:
     )
 
 
-def process_is_running(tasklist_output: str) -> bool:
-    """Return True when the task list names the application executable."""
-    return EXE_NAME.lower() in tasklist_output.lower()
+def shortcut_target_command(link: Path) -> str:
+    """Return the PowerShell that prints the target a shortcut points at."""
+    escaped = str(link).replace("'", "''")
+    return (
+        "(New-Object -ComObject WScript.Shell).CreateShortcut("
+        f"'{escaped}').TargetPath"
+    )
+
+
+def process_is_running(tasklist_output: str, exe_name: str = EXE_NAME) -> bool:
+    """Return True when the task list names the given executable."""
+    return exe_name.lower() in tasklist_output.lower()

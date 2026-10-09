@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shared shell helpers for the Fulcrum build scripts."""
+"""Shared shell helpers for the Decitect build scripts."""
 
 from __future__ import annotations
 

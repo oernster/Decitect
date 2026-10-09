@@ -6,7 +6,7 @@ uninstall registration should say, what a shortcut or a deferred delete asks
 Windows to do. The side effects that carry those decisions out live in
 installer_ops.py and the screens that present them live in installer_window.py,
 so this module is exercised by the test suite exactly like the application
-layer of the app it installs. Nothing here imports from the ``fulcrum``
+layer of the app it installs. Nothing here imports from the ``decitect``
 package (the installer stays standalone) and nothing here reads ``__file__``:
 the bundle root is passed in by the entry point, whose location is the one the
 onefile bootstrap defines.
@@ -21,33 +21,33 @@ import zipfile
 from dataclasses import dataclass
 from pathlib import Path
 
-APP_NAME = "Fulcrum"
-# Display name shown in all installer UI text and the Apps list. For Fulcrum the
+APP_NAME = "Decitect"
+# Display name shown in all installer UI text and the Apps list. For Decitect the
 # identifier and the display name match (no embedded space), so the payload
 # directory, install path and exe all share the same base name.
-APP_DISPLAY_NAME = "Fulcrum"
-APP_TAGLINE = "Organisational Decision Architecture Simulation Tool"
+APP_DISPLAY_NAME = "Decitect"
+APP_TAGLINE = "Decision Architecture Organisational Software"
 APP_PUBLISHER = "Oliver Ernster"
-APP_URL = "https://ernster.dev/fulcrum/"
+APP_URL = "https://decitect.com/"
 
-# Payload layout produced by buildinstaller.py: payload/Fulcrum/ holds the
-# bundle's non-binary files (read by the installer UI), payload/Fulcrum.zip the
+# Payload layout produced by buildinstaller.py: payload/Decitect/ holds the
+# bundle's non-binary files (read by the installer UI), payload/Decitect.zip the
 # full app bundle for deployment and payload/LICENSE the licence text.
 PAYLOAD_DIR_NAME = "payload"
 MODEL_LICENSE_FILE_NAME = "LICENSE-GPL-3.0.txt"
 UI_LICENSE_FILE_NAME = "LICENSE-LGPL-3.0.txt"
 INSTALLER_LICENSE_FILE_NAME = "INSTALLER_LICENSE"
 VERSION_FILE_NAME = "VERSION"
-EXE_NAME = "fulcrum.exe"
+EXE_NAME = "decitect.exe"
 # The bundle ships as a single zip because Nuitka's onefile build drops loose
 # executables and DLLs from a data directory; the installer extracts it.
-PAYLOAD_ARCHIVE_NAME = "Fulcrum.zip"
+PAYLOAD_ARCHIVE_NAME = "Decitect.zip"
 # The application's asset resolver looks for these beside the executable (the
 # bundle root), not in an assets subdirectory. The multi-size .ico is what
 # shortcuts and the Apps-list DisplayIcon use, so the small sizes that Windows
 # search and the taskbar render are present.
-ICON_FILE_NAME = "fulcrum_256.png"
-SHORTCUT_ICON_FILE_NAME = "fulcrum.ico"
+ICON_FILE_NAME = "decitect_256.png"
+SHORTCUT_ICON_FILE_NAME = "decitect.ico"
 
 # Per-user locations (no administrator rights required).
 ENV_LOCALAPPDATA = "LOCALAPPDATA"
@@ -62,12 +62,12 @@ _SHORTCUT_EXT = ".lnk"
 # than under LocalAppData. This MUST match the app's own directory name or the
 # uninstaller's "also remove my settings and saved games" removes nothing and
 # says otherwise. tests/installer/test_state_dir.py pins the two together.
-_STATE_DIR_NAME = ".fulcrum"
+_STATE_DIR_NAME = ".decitect"
 
 # The registered uninstaller is a copy of this installer placed under the
 # install root, so "Apps & features" can re-run it with --uninstall.
 UNINSTALLER_SUBDIR = "_uninstall"
-UNINSTALLER_NAME = "FulcrumSetup.exe"
+UNINSTALLER_NAME = "DecitectSetup.exe"
 UNINSTALL_FLAG = "--uninstall"
 # Under a Nuitka onefile build sys.executable is the unpacked temporary
 # bootstrap, so the launcher is discovered via this variable instead.
@@ -76,22 +76,22 @@ _EXE_SUFFIX = ".exe"
 
 # HKCU Uninstall registration: this is what makes the app appear in
 # "Apps & features" with a working Uninstall button.
-UNINSTALL_KEY = r"Software\Microsoft\Windows\CurrentVersion\Uninstall\Fulcrum"
+UNINSTALL_KEY = r"Software\Microsoft\Windows\CurrentVersion\Uninstall\Decitect"
 
 # Per-user Run key for launching the app at Windows sign-in (no admin needed).
 RUN_SUBKEY = r"Software\Microsoft\Windows\CurrentVersion\Run"
-RUN_VALUE = "Fulcrum"
+RUN_VALUE = "Decitect"
 
 # The app registers its notification name and icon under this Application User
 # Model ID at startup so Windows can brand its toasts, and the uninstall flow
 # removes it. Must match the app's APP_APPUSERMODELID.
-APP_AUMID = "uk.codecrafter.fulcrum"
+APP_AUMID = "uk.codecrafter.decitect"
 AUMID_CLASSES_SUBKEY = r"Software\Classes\AppUserModelId"
 
 # Crash diagnostics: a console-disabled onefile shows no traceback when it
 # dies, so unhandled exceptions are appended to this file under the temp
 # directory for the user to send back.
-INSTALLER_LOG_NAME = "fulcrum-installer.log"
+INSTALLER_LOG_NAME = "decitect-installer.log"
 
 LICENSE_FALLBACK = "The licence text was not bundled with this installer."
 INSTALLER_LICENSE_FALLBACK = (
@@ -183,9 +183,14 @@ def _local_appdata(local_appdata: str | None, home: Path) -> Path:
     return home.joinpath(*_LOCAL_APPDATA_SUBPATH)
 
 
+def programs_dir(local_appdata: str | None, home: Path) -> Path:
+    """Return the per-user Programs directory every install lives under."""
+    return _local_appdata(local_appdata, home) / _PROGRAMS_DIR_NAME
+
+
 def install_target(local_appdata: str | None, home: Path) -> Path:
     """Return the per-user install directory for the application."""
-    return _local_appdata(local_appdata, home) / _PROGRAMS_DIR_NAME / APP_NAME
+    return programs_dir(local_appdata, home) / APP_NAME
 
 
 def state_dir(home: Path) -> Path:
@@ -193,17 +198,17 @@ def state_dir(home: Path) -> Path:
     return home / _STATE_DIR_NAME
 
 
-def start_menu_link(appdata: str | None) -> Path | None:
+def start_menu_link(appdata: str | None, name: str = APP_DISPLAY_NAME) -> Path | None:
     """Return the per-user Start Menu shortcut path, or None when unavailable."""
     if not appdata:
         return None
     programs = Path(appdata).joinpath(*_START_MENU_SUBPATH)
-    return programs / f"{APP_DISPLAY_NAME}{_SHORTCUT_EXT}"
+    return programs / f"{name}{_SHORTCUT_EXT}"
 
 
-def desktop_link(home: Path) -> Path:
+def desktop_link(home: Path, name: str = APP_DISPLAY_NAME) -> Path:
     """Return the per-user Desktop shortcut path."""
-    return home / _DESKTOP_DIR_NAME / f"{APP_DISPLAY_NAME}{_SHORTCUT_EXT}"
+    return home / _DESKTOP_DIR_NAME / f"{name}{_SHORTCUT_EXT}"
 
 
 def uninstaller_path(install_dir: Path) -> Path:

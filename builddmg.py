@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""macOS DMG builder for Fulcrum.
+"""macOS DMG builder for Decitect.
 
 Requires macOS with Xcode command-line tools and Homebrew. Nuitka is the
 build-time compiler (from requirements-dev.txt); it produces a standalone .app
@@ -12,14 +12,14 @@ Notarization is mandatory. A Developer ID signature alone is not enough: since
 macOS 10.15 Gatekeeper rejects signed-but-unnotarized apps with "Apple could not
 verify ... is free of malware". Notarization authenticates with APPLE_ID and
 APPLE_APP_PASSWORD when both are set; otherwise with the keychain profile
-Fulcrum. A missing or rejected credential stops the build at the notarization
+Decitect. A missing or rejected credential stops the build at the notarization
 step; only ALLOW_UNNOTARIZED=1 skips notarization.
 
 Env vars:
     APPLE_ID                  : Apple ID for notarization (with the password)
     APPLE_APP_PASSWORD        : app-specific password for notarization
     APPLE_KEYCHAIN_PROFILE    : keychain profile used when the pair above is
-                                unset (defaults to Fulcrum)
+                                unset (defaults to Decitect)
     DEVELOPER_ID_APPLICATION  : override the default signing identity
     APPLE_TEAM_ID             : Team ID for notarization (defaults to W7K465GKFJ)
     ALLOW_UNNOTARIZED         : set to 1 to build without notarizing. The result
@@ -63,27 +63,27 @@ def _resolve_source_png() -> Path | None:
 
 # Constants
 
-APP_NAME = "Fulcrum"
+APP_NAME = "Decitect"
 APP_VERSION = _read_version()
-BUNDLE_ID = "uk.codecrafter.Fulcrum"
-FINAL_DMG = "fulcrum.dmg"
-RW_DMG = "_fulcrum_rw.dmg"
+BUNDLE_ID = "uk.codecrafter.Decitect"
+FINAL_DMG = "decitect.dmg"
+RW_DMG = "_decitect_rw.dmg"
 VOLUME_NAME = f"Install {APP_NAME}"
 DIST_DIR = Path("dist")
 
 # Source PNG for the macOS .icns. This must be one of the glow-treated icons
-# generate_icons.py emits, NOT the fulcrum.png master: that master is the raw
+# generate_icons.py emits, NOT the decitect.png master: that master is the raw
 # dark-on-black artwork, so building the icns from it ships the pre-glow icon
-# (dark art on a dark fill) while Windows (fulcrum.ico) and Flatpak
-# (fulcrum_*.png) ship the treated set. Ordered largest first so png_to_icns
+# (dark art on a dark fill) while Windows (decitect.ico) and Flatpak
+# (decitect_*.png) ship the treated set. Ordered largest first so png_to_icns
 # downscales from the highest-fidelity treated source that is present.
 SOURCE_PNG_CANDIDATES = (
-    "fulcrum_1024.png",
-    "fulcrum_512.png",
-    "fulcrum_256.png",
+    "decitect_1024.png",
+    "decitect_512.png",
+    "decitect_256.png",
 )
 
-# Dark background matching Fulcrum's theme base colour (the installer _BACKGROUND
+# Dark background matching Decitect's theme base colour (the installer _BACKGROUND
 # and theme.py dark surface), so transparent icon areas read dark, not white.
 ICON_BG = (0x0D, 0x0F, 0x12)
 
@@ -91,22 +91,22 @@ ICON_BG = (0x0D, 0x0F, 0x12)
 # beside the binary (icon, the amber spinbox arrows). The book covers under
 # assets/books are added separately as a data directory.
 BUNDLED_ICONS = [
-    "fulcrum_16.png",
-    "fulcrum_32.png",
-    "fulcrum_48.png",
-    "fulcrum_64.png",
-    "fulcrum_128.png",
-    "fulcrum_256.png",
-    "fulcrum_provenance_256.png",
-    "fulcrum_512.png",
-    "fulcrum.png",
-    "fulcrum.ico",
+    "decitect_16.png",
+    "decitect_32.png",
+    "decitect_48.png",
+    "decitect_64.png",
+    "decitect_128.png",
+    "decitect_256.png",
+    "decitect_provenance_256.png",
+    "decitect_512.png",
+    "decitect.png",
+    "decitect.ico",
     "spin_up.png",
     "spin_down.png",
 ]
 
 # VERSION plus the dual-licence texts (model GPL-3.0, UI LGPL-3.0) and the
-# overview, all resolved beside the binary by fulcrum.shared.resources.
+# overview, all resolved beside the binary by decitect.shared.resources.
 BUNDLED_DATA = [
     "VERSION",
     "LICENSE",
@@ -134,14 +134,14 @@ APPLE_APP_PASSWORD = os.environ.get("APPLE_APP_PASSWORD", "")
 APPLE_TEAM_ID = os.environ.get("APPLE_TEAM_ID", "W7K465GKFJ")
 
 # The notarization credential for this app, created once with
-#   xcrun notarytool store-credentials Fulcrum \
+#   xcrun notarytool store-credentials Decitect \
 #     --apple-id <id> --team-id <team> --password <app-specific>
 # One profile per app means a leaked credential can be revoked for a single
 # app. Stated explicitly rather than derived from a display name: the profile
 # is a fact registered with Apple. Deriving it would silently change which
 # credential the build looks for if that name were ever edited.
 # APPLE_KEYCHAIN_PROFILE overrides it.
-NOTARY_PROFILE = os.environ.get("APPLE_KEYCHAIN_PROFILE", "") or "Fulcrum"
+NOTARY_PROFILE = os.environ.get("APPLE_KEYCHAIN_PROFILE", "") or "Decitect"
 
 # The notary service accepts only an app-specific password from appleid.apple.com
 # and rejects the Apple account password with HTTP 401. The shape is distinctive,
@@ -169,7 +169,7 @@ DMG_APP_ICON_POS = ("120", "180")
 DMG_OK_RETURN_CODES = (0, 2)
 BYTES_PER_MB = 1024 * 1024
 
-# Minimal hardened-runtime entitlements. Fulcrum is a local-first app with no
+# Minimal hardened-runtime entitlements. Decitect is a local-first app with no
 # network use and no JIT, so none of the relaxed memory/network entitlements are
 # required. disable-library-validation lets the hardened runtime load the
 # Nuitka-bundled Qt frameworks signed with our identity.
@@ -580,7 +580,7 @@ def apply_file_icon(png_path: Path) -> None:
 
 
 def main() -> int:
-    print(f"\nFULCRUM DMG BUILDER  v{APP_VERSION}")
+    print(f"\nDECITECT DMG BUILDER  v{APP_VERSION}")
     print(f"Signing identity: {DEVELOPER_ID}")
 
     check_platform()

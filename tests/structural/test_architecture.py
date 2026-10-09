@@ -41,7 +41,7 @@ def test_application_does_not_import_infrastructure_or_ui():
 
 
 def test_infrastructure_and_shared_never_import_the_ui_or_qt():
-    # The GPL and LGPL boundary the LICENSE draws: only fulcrum.ui is Qt.
+    # The GPL and LGPL boundary the LICENSE draws: only decitect.ui is Qt.
     for layer in ("infrastructure", "shared"):
         assert _layer_problems(layer, ui_import_violations) == [], layer
 
@@ -68,11 +68,11 @@ def test_modules_stay_under_the_line_limit():
 
 def test_the_installer_stays_standalone():
     # The installer is compiled separately and must pull in nothing from the
-    # application: an import of fulcrum here would drag the whole package
+    # application: an import of decitect here would drag the whole package
     # into the setup binary and couple two release artefacts together.
     for path in _installer_sources():
         modules = _imported_modules(path)
-        assert not any(m.split(".")[0] == "fulcrum" for m in modules), path.name
+        assert not any(m.split(".")[0] == "decitect" for m in modules), path.name
 
 
 def test_the_installer_decisions_touch_no_side_effects():
@@ -120,7 +120,7 @@ def test_the_update_check_exemption_is_exact():
 def test_the_network_scan_covers_what_ships():
     scanned = {p.relative_to(_ROOT).as_posix() for p in _shipped_sources()}
     assert {"main.py", "installer/app.py"} <= scanned
-    assert any(name.startswith("fulcrum/") for name in scanned)
+    assert any(name.startswith("decitect/") for name in scanned)
     assert not any(_INSTALLER_PAYLOAD in name.split("/") for name in scanned)
 
 

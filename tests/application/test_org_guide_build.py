@@ -10,17 +10,17 @@ from itertools import pairwise
 
 import pytest
 
-from fulcrum.application.game_session import MAX_PLAYABLE_TEAMS
-from fulcrum.application.org_guide import (
+from decitect.application.game_session import MAX_PLAYABLE_TEAMS
+from decitect.application.org_guide import (
     LOOSE_TEAMS_LABEL,
     _Builder,
     build_org_guide,
 )
-from fulcrum.application.org_guide_model import GROWTH_FRAME_LABEL
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.domain.hierarchy import TOP_LEVEL_FOCUS
-from fulcrum.domain.models import Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import MoveKind
+from decitect.application.org_guide_model import GROWTH_FRAME_LABEL
+from decitect.application.simulator import DeterministicSimulator
+from decitect.domain.hierarchy import TOP_LEVEL_FOCUS
+from decitect.domain.models import Dependency, Domain, OrgState, Team
+from decitect.domain.moves import MoveKind
 
 _SIM = DeterministicSimulator()
 

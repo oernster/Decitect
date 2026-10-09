@@ -1,8 +1,8 @@
 """Shared builders for the game-session test files."""
 
-from fulcrum.application.dto import MoveValuation
-from fulcrum.domain.models import Dependency, Domain, OrgState, Team
-from fulcrum.domain.simulation import MoveClassification, StructuralScore
+from decitect.application.dto import MoveValuation
+from decitect.domain.models import Dependency, Domain, OrgState, Team
+from decitect.domain.simulation import MoveClassification, StructuralScore
 
 _SCORE = 50.0
 _AFTER = 55.0

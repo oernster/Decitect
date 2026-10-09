@@ -4,14 +4,14 @@ from session_support import FakeSimulator as _FakeSimulator
 from session_support import flat_org as _org
 from session_support import nested_org as _nested_org
 
-from fulcrum.application.dto import SessionSnapshot
-from fulcrum.application.game_session import (
+from decitect.application.dto import SessionSnapshot
+from decitect.application.game_session import (
     GameSession,
     record_positions,
     restore_session,
 )
-from fulcrum.domain.hierarchy import TOP_LEVEL_FOCUS
-from fulcrum.domain.moves import Move, MoveKind
+from decitect.domain.hierarchy import TOP_LEVEL_FOCUS
+from decitect.domain.moves import Move, MoveKind
 
 
 def test_snapshot_captures_start_moves_and_result():

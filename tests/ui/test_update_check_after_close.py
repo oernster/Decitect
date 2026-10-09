@@ -16,9 +16,9 @@ import threading
 import shiboken6
 from PySide6.QtWidgets import QWidget
 
-from fulcrum.application.update_info import ReleaseInfo
-from fulcrum.application.update_service import UpdateService, platform_key_for
-from fulcrum.ui.update_check import UpdateCheckController
+from decitect.application.update_info import ReleaseInfo
+from decitect.application.update_service import UpdateService, platform_key_for
+from decitect.ui.update_check import UpdateCheckController
 
 CURRENT = "4.4.0"
 

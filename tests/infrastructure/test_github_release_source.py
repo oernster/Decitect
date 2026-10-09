@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from fulcrum.infrastructure.github_release_source import (
+from decitect.infrastructure.github_release_source import (
     _ACCEPT_HEADER,
     _API_URL,
     _TIMEOUT_SECONDS,
@@ -13,11 +13,11 @@ from fulcrum.infrastructure.github_release_source import (
 
 PAYLOAD = {
     "tag_name": "v4.4.0",
-    "html_url": "https://github.com/oernster/fulcrum/releases/tag/v4.4.0",
+    "html_url": "https://github.com/oernster/Decitect/releases/tag/v4.4.0",
     "assets": [
         {
-            "name": "FulcrumSetup.exe",
-            "browser_download_url": "https://example.com/FulcrumSetup.exe",
+            "name": "DecitectSetup.exe",
+            "browser_download_url": "https://example.com/DecitectSetup.exe",
         },
     ],
 }
@@ -64,7 +64,7 @@ def test_happy_path():
     release = source_for(PAYLOAD).latest_release()
     assert release.version == "v4.4.0"
     assert release.page_url == PAYLOAD["html_url"]
-    assert release.assets[0].name == "FulcrumSetup.exe"
+    assert release.assets[0].name == "DecitectSetup.exe"
 
 
 def test_request_target_headers_and_timeout():

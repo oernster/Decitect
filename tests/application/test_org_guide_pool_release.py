@@ -11,10 +11,10 @@ import time
 
 import pytest
 
-from fulcrum.application.org_guide_parallel import GuideWorkers
-from fulcrum.application.planner import GuideBuildCancelled
-from fulcrum.domain.models import OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind
+from decitect.application.org_guide_parallel import GuideWorkers
+from decitect.application.planner import GuideBuildCancelled
+from decitect.domain.models import OrgState, Team
+from decitect.domain.moves import Move, MoveKind
 
 # Long enough that a worker still holding its chunk at the check can only
 # be one that was left running, short enough that a red run cleans itself.

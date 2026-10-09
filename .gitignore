@@ -217,7 +217,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Fulcrum build outputs (Nuitka standalone payload + onefile installer)
+# Decitect build outputs (Nuitka standalone payload + onefile installer)
 dist-installer/
 installer/payload/
 *.dist
@@ -231,7 +231,7 @@ installer/payload/
 .flatpak-builder/
 .flatpak-wheels/
 packaging/
-uk.codecrafter.Fulcrum.yml
+uk.codecrafter.Decitect.yml
 
 # macOS DMG build outputs (builddmg.py)
 *.dmg

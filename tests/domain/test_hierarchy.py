@@ -1,8 +1,8 @@
 """Tests for the domain-hierarchy queries and focused sub-org views."""
 
-from fulcrum.domain import hierarchy
-from fulcrum.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind
+from decitect.domain import hierarchy
+from decitect.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
+from decitect.domain.moves import Move, MoveKind
 
 
 def _nested_org():

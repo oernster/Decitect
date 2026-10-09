@@ -1,6 +1,8 @@
-# Fulcrum
+# Decitect
 
-Fulcrum turns the Decision Architecture model into an engine you operate. You fix a
+**Decision Architecture Organisational Software**
+
+Decitect turns the Decision Architecture model into an engine you operate. You fix a
 failing organisation by choosing structural moves (delegate authority, stabilise
 interfaces, realign incentives, collapse a boundary or resolve contested
 ownership to a single accountable owner) and a deterministic model scores the
@@ -10,11 +12,16 @@ or ask for a guide to a stronger structure.
 It is a local-first desktop app: everything runs on your machine and nothing
 about you or your organisations leaves it. The one call it makes to the
 network is an anonymous daily ask of GitHub's releases API for whether a
-newer Fulcrum exists; a failed check is silent.
+newer Decitect exists; a failed check is silent.
 
-A short tour and the books behind it are at <https://ernster.dev/fulcrum/>.
+A short tour and the books behind it are at <https://decitect.com/>.
 
-> **Commercial licences available.** Fulcrum is free and open source under
+Decitect was called Fulcrum before 5.0.0. Nothing is lost in the rename: the
+first launch moves the old `~/.fulcrum` settings and session into
+`~/.decitect`; the Windows setup offers to remove an old Fulcrum install
+once the new one is in place.
+
+> **Commercial licences available.** Decitect is free and open source under
 > GPL-3.0, with its interface layer under LGPL-3.0. If those terms do not suit
 > what you are building, such as a closed-source product, a commercial licence
 > can be bought from me separately. It covers my own code; PySide6 keeps its
@@ -223,7 +230,7 @@ python main.py
   read its result.
 - [Technical debt](TECH_DEBT.md): the standing reference to what is still open,
   what is deliberately left and what only looks like debt.
-- [Decisions and trade-offs](DECISIONS-TRADEOFFS.md): the decisions Fulcrum
+- [Decisions and trade-offs](DECISIONS-TRADEOFFS.md): the decisions Decitect
   rests on, with what each one gains and what it costs.
 - [Pre-registration](PREREGISTRATION.md): the blind external validation
   protocol, with its thresholds fixed before any organisation is scored.
@@ -244,15 +251,15 @@ Pages site) are described in [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## Supporting the project
 
-Fulcrum is free and stays free. There is no paid tier, no licence key and no
+Decitect is free and stays free. There is no paid tier, no licence key and no
 feature held back behind a donation. If it has saved you time or simply been
 useful, a donation supports its maintenance and continued development.
 
 The same link sits in the app's header, just left of the light and dark
-toggle. Pressing it hands the address to your browser; Fulcrum itself sends
+toggle. Pressing it hands the address to your browser; Decitect itself sends
 nothing and opens no connection of its own.
 
-<a href="https://www.paypal.com/ncp/payment/X2U2V8TML89DE"><img src="docs/donate.png" alt="Donate to Fulcrum" width="120"></a>
+<a href="https://www.paypal.com/ncp/payment/X2U2V8TML89DE"><img src="docs/donate.png" alt="Donate to Decitect" width="120"></a>
 
 ## Licence
 

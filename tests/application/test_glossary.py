@@ -2,7 +2,7 @@
 
 import pytest
 
-from fulcrum.application.glossary import (
+from decitect.application.glossary import (
     TERM_DEPENDENCY,
     TERM_DOMAIN,
     TERM_ESCALATION,
@@ -16,9 +16,9 @@ from fulcrum.application.glossary import (
     build_glossary,
     short_help,
 )
-from fulcrum.domain.moves import MoveKind
-from fulcrum.domain.signals import SIGNAL_DEFINITIONS
-from fulcrum.domain.simulation import DEFAULT_THRESHOLDS
+from decitect.domain.moves import MoveKind
+from decitect.domain.signals import SIGNAL_DEFINITIONS
+from decitect.domain.simulation import DEFAULT_THRESHOLDS
 
 
 def test_glossary_has_sections_for_moves_signals_and_ideas():

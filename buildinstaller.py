@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the Fulcrum Windows installer.
+"""Build the Decitect Windows installer.
 
 This mirrors the author's installer approach: a self-contained GUI installer
 executable that carries the built application as an embedded payload plus the
@@ -13,7 +13,7 @@ Two-step workflow (run from the project root):
     1) Build the app bundle:   python buildexe.py
     2) Build the installer:    python buildinstaller.py
 
-Step 1 writes the standalone bundle to installer/payload/Fulcrum. Step 2 zips
+Step 1 writes the standalone bundle to installer/payload/Decitect. Step 2 zips
 that bundle (alongside the LICENSE) into the installer payload, then compiles
 the installer UI (installer/app.py) into a single onefile executable.
 
@@ -35,9 +35,9 @@ import stamp_version
 from build_utils import require_nuitka
 
 # --- Project identity (single source of truth for installer metadata) -------
-APP_DISPLAY_NAME = "Fulcrum"
+APP_DISPLAY_NAME = "Decitect"
 APP_AUTHOR = "Oliver Ernster"
-INSTALLER_NAME = "FulcrumSetup"
+INSTALLER_NAME = "DecitectSetup"
 
 # Repository layout, resolved relative to this script.
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -45,11 +45,11 @@ LICENSE_FILE = PROJECT_ROOT / "LICENSE"
 MODEL_LICENSE_FILE = PROJECT_ROOT / "LICENSE-GPL-3.0.txt"
 UI_LICENSE_FILE = PROJECT_ROOT / "LICENSE-LGPL-3.0.txt"
 INSTALLER_LICENSE_FILE = PROJECT_ROOT / "INSTALLER_LICENSE"
-ICON_FILE = PROJECT_ROOT / "fulcrum.ico"
+ICON_FILE = PROJECT_ROOT / "decitect.ico"
 VERSION_FILE = PROJECT_ROOT / "VERSION"
 
 # Installer UI entry point and payload locations. buildexe.py writes the
-# standalone bundle directly into installer/payload/Fulcrum, so the bundle the
+# standalone bundle directly into installer/payload/Decitect, so the bundle the
 # installer packages is found there (not under dist/main.dist).
 INSTALLER_DIR = PROJECT_ROOT / "installer"
 INSTALLER_ENTRY = INSTALLER_DIR / "app.py"

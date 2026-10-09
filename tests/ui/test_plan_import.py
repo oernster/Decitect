@@ -10,11 +10,11 @@ import json
 
 import pytest
 
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.domain.models import OrgState, Origin, Team
-from fulcrum.infrastructure.json_serialization import org_to_dict
-from fulcrum.infrastructure.plan_exporter import FilePlanExporter
-from fulcrum.ui.plan_files import PlanFileActions
+from decitect.application.simulator import DeterministicSimulator
+from decitect.domain.models import OrgState, Origin, Team
+from decitect.infrastructure.json_serialization import org_to_dict
+from decitect.infrastructure.plan_exporter import FilePlanExporter
+from decitect.ui.plan_files import PlanFileActions
 
 
 def _org_dict() -> dict:

@@ -2,9 +2,9 @@
 
 import pytest
 
-from fulcrum.domain.errors import InvalidMoveError, UnknownTeamError
-from fulcrum.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind, apply_move
+from decitect.domain.errors import InvalidMoveError, UnknownTeamError
+from decitect.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
+from decitect.domain.moves import Move, MoveKind, apply_move
 
 
 def _t(team_id, authority=True, skew=0.0):

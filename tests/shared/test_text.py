@@ -1,6 +1,6 @@
 """Tests for the shared text helpers."""
 
-from fulcrum.shared.text import count_noun
+from decitect.shared.text import count_noun
 
 
 def test_count_noun_singular_and_regular_plural():

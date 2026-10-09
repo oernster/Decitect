@@ -1,12 +1,12 @@
 """Tests for the file plan exporter (separate HTML report and JSON source)."""
 
-from fulcrum.application.dto import Plan
-from fulcrum.application.plan import build_plan_report
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.domain.models import Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind, apply_move
-from fulcrum.infrastructure.plan_exporter import FilePlanExporter
-from fulcrum.infrastructure.plan_repository import read_plan
+from decitect.application.dto import Plan
+from decitect.application.plan import build_plan_report
+from decitect.application.simulator import DeterministicSimulator
+from decitect.domain.models import Dependency, Domain, OrgState, Team
+from decitect.domain.moves import Move, MoveKind, apply_move
+from decitect.infrastructure.plan_exporter import FilePlanExporter
+from decitect.infrastructure.plan_repository import read_plan
 
 _CREATED = "2026-06-18T00:00:00"
 

@@ -1,0 +1,64 @@
+"""File-based export and import of a plan: the JSON source and the HTML report.
+
+The JSON captures the starting org and the move sequence, so a plan can be
+re-imported and resumed later; writes are atomic (temp file then replace). The
+HTML report is written verbatim. Both are plain files the user chooses.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+from pathlib import Path
+
+from decitect.application.dto import Plan
+from decitect.domain.errors import InvalidOrgStateError
+from decitect.infrastructure.json_serialization import (
+    move_to_dict,
+    moves_from_list,
+    org_from_dict,
+    org_to_dict,
+)
+
+_JSON_INDENT = 2
+_TMP_SUFFIX = ".tmp"
+
+
+def plan_to_dict(plan: Plan) -> dict:
+    return {
+        "initial_org": org_to_dict(plan.initial_org),
+        "moves": [move_to_dict(move) for move in plan.moves],
+        "created_at": plan.created_at,
+    }
+
+
+def plan_from_dict(data: object) -> Plan:
+    if not isinstance(data, dict):
+        raise InvalidOrgStateError("a plan must be a JSON object")
+    created_at = data["created_at"]
+    if not isinstance(created_at, str):
+        raise InvalidOrgStateError("a plan's created_at must be text")
+    return Plan(
+        initial_org=org_from_dict(data["initial_org"]),
+        moves=moves_from_list(data["moves"]),
+        created_at=created_at,
+    )
+
+
+def write_plan(path: Path, plan: Plan) -> None:
+    _atomic_write(path, json.dumps(plan_to_dict(plan), indent=_JSON_INDENT))
+
+
+def read_plan(path: Path) -> Plan:
+    return plan_from_dict(json.loads(path.read_text(encoding="utf-8")))
+
+
+def write_html(path: Path, html: str) -> None:
+    _atomic_write(path, html)
+
+
+def _atomic_write(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + _TMP_SUFFIX)
+    tmp.write_text(text, encoding="utf-8")
+    os.replace(tmp, path)

@@ -26,7 +26,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
-from fulcrum.ui.header_buttons import BUTTON_ICON_PX
+from decitect.ui.header_buttons import BUTTON_ICON_PX
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "assets" / "buttons"

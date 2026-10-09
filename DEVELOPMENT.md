@@ -1,12 +1,12 @@
-# Fulcrum development
+# Decitect development
 
-This is the guide to working on Fulcrum from source: the environment, the
+This is the guide to working on Decitect from source: the environment, the
 quality gate and the build scripts. For the design see
 [ARCHITECTURE.md](ARCHITECTURE.md); for the test suite see [TESTING.md](TESTING.md).
 
 ## Environment
 
-Fulcrum targets Python 3.11 or newer and is developed on 3.13.
+Decitect targets Python 3.11 or newer and is developed on 3.13.
 
 Windows:
 
@@ -39,7 +39,7 @@ version it found and the install command, when Nuitka is missing or older.
 ## Project layout
 
 ```
-fulcrum/
+decitect/
   domain/          pure model: org state, moves, scoring, frames, signals, books
   application/     simulator seam, session, org draft, planner, org guide,
                    guide worker pool, plan, glossary
@@ -85,8 +85,8 @@ infrastructure, shared and the installer's pure modules). The structural
 tests in `tests/structural` enforce the architectural invariants: domain
 purity (an allowlist of pure standard-library modules, no I/O builtins),
 inward dependencies with relative imports resolved, Qt and the UI confined
-to `fulcrum/ui`, the 400-line module limit across source, tests and the
-installer, the installer importing nothing from the `fulcrum` package and
+to `decitect/ui`, the 400-line module limit across source, tests and the
+installer, the installer importing nothing from the `decitect` package and
 its pure modules touching no registry, subprocess, environment or Qt. Each
 layer rule is proven to bite on a planted violation. Adding a feature means placing it in the right layer (the domain stays
 pure; the UI talks only to the application) or those tests fail. The detail
@@ -106,8 +106,8 @@ Linux.
 python generate_icons.py
 ```
 
-Renders the multi-size PNG set and the multi-resolution `fulcrum.ico` from
-`fulcrum.png`, used for the window, the taskbar and the packaged executable.
+Renders the multi-size PNG set and the multi-resolution `decitect.ico` from
+`decitect.png`, used for the window, the taskbar and the packaged executable.
 The electric-glow treatment (transparent keying, colour lift, halo) and a
 mass-based trim (the art is cropped to the box holding almost all of its
 ink, then squared with a thin margin, so the mark fills the taskbar tile)
@@ -128,7 +128,7 @@ The same script derives the donate mark from its master, `assets/donate.png`.
 The mark is a wide picture rather than an icon, so it skips the squaring the
 app icon takes: it is cropped to its artwork, then scaled by height alone to
 four times the height the header draws it at (`BUTTON_ICON_PX` in
-`fulcrum/ui/header_buttons.py`), so it stays crisp under display scaling; the
+`decitect/ui/header_buttons.py`), so it stays crisp under display scaling; the
 render goes to `assets/buttons/donate.png` for the app. Replace the master and
 rerun; never hand-scale the render. The site's `docs/donate.png` is not
 generated: it is the small mark every project site shares byte for byte. The
@@ -141,17 +141,17 @@ python buildexe.py
 ```
 
 Builds a self-contained Windows executable with Nuitka into
-`installer/payload/Fulcrum`, so an end user needs no system Python. The icon,
+`installer/payload/Decitect`, so an end user needs no system Python. The icon,
 the book covers, the header-button icons, the stepper arrows, the calibration
 examples, the `VERSION` file and the licence texts are bundled beside it so
 the app's asset discovery finds them. Set
-`FULCRUM_DEBUG_CONSOLE=1` for a console-visible diagnostic build.
+`DECITECT_DEBUG_CONSOLE=1` for a console-visible diagnostic build.
 
 On a large organisation the guide spawns worker processes (the pool in
-`fulcrum/application/org_guide_parallel.py`); `main.py` calls
+`decitect/application/org_guide_parallel.py`); `main.py` calls
 `multiprocessing.freeze_support()` so those workers behave inside the
 packaged executable, where each worker relaunches the executable itself.
-Seeing several `fulcrum.exe` processes during guide planning is the pool
+Seeing several `decitect.exe` processes during guide planning is the pool
 at work, not a fault.
 
 ### Windows installer
@@ -161,22 +161,26 @@ python buildinstaller.py
 ```
 
 Packages the standalone payload into a single-file installer
-(`dist-installer/FulcrumSetup.exe`) that extracts to
-`%LOCALAPPDATA%\Programs\Fulcrum`, writes the uninstall entry and creates the
+(`dist-installer/DecitectSetup.exe`) that extracts to
+`%LOCALAPPDATA%\Programs\Decitect`, writes the uninstall entry and creates the
 desktop and Start Menu shortcuts. Run `buildexe.py` first.
 
 The installer under `installer/` is a second application, layered like one.
 `installer_logic.py` decides (where files go, how two versions compare, what
 the uninstall registration says, what a shortcut or a deferred delete asks
 Windows to do): it is pure, imports nothing beyond the stdlib and is held at
-100% coverage by `tests/installer`. `installer_ops.py` acts
-(registry, task list, PowerShell, Win32). `installer_lifecycle.py` composes
-the two into install, repair and uninstall. `installer_bundle.py` reads the
+100% coverage by `tests/installer`, as is `installer_legacy.py`, which decides
+what an install under the former name (Fulcrum) consists of and which of its
+shortcuts and sign-in entries are provably its own. `installer_ops.py` acts
+(registry, task list, PowerShell, Win32); `installer_startup.py` sets up the
+process (crash log, taskbar identity). `installer_lifecycle.py` composes
+them into install, repair and uninstall; an install with the old Fulcrum
+install found and its option left ticked retires that install last. `installer_bundle.py` reads the
 payload beside the binary; `installer_theme.py`, `installer_widgets.py`
 and `installer_window.py` are the Qt surface, outside the coverage gate as the
 app's own UI is. `app.py` is the entry point. Every module is inside the
 400-line cap, which the structural test now enforces over `installer/` too.
-Nothing under `installer/` may import from the `fulcrum` package: the two
+Nothing under `installer/` may import from the `decitect` package: the two
 binaries are built and released separately.
 
 ### macOS disk image
@@ -185,18 +189,18 @@ binaries are built and released separately.
 python builddmg.py
 ```
 
-Compiles a standalone `Fulcrum.app` with Nuitka and packages it into
-`fulcrum.dmg`. Needs macOS with the Xcode command-line tools, Homebrew and
+Compiles a standalone `Decitect.app` with Nuitka and packages it into
+`decitect.dmg`. Needs macOS with the Xcode command-line tools, Homebrew and
 `create-dmg`. The app and the disk image are always code signed (with the
 identity in `DEVELOPER_ID_APPLICATION` when it is set) and notarized.
 Notarization uses `APPLE_ID` and `APPLE_APP_PASSWORD` when both are set,
 refusing a password that is not app-specific before any build work; otherwise
-it uses the keychain profile `Fulcrum` (or the one `APPLE_KEYCHAIN_PROFILE`
+it uses the keychain profile `Decitect` (or the one `APPLE_KEYCHAIN_PROFILE`
 names). A missing or rejected credential stops the build at the notarization
 step. Only `ALLOW_UNNOTARIZED=1` skips notarization, for a local test build
 that must never be released. The
 `.icns` derives from the glow-treated icon set `generate_icons.py` emits
-(`fulcrum_1024.png` downwards), never from the raw `fulcrum.png` master, so
+(`decitect_1024.png` downwards), never from the raw `decitect.png` master, so
 run the icon generator first or the build warns and ships without a custom
 icon.
 
@@ -206,9 +210,9 @@ icon.
 ./build_flatpak.sh
 ```
 
-Builds Fulcrum as a Flatpak against the `org.freedesktop.Platform//25.08`
+Builds Decitect as a Flatpak against the `org.freedesktop.Platform//25.08`
 runtime, installs it for the current user and writes a distributable
-`fulcrum.flatpak` bundle. The PySide6 wheels are pre-downloaded on the host then
+`decitect.flatpak` bundle. The PySide6 wheels are pre-downloaded on the host then
 installed offline inside the sandbox, so the build needs no network. The
 manifest's finish-args grant `--share=network` at runtime, which the in-app
 update check needs: without it the sandbox blocks the socket and every check
@@ -221,7 +225,7 @@ reports unreachable. Needs
 ```
 
 Uninstalls the Flatpak for the current user and removes the Flatpak build
-artefacts (`fulcrum.flatpak`, the build and repo directories and the generated
+artefacts (`decitect.flatpak`, the build and repo directories and the generated
 manifest). It leaves the Nuitka and macOS outputs untouched, so the build paths
 stay independent.
 

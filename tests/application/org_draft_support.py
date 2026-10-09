@@ -7,14 +7,14 @@ fixture exists once.
 
 from random import Random
 
-from fulcrum.application.dto import (
+from decitect.application.dto import (
     DependencySpec,
     DomainSpec,
     OrgBlueprint,
     TeamSpec,
 )
-from fulcrum.application.name_pool import NamePicker
-from fulcrum.application.org_draft import OrgDraft
+from decitect.application.name_pool import NamePicker
+from decitect.application.org_draft import OrgDraft
 
 
 def make_draft() -> OrgDraft:

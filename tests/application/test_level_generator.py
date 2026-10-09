@@ -4,17 +4,17 @@ from random import Random
 
 import pytest
 
-from fulcrum.application.cluster_pool import reaches_great_move
-from fulcrum.application.level_generator import _DEPTHS, generate_level
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.domain.hierarchy import (
+from decitect.application.cluster_pool import reaches_great_move
+from decitect.application.level_generator import _DEPTHS, generate_level
+from decitect.application.simulator import DeterministicSimulator
+from decitect.domain.hierarchy import (
     focused_suborg,
     headcount_in_domain,
     root_domains,
     total_headcount,
 )
-from fulcrum.domain.models import OrgState, Origin
-from fulcrum.domain.org_size import ORG_SIZE_BANDS
+from decitect.domain.models import OrgState, Origin
+from decitect.domain.org_size import ORG_SIZE_BANDS
 
 _LOW = 0.6
 _HIGH = 1.4

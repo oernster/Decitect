@@ -2,15 +2,15 @@
 
 import pytest
 
-from fulcrum.application.dto import (
+from decitect.application.dto import (
     DependencySpec,
     DomainSpec,
     OrgBlueprint,
     TeamSpec,
 )
-from fulcrum.application.intake import build_org_state, org_to_blueprint
-from fulcrum.domain.errors import InvalidOrgStateError
-from fulcrum.domain.models import Origin
+from decitect.application.intake import build_org_state, org_to_blueprint
+from decitect.domain.errors import InvalidOrgStateError
+from decitect.domain.models import Origin
 
 
 def test_build_org_state_valid():

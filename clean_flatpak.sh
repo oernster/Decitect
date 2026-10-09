@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# clean_flatpak.sh - Uninstall and purge the Fulcrum Flatpak
+# clean_flatpak.sh - Uninstall and purge the Decitect Flatpak
 #
 # Scoped to flatpak artefacts only. It deliberately does NOT touch the Nuitka
 # outputs (installer/payload, dist-installer) produced by buildexe.py /
@@ -7,7 +7,7 @@
 # stay independent.
 set -euo pipefail
 
-APP_ID="uk.codecrafter.Fulcrum"
+APP_ID="uk.codecrafter.Decitect"
 
 bold=$(tput bold 2>/dev/null || true)
 reset=$(tput sgr0 2>/dev/null || true)
@@ -22,7 +22,7 @@ else
 fi
 
 section "Removing flatpak build artefacts"
-rm -f fulcrum.flatpak
+rm -f decitect.flatpak
 rm -rf .flatpak-build .flatpak-repo .flatpak-builder .flatpak-wheels
 rm -f "${APP_ID}.yml"
 rm -rf packaging/

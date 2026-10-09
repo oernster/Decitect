@@ -11,9 +11,9 @@ from concurrent.futures.process import BrokenProcessPool
 
 import pytest
 
-from fulcrum.application.game_session import MAX_PLAYABLE_TEAMS
-from fulcrum.application.org_guide import build_org_guide
-from fulcrum.application.org_guide_parallel import (
+from decitect.application.game_session import MAX_PLAYABLE_TEAMS
+from decitect.application.org_guide import build_org_guide
+from decitect.application.org_guide_parallel import (
     GuideWorkers,
     _price_chunk,
     _replay_without,
@@ -21,10 +21,10 @@ from fulcrum.application.org_guide_parallel import (
     build_org_guide_auto,
     guide_workers_for,
 )
-from fulcrum.application.planner import ImprovementPlanner
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.domain.models import Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind
+from decitect.application.planner import ImprovementPlanner
+from decitect.application.simulator import DeterministicSimulator
+from decitect.domain.models import Dependency, Domain, OrgState, Team
+from decitect.domain.moves import Move, MoveKind
 
 _SIM = DeterministicSimulator()
 

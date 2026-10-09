@@ -10,10 +10,10 @@ import json
 
 import pytest
 
-from fulcrum.application.dto import SessionSnapshot
-from fulcrum.domain.models import OrgState, Origin, Team
-from fulcrum.infrastructure.json_serialization import org_to_dict
-from fulcrum.infrastructure.org_autosave import _PRESERVE_ATTEMPTS, FileOrgStore
+from decitect.application.dto import SessionSnapshot
+from decitect.domain.models import OrgState, Origin, Team
+from decitect.infrastructure.json_serialization import org_to_dict
+from decitect.infrastructure.org_autosave import _PRESERVE_ATTEMPTS, FileOrgStore
 
 
 def _org() -> OrgState:

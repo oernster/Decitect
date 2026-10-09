@@ -1,6 +1,6 @@
 """The donate button in the header tray.
 
-The seam in fulcrum.ui.links is replaced in every test that presses the
+The seam in decitect.ui.links is replaced in every test that presses the
 button, so the suite never opens a real browser.
 """
 
@@ -8,20 +8,20 @@ from __future__ import annotations
 
 import pytest
 
-from fulcrum.ui import links
-from fulcrum.ui.header_buttons import DONATE_TOOLTIP
-from fulcrum.ui.header_tray import (
+from decitect.ui import links
+from decitect.ui.header_buttons import DONATE_TOOLTIP
+from decitect.ui.header_tray import (
     DONATE_REFUSED_TEXT,
     DONATE_REFUSED_TITLE,
     HeaderTray,
     TrayHandlers,
 )
-from fulcrum.ui.theme_palettes import THEME_DARK
-from fulcrum.version import DONATE_URL
+from decitect.ui.theme_palettes import THEME_DARK
+from decitect.version import DONATE_URL
 
 # Written out in full on purpose: a typo in the payment address must fail
 # here rather than send a supporter to a page that is not the author's.
-FULCRUM_DONATE_URL = "https://www.paypal.com/ncp/payment/X2U2V8TML89DE"
+DECITECT_DONATE_URL = "https://www.paypal.com/ncp/payment/X2U2V8TML89DE"
 
 
 def _nothing() -> None:
@@ -76,12 +76,12 @@ def test_pressing_it_asks_the_desktop_for_that_one_address(qapp, asked) -> None:
     informed: list[tuple[str, str]] = []
     tray = _tray(informed)
     tray.donate_button.click()
-    assert asked == [FULCRUM_DONATE_URL]
+    assert asked == [DECITECT_DONATE_URL]
     assert informed == []
 
 
-def test_the_address_is_fulcrums_own_and_secure() -> None:
-    assert DONATE_URL == FULCRUM_DONATE_URL
+def test_the_address_is_decitects_own_and_secure() -> None:
+    assert DONATE_URL == DECITECT_DONATE_URL
     assert DONATE_URL.startswith("https://")
 
 

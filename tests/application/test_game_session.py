@@ -4,14 +4,14 @@ from session_support import FakeSimulator as _FakeSimulator
 from session_support import flat_org as _org
 from session_support import nested_org as _nested_org
 
-from fulcrum.application.game_session import (
+from decitect.application.game_session import (
     MAX_PLAYABLE_TEAMS,
     GameSession,
     enumerate_moves,
 )
-from fulcrum.domain.hierarchy import TOP_LEVEL_FOCUS
-from fulcrum.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind
+from decitect.domain.hierarchy import TOP_LEVEL_FOCUS
+from decitect.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
+from decitect.domain.moves import Move, MoveKind
 
 
 def test_enumerate_moves_offers_each_kind():

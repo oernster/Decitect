@@ -5,15 +5,15 @@ rule runs over the real package and over a planted file in a temporary
 directory; the plant tests prove each rule bites rather than trusting it.
 
 Relative imports are resolved against the file's own package before any
-rule reads them: `from ..ui import x` inside `fulcrum.domain` is an import
-of `fulcrum.ui.x`, whatever it looks like on the page.
+rule reads them: `from ..ui import x` inside `decitect.domain` is an import
+of `decitect.ui.x`, whatever it looks like on the page.
 """
 
 import ast
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-PKG = ROOT / "fulcrum"
+PKG = ROOT / "decitect"
 
 # The domain is an allowlist, not a denylist: pure computation from the
 # standard library and the domain itself. Anything else (I/O, clocks,
@@ -43,17 +43,17 @@ DOMAIN_STDLIB = frozenset(
         "typing",
     }
 )
-_DOMAIN_PACKAGE = "fulcrum.domain"
-_TOP_PACKAGE = "fulcrum"
+_DOMAIN_PACKAGE = "decitect.domain"
+_TOP_PACKAGE = "decitect"
 # Builtins that reach outside the process or load code by name, so I/O or
 # an import can happen with no import statement at all.
 FORBIDDEN_CALLS = frozenset(
     {"open", "__import__", "eval", "exec", "compile", "input", "print", "breakpoint"}
 )
-FORBIDDEN_FOR_APPLICATION = ("fulcrum.infrastructure", "fulcrum.ui", "PySide6")
+FORBIDDEN_FOR_APPLICATION = ("decitect.infrastructure", "decitect.ui", "PySide6")
 # The UI is the only LGPL component and the only Qt client; nothing in the
 # GPL layers beneath it may import either.
-UI_AND_QT = ("fulcrum.ui", "PySide6")
+UI_AND_QT = ("decitect.ui", "PySide6")
 
 
 def python_files(directory):

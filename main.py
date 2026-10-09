@@ -1,27 +1,32 @@
-"""Fulcrum entry point: composition root and Qt event loop."""
+"""Decitect entry point: composition root and Qt event loop."""
 
 from __future__ import annotations
 
 import multiprocessing
 import sys
+from pathlib import Path
 from random import Random
 
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.application.update_service import UpdateService, platform_key_for
-from fulcrum.infrastructure.example_library import FileExampleLibrary
-from fulcrum.infrastructure.github_release_source import GitHubReleaseSource
-from fulcrum.infrastructure.org_autosave import FileOrgStore
-from fulcrum.infrastructure.plan_exporter import FilePlanExporter
-from fulcrum.infrastructure.settings_store import FileSettingsStore
-from fulcrum.infrastructure.system_clock import SystemClock
-from fulcrum.shared.resources import find_app_icon, find_examples_dir
-from fulcrum.ui import ui_scale
-from fulcrum.ui.main_window import MainWindow
-from fulcrum.ui.theme import get_qss
-from fulcrum.version import __version__
+from decitect.application.simulator import DeterministicSimulator
+from decitect.application.update_service import UpdateService, platform_key_for
+from decitect.infrastructure.example_library import FileExampleLibrary
+from decitect.infrastructure.github_release_source import GitHubReleaseSource
+from decitect.infrastructure.org_autosave import FileOrgStore, default_autosave_path
+from decitect.infrastructure.plan_exporter import FilePlanExporter
+from decitect.infrastructure.settings_store import (
+    FileSettingsStore,
+    default_settings_path,
+)
+from decitect.infrastructure.state_dir import resolve_state_dir
+from decitect.infrastructure.system_clock import SystemClock
+from decitect.shared.resources import find_app_icon, find_examples_dir
+from decitect.ui import ui_scale
+from decitect.ui.main_window import MainWindow
+from decitect.ui.theme import get_qss
+from decitect.version import __version__
 
 _UI_SCALE_REFERENCE_HEIGHT = 1260.0
 _MAX_UI_SCALE = 1.5
@@ -52,7 +57,10 @@ def main() -> int:
 
     avail = app.primaryScreen().availableGeometry()
     ui_scale.init(min(avail.height() / _UI_SCALE_REFERENCE_HEIGHT, _MAX_UI_SCALE))
-    settings = FileSettingsStore()
+    # Resolved once, before either store opens a file, so a pre-rename
+    # ~/.fulcrum is adopted before anything could write a fresh directory.
+    state = resolve_state_dir(Path.home())
+    settings = FileSettingsStore(default_settings_path(state))
     app.setStyleSheet(get_qss(settings.load_theme()))
 
     icon_path = find_app_icon()
@@ -66,7 +74,7 @@ def main() -> int:
         clock=SystemClock(),
         rng=Random(),
         examples=FileExampleLibrary(find_examples_dir()),
-        org_store=FileOrgStore(),
+        org_store=FileOrgStore(default_autosave_path(state)),
         settings=settings,
         update_service=UpdateService(
             GitHubReleaseSource(), __version__, platform_key_for(sys.platform)

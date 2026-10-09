@@ -142,7 +142,7 @@ def test_the_toast_identity_key_sits_under_the_classes_subkey():
 
 def test_the_shortcut_command_points_at_the_installed_exe(tmp_path):
     exe = tmp_path / logic.EXE_NAME
-    link = tmp_path / "Fulcrum.lnk"
+    link = tmp_path / "Decitect.lnk"
     command = scripts.shortcut_command(exe, link)
     assert f"$s.TargetPath = '{exe}'" in command
     assert f"$s.WorkingDirectory = '{tmp_path}'" in command
@@ -165,7 +165,7 @@ def test_the_deferred_delete_escapes_quotes_and_polls_the_lock(tmp_path):
 
 
 def test_the_task_list_is_read_case_insensitively():
-    assert scripts.process_is_running("FULCRUM.EXE  1234 Console") is True
+    assert scripts.process_is_running("DECITECT.EXE  1234 Console") is True
     assert scripts.process_is_running("No tasks are running") is False
 
 
@@ -176,7 +176,7 @@ def _archive(tmp_path, name=logic.PAYLOAD_ARCHIVE_NAME):
     archive = tmp_path / name
     with zipfile.ZipFile(archive, "w") as bundle:
         bundle.writestr(logic.EXE_NAME, "binary")
-        bundle.writestr("assets/fulcrum.ico", "icon")
+        bundle.writestr("assets/decitect.ico", "icon")
     return archive
 
 
@@ -186,7 +186,7 @@ def test_deploying_extracts_the_bundle_and_returns_the_exe(tmp_path):
     exe = logic.deploy_files(archive, target)
     assert exe == target / logic.EXE_NAME
     assert exe.read_text(encoding="utf-8") == "binary"
-    assert (target / "assets" / "fulcrum.ico").is_file()
+    assert (target / "assets" / "decitect.ico").is_file()
 
 
 def test_deploying_over_an_existing_install_leaves_nothing_of_the_old_one(tmp_path):
@@ -212,7 +212,7 @@ def test_the_onefile_launcher_is_preferred_over_the_unpacked_bootstrap(tmp_path)
     temp_root.mkdir()
     bootstrap = temp_root / "bootstrap.exe"
     bootstrap.write_bytes(b"exe")
-    launcher = tmp_path / "FulcrumSetup.exe"
+    launcher = tmp_path / "DecitectSetup.exe"
     launcher.write_bytes(b"exe")
     found = logic.original_installer_exe(
         str(launcher), str(bootstrap), str(bootstrap), temp_root

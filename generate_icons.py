@@ -1,8 +1,8 @@
-"""Generate multi-size PNG and ICO icons for Fulcrum from fulcrum.png.
+"""Generate multi-size PNG and ICO icons for Decitect from decitect.png.
 
 Run from the repo root: python generate_icons.py. The window and taskbar use
 the ICO; the About dialog and the header's overview button use
-fulcrum_256.png; the installer, DMG and Flatpak bundle the same set.
+decitect_256.png; the installer, DMG and Flatpak bundle the same set.
 
 The master artwork is dark-on-black; every emitted icon gets the approved
 "electric glow" treatment first: the near-black backdrop is keyed to full
@@ -16,11 +16,11 @@ from pathlib import Path
 
 from PIL import Image, ImageEnhance, ImageFilter
 
-_SOURCE = "fulcrum.png"
+_SOURCE = "decitect.png"
 _PNG_SIZES = (16, 32, 48, 64, 128, 256, 512, 1024)
 _ICO_SIZES = (16, 32, 48, 64, 128, 256)
-_PNG_TEMPLATE = "fulcrum_{size}.png"
-_ICO_NAME = "fulcrum.ico"
+_PNG_TEMPLATE = "decitect_{size}.png"
+_ICO_NAME = "decitect.ico"
 _RESAMPLE = Image.Resampling.LANCZOS
 
 # The electric-glow treatment: background floor cut, alpha gain, colour and
@@ -35,7 +35,7 @@ _HALO_THIN = 2
 # The provenance sibling: the same mark retinted golden (the approved
 # "golden" candidate: hue set uniformly, saturation eased) then given the
 # same glow, so the header's numbers button reads as the app icon's kin.
-_PROVENANCE_NAME = "fulcrum_provenance_256.png"
+_PROVENANCE_NAME = "decitect_provenance_256.png"
 _PROVENANCE_SIZE = 256
 _PROVENANCE_HUE_DEG = 38
 _PROVENANCE_SAT = 0.85

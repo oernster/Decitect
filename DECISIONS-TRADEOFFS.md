@@ -1,6 +1,6 @@
 # Decisions and trade-offs
 
-The deliberate choices Fulcrum rests on: what was chosen, what was given up
+The deliberate choices Decitect rests on: what was chosen, what was given up
 for it and why. Each entry is the decision as the product makes it today.
 The detail behind each one, with the tests that hold it, lives in
 [ARCHITECTURE.md](ARCHITECTURE.md) and [TESTING.md](TESTING.md); the
@@ -12,7 +12,7 @@ like debt.
 
 ### Local first, one person, one machine
 
-Everything Fulcrum keeps (the current organisation with its moves, the theme
+Everything Decitect keeps (the current organisation with its moves, the theme
 and a skipped update) sits in plain JSON files in a folder in the user's home
 directory.
 
@@ -44,7 +44,7 @@ importing either.
   model can be frozen and tested against outcomes.
 - **Costs:** the score carries no spread or uncertainty of its own.
 
-### What Fulcrum deliberately is not
+### What Decitect deliberately is not
 
 It scores organisation structure as a system of decisions. It is not an HR
 tool, a project tracker or a cloud service.
@@ -73,10 +73,10 @@ are permanently excluded from it.
 The update check is the only code that opens a network connection: one
 request to GitHub's releases API with a short timeout. Opening a link (the
 releases page, a saved report, the donation page) hands the address to the
-desktop's own browser; Fulcrum fetches nothing itself.
+desktop's own browser; Decitect fetches nothing itself.
 
 - **Rather than:** any feature reaching out on its own account.
-- **Gains:** the README can say plainly what Fulcrum asks the network.
+- **Gains:** the README can say plainly what Decitect asks the network.
 - **Costs:** a structural test holds the rule, so a second way out fails the
   suite until it is argued for; the test reads source, so a connection a
   library opens through a module it does not list is outside it.
@@ -627,7 +627,7 @@ version they found.
 ### Installed for one user, without administrator rights
 
 On Windows the setup program installs into the user's own folders and
-registry. Removing Fulcrum keeps the user's organisations and settings unless
+registry. Removing Decitect keeps the user's organisations and settings unless
 they tick the box to remove them.
 
 - **Rather than:** a machine-wide install.
@@ -639,7 +639,7 @@ they tick the box to remove them.
 
 Install, repair and removal are one bespoke program, layered like the app:
 pure decisions, the exact command text, then the code that acts. It may not
-import the application. It asks the user to close a running Fulcrum first.
+import the application. It asks the user to close a running Decitect first.
 
 - **Rather than:** a generic installer.
 - **Gains:** its decisions are held at full coverage; the two binaries ship
@@ -669,7 +669,7 @@ The sandbox grants network access and the home folder.
 - **Rather than:** a tighter sandbox.
 - **Gains:** the update check can work; plans can be exported where the user
   chooses.
-- **Costs:** the sandbox does not itself enforce that Fulcrum stays local.
+- **Costs:** the sandbox does not itself enforce that Decitect stays local.
 
 ### One version, read at run time
 
@@ -694,7 +694,7 @@ The site is static pages with no generator.
 ### Two licences plus a commercial one
 
 The model is GPL-3.0 and the interface LGPL-3.0. A commercial licence for
-Fulcrum's own code is offered separately.
+Decitect's own code is offered separately.
 
 - **Rather than:** one licence for everything.
 - **Gains:** the interface carries the same terms as Qt itself.

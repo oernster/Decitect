@@ -2,9 +2,9 @@
 
 import json
 
-from fulcrum.domain.models import Domain, OrgState, Origin, Team
-from fulcrum.infrastructure.example_library import FileExampleLibrary
-from fulcrum.infrastructure.json_serialization import org_to_dict
+from decitect.domain.models import Domain, OrgState, Origin, Team
+from decitect.infrastructure.example_library import FileExampleLibrary
+from decitect.infrastructure.json_serialization import org_to_dict
 
 
 def _org() -> OrgState:
@@ -71,7 +71,7 @@ def test_load_round_trips_the_org(tmp_path):
 
 def test_shipped_calibration_cases_all_list_and_load():
     """The real directory the app bundles stays loadable end to end."""
-    from fulcrum.shared.resources import find_examples_dir
+    from decitect.shared.resources import find_examples_dir
 
     directory = find_examples_dir()
     assert directory is not None

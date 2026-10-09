@@ -21,11 +21,10 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import traceback
 from ctypes import wintypes
 from pathlib import Path
-from types import TracebackType
 
+import installer_legacy as legacy
 import installer_logic as logic
 import installer_scripts as scripts
 
@@ -65,14 +64,19 @@ def write_uninstall_entry(values: tuple[logic.RegistryValue, ...]) -> None:
             )
 
 
-def delete_uninstall_entry() -> None:
-    """Remove the HKCU Uninstall registration (best effort)."""
+def delete_key(key: str) -> None:
+    """Remove an HKCU key that has no subkeys (best effort)."""
     import winreg
 
     try:
-        winreg.DeleteKey(winreg.HKEY_CURRENT_USER, logic.UNINSTALL_KEY)
+        winreg.DeleteKey(winreg.HKEY_CURRENT_USER, key)
     except OSError:
         return
+
+
+def delete_uninstall_entry() -> None:
+    """Remove the HKCU Uninstall registration (best effort)."""
+    delete_key(logic.UNINSTALL_KEY)
 
 
 def delete_toast_identity() -> None:
@@ -81,24 +85,17 @@ def delete_toast_identity() -> None:
     The app writes its toast name and icon under HKCU on launch; removing the
     key on uninstall leaves no orphaned registration behind. Best effort.
     """
-    import winreg
-
-    try:
-        winreg.DeleteKey(winreg.HKEY_CURRENT_USER, logic.toast_identity_key())
-    except OSError:
-        return
+    delete_key(logic.toast_identity_key())
 
 
-def installed_version() -> str | None:
-    """Return the registered installed version, or None when not installed."""
-    return read_registry_str(logic.UNINSTALL_KEY, "DisplayVersion")
+def installed_version(key: str = logic.UNINSTALL_KEY) -> str | None:
+    """Return the registered installed version; None when not installed."""
+    return read_registry_str(key, "DisplayVersion")
 
 
-def installed_location() -> Path | None:
-    """Return the registered install location, or None when not installed."""
-    return logic.absolute_location(
-        read_registry_str(logic.UNINSTALL_KEY, "InstallLocation")
-    )
+def installed_location(key: str = logic.UNINSTALL_KEY) -> Path | None:
+    """Return the registered install location; None when not installed."""
+    return logic.absolute_location(read_registry_str(key, "InstallLocation"))
 
 
 # ------------------------------------------------------------------ autostart
@@ -123,8 +120,8 @@ def set_autostart(enabled: bool, exe_path: Path) -> None:
         return
 
 
-def remove_autostart() -> None:
-    """Remove the per-user Run entry (best effort), used on uninstall."""
+def remove_autostart(value: str = logic.RUN_VALUE) -> None:
+    """Remove a per-user Run entry (best effort), used on uninstall."""
     import winreg
 
     try:
@@ -132,7 +129,7 @@ def remove_autostart() -> None:
             winreg.HKEY_CURRENT_USER, logic.RUN_SUBKEY, 0, winreg.KEY_SET_VALUE
         ) as key:
             try:
-                winreg.DeleteValue(key, logic.RUN_VALUE)
+                winreg.DeleteValue(key, value)
             except OSError:
                 pass
     except OSError:
@@ -165,12 +162,12 @@ def desktop_link() -> Path:
 # ------------------------------------------------------------------- processes
 
 
-def is_app_running() -> bool:
-    """Return True when the app appears in the task list (best effort)."""
+def is_app_running(exe_name: str = logic.EXE_NAME) -> bool:
+    """Return True when the executable appears in the task list (best effort)."""
     no_window = getattr(subprocess, "CREATE_NO_WINDOW", 0)
     try:
         result = subprocess.run(
-            ["tasklist", "/fi", f"imagename eq {logic.EXE_NAME}", "/nh"],
+            ["tasklist", "/fi", f"imagename eq {exe_name}", "/nh"],
             capture_output=True,
             text=True,
             timeout=_TASKLIST_TIMEOUT_S,
@@ -180,24 +177,25 @@ def is_app_running() -> bool:
         )
     except (OSError, subprocess.SubprocessError):
         return False
-    return scripts.process_is_running(result.stdout)
+    return scripts.process_is_running(result.stdout, exe_name)
 
 
-def run_powershell(command: str) -> None:
-    """Run a PowerShell command, ignoring failures (best effort)."""
+def run_powershell(command: str) -> str:
+    """Run a PowerShell command; its output, empty on any failure."""
     no_window = getattr(subprocess, "CREATE_NO_WINDOW", 0)
     try:
-        subprocess.run(
+        result = subprocess.run(
             [_POWERSHELL, "-NoProfile", "-NonInteractive", "-Command", command],
             check=False,
             timeout=_SHORTCUT_TIMEOUT_S,
             stdin=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            capture_output=True,
+            text=True,
             creationflags=no_window,
         )
     except (OSError, subprocess.SubprocessError):
-        return
+        return ""
+    return result.stdout or ""
 
 
 def launch(exe_path: Path) -> subprocess.Popen | None:
@@ -227,16 +225,6 @@ def bring_process_window_to_front(pid: int) -> bool:
         return False
     user32.SetForegroundWindow(found[0])
     return True
-
-
-def set_app_user_model_id() -> None:
-    """Give the installer a stable taskbar identity (best effort)."""
-    try:
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
-            f"{logic.APP_AUMID}.installer"
-        )
-    except (OSError, AttributeError):
-        return
 
 
 # ------------------------------------------------------------------- shortcuts
@@ -338,9 +326,14 @@ def schedule_delete_after_exit(install_dir: Path) -> None:
 
 
 def remove_state(remove_settings: bool) -> None:
-    """Remove the per-user state directory when the user asked for it."""
+    """Remove the per-user state directories when the user asked for it.
+
+    The former name's directory goes too: it is only still there when the
+    app could not adopt it. The user asked for their settings gone.
+    """
     if remove_settings:
         shutil.rmtree(state_dir(), ignore_errors=True)
+        shutil.rmtree(legacy.legacy_state_dir(Path.home()), ignore_errors=True)
 
 
 def remove_install_dir(install_dir: Path) -> None:
@@ -351,36 +344,3 @@ def remove_install_dir(install_dir: Path) -> None:
         schedule_delete_after_exit(install_dir)
     else:
         shutil.rmtree(install_dir, ignore_errors=True)
-
-
-# ---------------------------------------------------------- crash diagnostics
-
-
-def installer_log_path() -> Path:
-    """Return the crash-log path under the per-user temporary directory."""
-    return Path(tempfile.gettempdir()) / logic.INSTALLER_LOG_NAME
-
-
-def install_crash_logging() -> None:
-    """Log unhandled exceptions to a file before the default handler runs.
-
-    The installer is a console-disabled onefile; a crash otherwise leaves no
-    visible traceback. This excepthook appends one to a known log file and
-    then chains to the default handler so behaviour is unchanged.
-    """
-    log_path = installer_log_path()
-
-    def _hook(
-        exc_type: type[BaseException],
-        exc: BaseException,
-        tb: TracebackType | None,
-    ) -> None:
-        try:
-            with log_path.open("a", encoding="utf-8") as handle:
-                handle.write("\n=== Unhandled exception ===\n")
-                traceback.print_exception(exc_type, exc, tb, file=handle)
-        except OSError:
-            pass
-        sys.__excepthook__(exc_type, exc, tb)
-
-    sys.excepthook = _hook

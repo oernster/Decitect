@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the Fulcrum standalone Windows executable with Nuitka.
+"""Build the Decitect standalone Windows executable with Nuitka.
 
 This produces a self-contained GUI executable so that end users do NOT need a
 system-wide Python installation. It mirrors the Nuitka invocation style used by
@@ -18,10 +18,10 @@ Nuitka notes:
 - --windows-console-mode=disable: GUI app, no console window.
 - The application icon and PNG assets plus the VERSION file and LICENCE are
   bundled at the bundle root so the running app's asset resolver
-  (fulcrum.shared.resources) finds them beside the executable.
+  (decitect.shared.resources) finds them beside the executable.
 
 The standalone bundle is written directly into the installer payload directory
-(installer/payload/Fulcrum) so buildinstaller.py can package it without an
+(installer/payload/Decitect) so buildinstaller.py can package it without an
 intermediate copy step.
 """
 
@@ -37,15 +37,15 @@ import stamp_version
 from build_utils import require_nuitka
 
 # --- Project identity (single source of truth for build metadata) -----------
-APP_DISPLAY_NAME = "Fulcrum"
+APP_DISPLAY_NAME = "Decitect"
 APP_AUTHOR = "Oliver Ernster"
-EXE_NAME = "fulcrum"
+EXE_NAME = "decitect"
 
 # Repository layout, resolved relative to this script so the build works from
 # any working directory.
 PROJECT_ROOT = Path(__file__).resolve().parent
 ENTRY_SCRIPT = PROJECT_ROOT / "main.py"
-ICON_FILE = PROJECT_ROOT / "fulcrum.ico"
+ICON_FILE = PROJECT_ROOT / "decitect.ico"
 VERSION_FILE = PROJECT_ROOT / "VERSION"
 LICENSE_FILE = PROJECT_ROOT / "LICENSE"
 MODEL_LICENSE_FILE = PROJECT_ROOT / "LICENSE-GPL-3.0.txt"
@@ -54,10 +54,10 @@ UI_LICENSE_FILE = PROJECT_ROOT / "LICENSE-LGPL-3.0.txt"
 # Asset files bundled at the bundle root (the app's resource resolver looks for
 # these beside the executable, not inside an assets subdirectory).
 ASSET_FILES = (
-    PROJECT_ROOT / "fulcrum.ico",
-    PROJECT_ROOT / "fulcrum_256.png",
-    PROJECT_ROOT / "fulcrum_provenance_256.png",
-    PROJECT_ROOT / "fulcrum.png",
+    PROJECT_ROOT / "decitect.ico",
+    PROJECT_ROOT / "decitect_256.png",
+    PROJECT_ROOT / "decitect_provenance_256.png",
+    PROJECT_ROOT / "decitect.png",
     PROJECT_ROOT / "spin_up.png",
     PROJECT_ROOT / "spin_down.png",
 )
@@ -90,11 +90,11 @@ DEFAULT_JOBS = 1
 PE_VERSION_PARTS = 4
 PE_VERSION_PAD_VALUE = "0"
 
-# Console-mode toggles. Set FULCRUM_DEBUG_CONSOLE=1 to build a console-visible
+# Console-mode toggles. Set DECITECT_DEBUG_CONSOLE=1 to build a console-visible
 # binary for diagnosing the packaged app; release builds keep it disabled.
 CONSOLE_MODE_DEBUG = "attach"
 CONSOLE_MODE_RELEASE = "disable"
-DEBUG_CONSOLE_ENV_VAR = "FULCRUM_DEBUG_CONSOLE"
+DEBUG_CONSOLE_ENV_VAR = "DECITECT_DEBUG_CONSOLE"
 TRUTHY_VALUES = {"1", "true", "yes", "on"}
 
 
@@ -228,7 +228,7 @@ def build_exe() -> int:
         )
 
     # Bundle the icon and PNG assets at the bundle root. The running app's
-    # asset resolver (fulcrum.shared.resources) searches beside the executable,
+    # asset resolver (decitect.shared.resources) searches beside the executable,
     # so each asset is shipped as a loose data file rather than in a subfolder.
     for asset in ASSET_FILES:
         if asset.exists():
@@ -289,7 +289,7 @@ def build_exe() -> int:
         return result.returncode
 
     # Rename the Nuitka output (main.dist) to the product bundle name so the
-    # payload directory is installer/payload/Fulcrum.
+    # payload directory is installer/payload/Decitect.
     exe_path = standalone_dir / f"{EXE_NAME}.exe"
     if not exe_path.exists():
         print(

@@ -9,15 +9,15 @@ byte-identical to one never asked.
 
 import pytest
 
-from fulcrum.application.org_guide import build_org_guide
-from fulcrum.application.org_guide_parallel import build_org_guide_auto
-from fulcrum.application.planner import (
+from decitect.application.org_guide import build_org_guide
+from decitect.application.org_guide_parallel import build_org_guide_auto
+from decitect.application.planner import (
     GuideBuildCancelled,
     ImprovementPlanner,
     ensure_live,
 )
-from fulcrum.application.simulator import DeterministicSimulator
-from fulcrum.domain.models import Dependency, Domain, OrgState, Team
+from decitect.application.simulator import DeterministicSimulator
+from decitect.domain.models import Dependency, Domain, OrgState, Team
 
 _SIM = DeterministicSimulator()
 

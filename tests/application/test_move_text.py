@@ -1,12 +1,12 @@
 """Tests for human-readable move descriptions."""
 
-from fulcrum.application.move_text import (
+from decitect.application.move_text import (
     describe_move,
     describe_position_change,
     move_note,
 )
-from fulcrum.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
-from fulcrum.domain.moves import Move, MoveKind
+from decitect.domain.models import AuthorityClaim, Dependency, Domain, OrgState, Team
+from decitect.domain.moves import Move, MoveKind
 
 
 def _org():
