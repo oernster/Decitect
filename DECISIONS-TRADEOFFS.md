@@ -690,13 +690,15 @@ application's identity with Windows changed with the name.
 ### The product on its own domain
 
 The website lives at its own address rather than as a page under the author's
-portfolio site. The old addresses forward to the new one.
+portfolio site. The old address under the portfolio was retired rather than
+forwarded.
 
-- **Rather than:** staying a path beneath the portfolio site.
+- **Rather than:** staying a path beneath the portfolio site; keeping
+  forwarding pages there.
 - **Gains:** an address that names the product and outlives any change to the
-  portfolio.
-- **Costs:** the site carries its own crawler files; forwarding pages for the
-  old addresses have to be kept on the portfolio site.
+  portfolio; nothing of the old product left to maintain there.
+- **Costs:** the site carries its own crawler files; links to the old address
+  now find nothing.
 
 ### macOS builds are notarised or refused
 
