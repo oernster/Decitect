@@ -1,4 +1,4 @@
-# Decitect
+# <img width="128" height="128" alt="decitect" src="https://github.com/user-attachments/assets/09cac293-f20c-4e3d-b4dc-a737688ae8a6" /> Decitect
 
 **Decision Architecture Organisational Software**
 
