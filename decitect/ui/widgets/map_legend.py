@@ -25,8 +25,10 @@ _ENTRIES: tuple[tuple[Callable[[MapPalette], QColor], str, str], ...] = (
     (
         lambda p: p.authority,
         "Decides locally",
-        "Border: the teams decide for themselves. A box shades from amber "
-        "to green with the share of its teams that do.",
+        (
+            "Border: the teams decide for themselves. A box shades from amber "
+            "to green with the share of its teams that do."
+        ),
     ),
     (
         lambda p: p.no_authority,
@@ -36,8 +38,10 @@ _ENTRIES: tuple[tuple[Callable[[MapPalette], QColor], str, str], ...] = (
     (
         lambda p: p.contested,
         "Contested",
-        "Person glyph and count: a standing claim on who decides, to be "
-        "settled before the decision can be made.",
+        (
+            "Person glyph and count: a standing claim on who decides, to be "
+            "settled before the decision can be made."
+        ),
     ),
     (
         lambda p: p.pulse,

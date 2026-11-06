@@ -24,10 +24,10 @@ from decitect.ui.map_palette import map_palette
 from decitect.ui.widgets import org_map_painter as painter
 from decitect.ui.widgets.ring_pulse import RingPulse
 
-# One ring model everywhere: green marks the node you can act on, whether
-# reached by mouse (hover), keyboard (cursor) or affected by a change; muted
-# so the large surround does not shout. The ring itself is painted by
-# org_map_painter.draw_ring.
+# Two rings, painted by org_map_painter.draw_ring: a neutral grey one marks
+# the node you can act on, reached by mouse (hover) or keyboard (cursor);
+# a sky-blue one marks where a move acted, the colour the board's pulse uses.
+# Neither shares a colour with the authority or contest encoding.
 
 _MIN_HEIGHT = 340
 _GAP_X = 64.0
@@ -346,7 +346,7 @@ class OrgMapView(QGraphicsView):
             return
         drawn = {node_id: node_rect for node_rect, _kind, node_id in self._hot}
         for node_id in ringed_nodes(self._org, self._highlight, drawn):
-            painter.draw_ring(scene_painter, drawn[node_id])
+            painter.draw_ring(scene_painter, drawn[node_id], map_palette().pulse)
         pulsing = ringed_nodes(self._org, self._pulse.targets, drawn)
         self._pulse.paint(
             scene_painter,

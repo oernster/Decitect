@@ -7,8 +7,9 @@ refresh, which is how a theme switch repaints the board. The encoding keeps
 its meaning in both themes: a border runs from amber (escalates) to green
 (decides locally); violet marks contested teams on the glyph or the count
 line, never the border (violet rather than red, so it stays distinct from
-the green hover ring under red-green colour blindness and never reads as an
-error). Only the depth changes so each reads on its surface.
+the authority green under red-green colour blindness and never reads as an
+error). A move is marked in sky blue; the hover ring is neutral grey. Only
+the depth changes so each reads on its surface.
 """
 
 from __future__ import annotations
@@ -33,6 +34,9 @@ class MapPalette:
     authority: QColor
     no_authority: QColor
     contested: QColor
+    # The hover and keyboard-cursor ring: a neutral grey, since pointing at a
+    # box says nothing about the organisation. Green, its old colour, read as
+    # authority on an amber box.
     ring: QColor
     preview: QColor
     # The last-move pulse: sky blue, kept clear of the authority green, the
@@ -51,7 +55,7 @@ DARK_MAP = MapPalette(
     authority=QColor("#34d399"),
     no_authority=QColor("#f59e0b"),
     contested=QColor("#a855f7"),
-    ring=QColor("#2f9e64"),
+    ring=QColor("#c9d1d9"),
     preview=QColor("#fbbf24"),
     pulse=QColor("#38bdf8"),
 )
@@ -66,7 +70,7 @@ LIGHT_MAP = MapPalette(
     authority=QColor("#059669"),
     no_authority=QColor("#d97706"),
     contested=QColor("#7c3aed"),
-    ring=QColor("#15803d"),
+    ring=QColor("#475569"),
     preview=QColor("#b45309"),
     pulse=QColor("#0284c7"),
 )

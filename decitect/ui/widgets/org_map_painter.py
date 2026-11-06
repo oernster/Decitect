@@ -36,8 +36,8 @@ RING_PEN = 3.0
 
 # Contested ownership is its own signal beside the authority gradient: the
 # person glyph turns violet and the third line counts the contested teams.
-# Violet, never red, which would read as an error and collide with the green
-# hover ring for red-green colour-blind readers.
+# Violet, never red, which would read as an error and collide with the
+# authority green for red-green colour-blind readers.
 
 _GAP_Y = 72.0
 _PAD = 12.0
@@ -208,12 +208,18 @@ def grid_positions(nodes, gap_x: float, gap_y: float) -> dict:
     return positions
 
 
-def draw_ring(scene_painter: QPainter, rect: QRectF) -> None:
-    """One ring model everywhere: the green action ring outside a node."""
+def draw_ring(
+    scene_painter: QPainter, rect: QRectF, colour: QColor | None = None
+) -> None:
+    """A ring just outside a node: the neutral hover ring unless told otherwise.
+
+    A ring marking where a move acted passes the pulse colour, so a move is
+    marked in one colour whether it pulses on the board or holds in a dialog.
+    """
     outer = rect.adjusted(-RING_INSET, -RING_INSET, RING_INSET, RING_INSET)
     radius = CORNER + RING_INSET
     scene_painter.save()
-    scene_painter.setPen(QPen(map_palette().ring, RING_PEN))
+    scene_painter.setPen(QPen(colour or map_palette().ring, RING_PEN))
     scene_painter.setBrush(Qt.BrushStyle.NoBrush)
     scene_painter.drawRoundedRect(outer, radius, radius)
     scene_painter.restore()

@@ -35,8 +35,8 @@ _FULL = 1.0
 # when the full-size map is dragged to its limits.
 _VIEW_MARGIN = 40.0
 _CLICK_SLOP = 4
-# The hover ring sits just outside the section border, the same open cue the
-# drill map gives, in the same green as every other hover ring.
+# The hover ring sits just outside the section border, the same cue the drill
+# map gives that a click opens the section, in the same neutral grey.
 _RING_INSET = 5.0
 _RING_PEN = 3.0
 
@@ -176,17 +176,20 @@ class CompleteMapView(QGraphicsView):
                 (self._node_rects[node_id] for node_id in pulsing),
                 (_RING_INSET, _RING_PEN, painter.CORNER),
             )
-        targets = self._highlight_rects()
+        # Where a move acted rings sky blue, as the board's pulse does; the
+        # hover ring is neutral grey, since pointing says nothing about the
+        # organisation.
         hover = self._domain_rects.get(self._hover_id) if self._hover_id else None
+        rings = [(rect, map_palette().pulse) for rect in self._highlight_rects()]
         if hover is not None:
-            targets.append(hover)
-        if not targets:
+            rings.append((hover, map_palette().ring))
+        if not rings:
             return
         radius = painter.CORNER + _RING_INSET
         scene_painter.save()
-        scene_painter.setPen(QPen(map_palette().ring, _RING_PEN))
         scene_painter.setBrush(Qt.BrushStyle.NoBrush)
-        for target in targets:
+        for target, colour in rings:
+            scene_painter.setPen(QPen(colour, _RING_PEN))
             outer = target.adjusted(
                 -_RING_INSET, -_RING_INSET, _RING_INSET, _RING_INSET
             )
