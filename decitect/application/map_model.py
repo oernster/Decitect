@@ -8,6 +8,8 @@ between the nodes at the current level, so the map stays legible at any scale.
 
 from __future__ import annotations
 
+from collections.abc import Collection, Iterable
+
 from decitect.application.dto import MapEdge, MapNode
 from decitect.domain.hierarchy import (
     child_domains,
@@ -73,6 +75,31 @@ def build_level(
             )
         )
     return tuple(nodes), _edges(org, node_of)
+
+
+def ringed_nodes(
+    org: OrgState, node_ids: Iterable[str], drawn: Collection[str]
+) -> frozenset[str]:
+    """The drawn node ids that stand for the given team or domain ids.
+
+    A move is recorded against real teams, while a map level draws a whole
+    department as one box. Each id resolves to itself when drawn; otherwise a
+    team climbs to its domain, then domains climb parent by parent to the
+    first one drawn. An id with no drawn ancestor rings nothing: it sits
+    outside the shown level or has gone from the org.
+    """
+    parents = {d.id: d.parent_id for d in org.domains}
+    domain_of = {t.id: t.domain_id for t in org.teams}
+    ringed = set()
+    for node_id in node_ids:
+        current = node_id
+        if current not in drawn and current in domain_of:
+            current = domain_of[current]
+        while current is not None and current not in drawn:
+            current = parents.get(current)
+        if current is not None:
+            ringed.add(current)
+    return frozenset(ringed)
 
 
 def _edges(org: OrgState, node_of: dict[str, str]) -> tuple[MapEdge, ...]:

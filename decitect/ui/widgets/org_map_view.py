@@ -17,7 +17,7 @@ from PySide6.QtCore import QPointF, QRectF, Qt, Signal
 from PySide6.QtGui import QBrush, QPainter
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsView
 
-from decitect.application.map_model import build_level
+from decitect.application.map_model import build_level, ringed_nodes
 from decitect.domain.models import OrgState
 from decitect.ui import ui_scale
 from decitect.ui.map_palette import map_palette
@@ -333,6 +333,10 @@ class OrgMapView(QGraphicsView):
         for target in (self._cursor_rect(), self._hover_rect()):
             if target is not None:
                 painter.draw_ring(scene_painter, target)
-        for node_rect, _kind, node_id in self._hot:
-            if node_id in self._highlight:
-                painter.draw_ring(scene_painter, node_rect)
+        # A move is recorded against real teams; a department drawn as one
+        # box rings when any of its teams (at any depth) was a target.
+        if self._org is None or not self._highlight:
+            return
+        drawn = {node_id: node_rect for node_rect, _kind, node_id in self._hot}
+        for node_id in ringed_nodes(self._org, self._highlight, drawn):
+            painter.draw_ring(scene_painter, drawn[node_id])

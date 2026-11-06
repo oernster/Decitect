@@ -13,6 +13,7 @@ from PySide6.QtCore import QRectF, Qt, QTimer, Signal
 from PySide6.QtGui import QBrush, QPainter, QPen
 from PySide6.QtWidgets import QGraphicsScene, QGraphicsView
 
+from decitect.application.map_model import ringed_nodes
 from decitect.domain.models import OrgState
 from decitect.ui.map_palette import map_palette
 from decitect.ui.widgets import complete_map_painter as painter
@@ -158,18 +159,8 @@ class CompleteMapView(QGraphicsView):
     def _highlight_rects(self) -> list[QRectF]:
         if self._org is None:
             return []
-        parents = {d.id: d.parent_id for d in self._org.domains}
-        domain_of = {t.id: t.domain_id for t in self._org.teams}
-        rects = []
-        for node_id in self._highlight:
-            current = node_id
-            if current not in self._node_rects and current in domain_of:
-                current = domain_of[current]
-            while current is not None and current not in self._node_rects:
-                current = parents.get(current)
-            if current is not None:
-                rects.append(self._node_rects[current])
-        return rects
+        ringed = ringed_nodes(self._org, self._highlight, self._node_rects)
+        return [self._node_rects[node_id] for node_id in ringed]
 
     def drawForeground(self, scene_painter: QPainter, rect: QRectF) -> None:
         targets = self._highlight_rects()
