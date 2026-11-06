@@ -12,7 +12,6 @@ from __future__ import annotations
 from PySide6.QtCore import QRectF, Qt
 from PySide6.QtGui import (
     QBrush,
-    QColor,
     QFont,
     QFontMetricsF,
     QPainterPath,
@@ -23,7 +22,7 @@ from PySide6.QtWidgets import QGraphicsScene
 from decitect.domain.hierarchy import headcount_in_domain, teams_in_domain
 from decitect.domain.models import Domain, OrgState
 from decitect.shared.text import count_noun
-from decitect.ui.map_palette import map_palette
+from decitect.ui.map_palette import authority_colour, map_palette
 from decitect.ui.widgets.complete_map_edges import direct_is_clear, route_edges
 from decitect.ui.widgets.complete_map_layout import (
     HALF,
@@ -59,14 +58,6 @@ def _font(bold: bool = False) -> QFont:
     return font
 
 
-def _blend(low: QColor, high: QColor, ratio: float) -> QColor:
-    return QColor(
-        int(low.red() + (high.red() - low.red()) * ratio),
-        int(low.green() + (high.green() - low.green()) * ratio),
-        int(low.blue() + (high.blue() - low.blue()) * ratio),
-    )
-
-
 def _domain(org: OrgState, ident: str) -> Domain:
     return next(domain for domain in org.domains if domain.id == ident)
 
@@ -81,12 +72,11 @@ def draw_domain(
 ) -> None:
     """One domain box, its border and detail rolling the subtree up.
 
-    Any standing claim in the subtree reads contested (violet); otherwise
-    the border blends from amber toward green with the share of member
-    teams deciding locally. The detail line carries the counts themselves,
-    so a change deep inside the unit (a delegation in one department of a
-    contested division) is visible as numbers even where the border colour
-    cannot move.
+    The border blends from amber toward green with the share of member
+    teams deciding locally, whatever else is true of them. A standing claim
+    in the subtree is its own signal: the rollup line turns violet and
+    counts the contested teams, so a delegation inside a contested unit
+    still shows as authority gained.
     """
     if box.ident == SHELL_ID:
         _draw_shell(scene, x, y, box)
@@ -95,14 +85,7 @@ def draw_domain(
     members = teams_in_domain(org, domain.id)
     contested_count = sum(1 for team in members if team.id in claimed)
     held = sum(1 for team in members if team.has_local_authority)
-    if contested_count:
-        border = map_palette().contested
-    elif not members:
-        border = map_palette().no_authority
-    else:
-        border = _blend(
-            map_palette().no_authority, map_palette().authority, held / len(members)
-        )
+    border = authority_colour(held / len(members) if members else 0.0)
     path = QPainterPath()
     path.addRoundedRect(QRectF(x, y, box.w, box.h), CORNER, CORNER)
     scene.addPath(path, QPen(border, _PEN_W), QBrush(map_palette().domain_fill))
@@ -125,9 +108,9 @@ def draw_domain(
         # swallow the part that changes between two positions.
         rollup = f"{held}/{len(members)} decide locally"
         if contested_count:
-            rollup = f"{held}/{len(members)} decide · {contested_count} contested"
+            rollup = f"{contested_count} contested · {held}/{len(members)} decide"
         line = scene.addSimpleText(_elide(rollup, _font(), box.w - PAD * HALF), _font())
-        line.setBrush(border)
+        line.setBrush(map_palette().contested if contested_count else border)
         line.setPos(x + PAD, y + _DOMAIN_ROLLUP_DY)
 
 
@@ -151,24 +134,19 @@ def draw_team(scene: QGraphicsScene, org: OrgState, x, y, box, claimed) -> None:
     path = QPainterPath()
     path.addRoundedRect(QRectF(x, y, box.w, box.h), CORNER, CORNER)
     contested = team.id in claimed
-    if contested:
-        border = map_palette().contested
-    else:
-        ratio = _FULL if team.has_local_authority else 0.0
-        border = _blend(map_palette().no_authority, map_palette().authority, ratio)
+    border = authority_colour(_FULL if team.has_local_authority else 0.0)
     scene.addPath(path, QPen(border, _PEN_W), QBrush(map_palette().team_fill))
     name = scene.addSimpleText(team.name, _font(bold=True))
     name.setBrush(map_palette().text)
     name.setPos(x + PAD, y + _NAME_DY)
+    status = "decides locally" if team.has_local_authority else "escalates"
     if contested:
-        status = "contested"
-    elif team.has_local_authority:
-        status = "decides locally"
-    else:
-        status = "escalates"
+        status = f"contested · {status}"
     sub_text = f"{status} · {count_noun(team.headcount, 'person', 'people')}"
     sub = scene.addSimpleText(sub_text, _font())
-    sub.setBrush(map_palette().text_muted)
+    # A contest colours the status line, never the border, which stays
+    # the authority reading.
+    sub.setBrush(map_palette().contested if contested else map_palette().text_muted)
     sub.setPos(x + PAD, y + _SUB_DY)
 
 

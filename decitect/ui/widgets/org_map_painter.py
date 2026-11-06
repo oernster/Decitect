@@ -22,7 +22,7 @@ from PySide6.QtGui import (
 from PySide6.QtWidgets import QGraphicsScene
 
 from decitect.shared.text import count_noun
-from decitect.ui.map_palette import map_palette
+from decitect.ui.map_palette import authority_colour, map_palette
 from decitect.ui.widgets.map_geometry import arrow_head, edge_span
 
 KIND_DOMAIN = "domain"
@@ -34,9 +34,10 @@ CORNER = 10.0
 RING_INSET = 5.0
 RING_PEN = 3.0
 
-# Contested ownership outranks the authority gradient: any contest reads
-# violet (never red, which would read as an error and collide with the green
-# hover ring for red-green colour-blind readers).
+# Contested ownership is its own signal beside the authority gradient: the
+# person glyph turns violet and the third line counts the contested teams.
+# Violet, never red, which would read as an error and collide with the green
+# hover ring for red-green colour-blind readers.
 
 _GAP_Y = 72.0
 _PAD = 12.0
@@ -76,32 +77,32 @@ def node_center(top_left: QPointF) -> QPointF:
     return QPointF(top_left.x() + NODE_W / _HALF, top_left.y() + NODE_H / _HALF)
 
 
-def _blend(low: QColor, high: QColor, ratio: float) -> QColor:
-    return QColor(
-        int(low.red() + (high.red() - low.red()) * ratio),
-        int(low.green() + (high.green() - low.green()) * ratio),
-        int(low.blue() + (high.blue() - low.blue()) * ratio),
-    )
-
-
 def _sublabel(node) -> str:
     people = count_noun(node.headcount, "person", "people")
     if node.kind == KIND_DOMAIN:
-        label = f"{node.category} · {count_noun(node.team_count, 'team')} · {people}"
-        if node.contested_count:
-            label = f"{label} · {node.contested_count} contested"
-        return label
-    if node.contested_count:
-        return f"contested · {people}"
+        return f"{node.category} · {count_noun(node.team_count, 'team')} · {people}"
     decides = "decides locally" if node.authority_ratio >= _FULL else "escalates"
     return f"{decides} · {people}"
 
 
 def _secondary(node) -> str:
-    if not node.owner:
-        return ""
-    label = "lead" if node.kind == KIND_DOMAIN else "owner"
-    return f"{label}: {node.owner}"
+    """The third line: the contested count first, then the lead or owner.
+
+    The count leads because the line is elided at the box edge. It is the
+    only place a contest is stated in words once the border no longer turns
+    violet.
+    """
+    parts = []
+    if node.contested_count:
+        parts.append(
+            f"{node.contested_count} contested"
+            if node.kind == KIND_DOMAIN
+            else "contested"
+        )
+    if node.owner:
+        label = "lead" if node.kind == KIND_DOMAIN else "owner"
+        parts.append(f"{label}: {node.owner}")
+    return " · ".join(parts)
 
 
 def _draw_person(scene: QGraphicsScene, rect: QRectF, color: QColor, node) -> None:
@@ -130,14 +131,12 @@ def draw_node(scene: QGraphicsScene, node, top_left: QPointF) -> QRectF:
         if node.kind == KIND_DOMAIN
         else map_palette().team_fill
     )
-    if node.contested_count:
-        border = map_palette().contested
-    else:
-        border = _blend(
-            map_palette().no_authority, map_palette().authority, node.authority_ratio
-        )
+    # The border is authority alone; a contest marks the person glyph and
+    # leads the second line, so neither signal hides the other.
+    border = authority_colour(node.authority_ratio)
+    glyph = map_palette().contested if node.contested_count else border
     scene.addPath(path, QPen(border, 2), QBrush(fill))
-    _draw_person(scene, rect, border, node)
+    _draw_person(scene, rect, glyph, node)
     name_font = node_font(bold=True)
     name = scene.addSimpleText(_fit(node.label, name_font, _LABEL_WIDTH), name_font)
     name.setBrush(map_palette().text)

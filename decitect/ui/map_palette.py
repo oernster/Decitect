@@ -3,12 +3,12 @@
 The board and the complete picture paint their own colours rather than
 reading QSS, so they carry their own palette pair. set_map_theme flips the
 module's current palette; the views rebuild their scenes on the next
-refresh, which is how a theme switch repaints the board. The authority
-encoding keeps its meaning in both themes: green decides locally, amber
-escalates, violet is contested (violet rather than red, so the state stays
-distinct from the green hover ring under red-green colour blindness and
-never reads as an error); only the depth changes so each reads on its
-surface.
+refresh, which is how a theme switch repaints the board. The encoding keeps
+its meaning in both themes: a border runs from amber (escalates) to green
+(decides locally); violet marks contested teams on the glyph or the count
+line, never the border (violet rather than red, so it stays distinct from
+the green hover ring under red-green colour blindness and never reads as an
+error). Only the depth changes so each reads on its surface.
 """
 
 from __future__ import annotations
@@ -83,3 +83,18 @@ def set_map_theme(theme: str) -> None:
 def map_palette() -> MapPalette:
     """The palette the painters resolve at draw time."""
     return _current
+
+
+def authority_colour(ratio: float) -> QColor:
+    """A border colour from the share of teams deciding locally.
+
+    Amber at none, green at all, blended between. Contest never replaces it:
+    a box marks its contested teams separately, so a delegation that lands
+    in a unit holding a standing claim still shows as authority gained.
+    """
+    low, high = _current.no_authority, _current.authority
+    return QColor(
+        int(low.red() + (high.red() - low.red()) * ratio),
+        int(low.green() + (high.green() - low.green()) * ratio),
+        int(low.blue() + (high.blue() - low.blue()) * ratio),
+    )

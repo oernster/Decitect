@@ -54,7 +54,7 @@ def test_overview_svg_for_a_flat_org():
     assert "decides locally" in svg and "escalates" in svg
 
 
-def test_overview_svg_marks_contested_nodes_in_violet():
+def test_overview_svg_marks_contest_in_text_and_keeps_the_border_for_authority():
     org = OrgState(
         teams=(
             Team("x", "X", True),
@@ -65,9 +65,13 @@ def test_overview_svg_marks_contested_nodes_in_violet():
         claims=(AuthorityClaim("y", "x"), AuthorityClaim("x", "y")),
     )
     svg = render_overview_svg(org)
-    assert "contested" in svg
+    assert "contested, decides locally" in svg
     assert "1 contested team" in svg
-    assert "#a855f7" in svg
+    # Both teams decide locally, so both borders read full authority green
+    # even though both are contested; the violet is on the subtitles.
+    assert svg.count('stroke="#34d399"') == 2
+    assert 'stroke="#a855f7"' not in svg
+    assert svg.count('fill="#a855f7"') == 2
 
 
 # ----------------------------------------------- text stays inside its box

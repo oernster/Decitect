@@ -52,9 +52,9 @@ _HALF = 2
 _FULL = 1.0
 _AUTHORITY = (52, 211, 153)
 _NO_AUTHORITY = (245, 158, 11)
-# Contested ownership outranks the authority gradient: a node carrying any
-# contest borders violet, matching the on-screen map.
-_CONTESTED_STROKE = "#a855f7"
+# A node carrying any contest colours its subtitle violet, matching the
+# on-screen map; its border stays the authority reading.
+_CONTESTED_TEXT = "#a855f7"
 _DOMAIN_FILL = "#222831"
 _TEAM_FILL = "#1a1e24"
 _TEXT = "#e6e9ee"
@@ -161,10 +161,10 @@ def _node_lines(node) -> tuple[str, str, str | None]:
         sub = count_noun(node.team_count, "team")
         if node.contested_count:
             sub = f"{sub}, {count_noun(node.contested_count, 'contested team')}"
-    elif node.contested_count:
-        sub = "contested"
     else:
         sub = "decides locally" if node.authority_ratio >= _FULL else "escalates"
+        if node.contested_count:
+            sub = f"contested, {sub}"
     owner = None
     if node.owner:
         prefix = "lead" if node.kind == _KIND_DOMAIN else "owner"
@@ -176,9 +176,10 @@ def _node_svg(node, pos, node_w: int) -> list[str]:
     x, y = pos
     fill = _DOMAIN_FILL if node.kind == _KIND_DOMAIN else _TEAM_FILL
     label, sub, owner = _node_lines(node)
-    stroke = (
-        _CONTESTED_STROKE if node.contested_count else _stroke(node.authority_ratio)
-    )
+    # As on the board: the border is authority alone and a contest colours
+    # the subtitle that counts it, so neither reading hides the other.
+    stroke = _stroke(node.authority_ratio)
+    sub_fill = _CONTESTED_TEXT if node.contested_count else _MUTED
     text_x = x + _TEXT_INSET
     parts = [
         (
@@ -190,7 +191,7 @@ def _node_svg(node, pos, node_w: int) -> list[str]:
             f'font-size="{_LABEL_PT}" font-weight="bold">{escape(label)}</text>'
         ),
         (
-            f'<text x="{text_x}" y="{y + 46}" fill="{_MUTED}" '
+            f'<text x="{text_x}" y="{y + 46}" fill="{sub_fill}" '
             f'font-size="{_SUB_PT}">{escape(sub)}</text>'
         ),
     ]

@@ -33,6 +33,7 @@ from decitect.ui.widgets.board_renderers import (
 )
 from decitect.ui.widgets.board_scope import ScopePresenter
 from decitect.ui.widgets.history_controls import HistoryControls
+from decitect.ui.widgets.map_legend import MapLegend
 from decitect.ui.widgets.move_note_view import MoveNoteView
 from decitect.ui.widgets.move_preview_dialog import MovePreviewDialog
 from decitect.ui.widgets.signal_detail_dialog import SignalDetailDialog
@@ -86,6 +87,7 @@ class BoardView(QWidget):
         self._history = HistoryControls()
         self._history.take_back_requested.connect(self.take_back)
         self._history.show_last_requested.connect(self.show_last_move)
+        self._legend = MapLegend()
         self._signals_row = QVBoxLayout()
         self._moves_box = QVBoxLayout()
         self._moves_holder = QWidget()
@@ -126,6 +128,7 @@ class BoardView(QWidget):
         column.addWidget(self._headcount_label)
         column.addWidget(self._scope.focus_label)
         column.addWidget(self._history)
+        column.addWidget(self._legend)
         caption_row = QHBoxLayout()
         caption_row.addWidget(self._scope.map_caption)
         caption_row.addStretch()
@@ -217,6 +220,7 @@ class BoardView(QWidget):
     def apply_map_theme(self) -> None:
         """Repaint the maps in the current palette after a theme switch."""
         self._map_pane.apply_map_theme()
+        self._legend.apply_map_theme()
 
     def refresh(self) -> None:
         if self._session is None:
