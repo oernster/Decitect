@@ -175,15 +175,20 @@ class MainWindow(QMainWindow):
         self._board.refresh()
 
     def _install_keyboard_nav(self, buttons) -> None:
-        undo_button, map_view, level_button, moves_group, signals_group = (
-            self._board.nav_targets()
-        )
+        (
+            undo_button,
+            show_button,
+            map_view,
+            level_button,
+            moves_group,
+            signals_group,
+        ) = self._board.nav_targets()
         self._undo_button = undo_button
         self._nav = KeyboardNavigator(
             self,
             self.menuBar(),
             self.menuBar().actions(),
-            (*buttons, undo_button, map_view, level_button),
+            (*buttons, undo_button, show_button, map_view, level_button),
             (moves_group, signals_group),
             map_view,
             neutral_start=self._focus_start,
