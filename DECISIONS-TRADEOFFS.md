@@ -537,15 +537,24 @@ window opens maximised.
 - **Gains:** fits small laptop screens and large monitors alike.
 - **Costs:** the scale is global, so nothing can draw at two scales.
 
-### Two themes; contest in violet
+### Two themes; the border for authority, violet for contest
 
 Light and dark themes are switched from the header and remembered. The map
-colours are weighted per theme. Contested ownership is violet.
+colours are weighted per theme. A box's border always reads authority, amber
+for escalating teams shading to green for teams deciding locally. Contested
+ownership has its own violet marker: the person glyph and a count of the
+contested teams. A key beside the map names every colour.
 
-- **Rather than:** red for contest.
-- **Gains:** contest stays distinct from the green hover ring under red-green
-  colour blindness.
-- **Costs:** none recorded.
+- **Rather than:** contest taking over the border, under which a delegation
+  that gave every team in a department authority left it looking unchanged
+  because a few of its leads were claimed; red for contest.
+- **Gains:** neither reading hides the other; violet stays distinct from the
+  authority green under red-green colour blindness and never reads as an
+  error. The ring round a box under the pointer is neutral grey, since
+  pointing says nothing about the organisation; when it was green it read as
+  authority on an escalating box.
+- **Costs:** a contest is a small mark rather than a whole border, so it is
+  easier to overlook at a glance.
 
 ### One keyboard ring
 
@@ -578,15 +587,20 @@ Every score and move value shows three decimals.
   hundredths; rounding would hide it.
 - **Costs:** busier numbers.
 
-### Played moves are ringed
+### The last move pulses, then leaves the map as it was
 
-The nodes a move acted on are ringed on both maps. Where the complete picture
-summarises them, the section holding them is ringed instead.
+The boxes a move acted on glow three times in sky blue and fade. Where a map
+draws them inside a larger box, the box holding them pulses instead. Take a
+move back pulses where the undone move acted, Show last move plays the pulse
+again and closing the guide plays it when a move was made there. The move
+preview and the move record keep a steady ring in the same sky blue, since
+there one move is being studied.
 
-- **Rather than:** relying on the colours to show change.
-- **Gains:** at whole-organisation scale the ring is what makes a played move
-  visible at all.
-- **Costs:** none recorded.
+- **Rather than:** a steady green ring left on the last move, which read as
+  authority; relying on the colours to show change.
+- **Gains:** at whole-organisation scale the pulse is what makes a played move
+  visible at all; the map is otherwise left showing only the state.
+- **Costs:** a reader who looks away misses it and has to ask for it again.
 
 ### One editor for every organisation
 
@@ -632,6 +646,22 @@ downloaded beforehand.
 - **Gains:** one compiler for both desktop packages; no system Python needed.
 - **Costs:** every file the app loads beside its code is listed in the build
   scripts by hand.
+
+### Only the Qt the app loads ships
+
+The app depends on the Essentials half of PySide6 alone. The compiled
+packages leave out every Qt plugin and library the app never loads, from the
+network and PDF support to all image formats but the icon's. Book covers ship
+at twice the height they are drawn, no taller. Qt itself stays as separate,
+unmodified libraries.
+
+- **Rather than:** the full PySide6 package and the compiler's default set of
+  Qt plugins, which made the Windows installer nearly twice its size and put
+  a web engine in the Linux package.
+- **Gains:** a far smaller download on every platform, with the open-source
+  terms Qt ships under kept exactly as before.
+- **Costs:** a feature needing one of the left-out pieces works from source
+  yet fails in the package until it is taken off the list.
 
 ### The build tools are held to chosen versions
 

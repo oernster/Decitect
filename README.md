@@ -39,14 +39,17 @@ and no server.
   teams as leaves, rows drag like folders, headcounts roll up and dependencies
   join any two items, team or unit.
 - **Matrix and dual reporting** as authority claims: a claimed team is
-  contested, drawn violet and gets its own repair moves.
+  contested and gets its own repair moves; a violet person glyph and a count
+  mark it.
 - **Play generated levels** (each leaf seeded so a great move is reachable) or
   open the bundled calibration organisations.
 - **The board** opens on the complete picture; click a section to drill in,
-  play any level and zoom either map.
-- **Moves graded from blunder to great**, each played move ringed on the maps
-  and kept in a move record that survives restarts. Take moves back with
-  Ctrl+Z, across runs.
+  play any level and zoom either map. A box's border shades from amber
+  (escalates) to green (decides locally) and a colour key beside the map names
+  each colour.
+- **Moves graded from blunder to great**, each played move pulsing briefly on
+  the maps (Show last move plays it again) and kept in a move record that
+  survives restarts. Take moves back with Ctrl+Z, across runs.
 - **The guide** plans every level at once; leaf lines compose into an honest
   whole-org before and after, with an optional growth line. Large
   organisations plan deterministically across every core but one; every
@@ -69,7 +72,7 @@ and no server.
 | Concern | Choice |
 |---|---|
 | Language | Python 3.11+ (developed on 3.13) |
-| UI | PySide6 (Qt for Python) |
+| UI | PySide6-Essentials (Qt for Python: Core, Gui and Widgets) |
 | Persistence | Local JSON files |
 | Tests | pytest, 100% gate on domain, application, infrastructure, shared and the installer's decision layer |
 | Format and lint | black (line length 88), flake8, ruff |

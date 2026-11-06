@@ -36,7 +36,7 @@ gate was met. For a plain count, run `pytest --no-cov -q`.
 | `tests/installer` | the installer's decisions, deploying real zips into a temp directory | temp files |
 | `tests/scripts` | smoke tests of the three analysis scripts | reads examples |
 | `tests/structural` | AST scans enforcing the architectural invariants | reads source |
-| `tests/ui` | Qt tests on a real `QApplication`: the update check, the donate button, plan-import failure and the message after a damaged autosave | temp files |
+| `tests/ui` | Qt tests on a real `QApplication`: the whole main window building as `main.py` builds it, the update check, the donate button, plan-import failure and the message after a damaged autosave | temp files |
 
 ## Coverage scope
 
@@ -67,6 +67,10 @@ lines; if the installer imports `decitect`; if an installer decision module
 reaches for the registry, a subprocess, the environment or Qt; or if anything
 but the update check imports a networking module. Relative imports are
 resolved before any rule reads them.
+
+`tests/structural/test_book_covers.py` fails if a bundled book cover is taller
+than twice the largest height the app draws it. It proves that check on a
+planted oversized image.
 
 The rules live in `tests/structural/layer_rules.py`, one checker per rule, so
 `tests/structural/test_layer_plants.py` runs each over a planted violation and

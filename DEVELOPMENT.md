@@ -27,7 +27,10 @@ pip install -r requirements-dev.txt
 python main.py
 ```
 
-`requirements.txt` holds the one runtime dependency, PySide6.
+`requirements.txt` holds the one runtime dependency, PySide6-Essentials, which
+carries the QtCore, QtGui and QtWidgets modules the app uses. The PySide6
+meta-package would add the Addons, Pdf and WebEngine wheels, none of which the
+app loads.
 `requirements-dev.txt` adds pytest (with pytest-cov and pytest-qt), Pillow,
 black, flake8, ruff and Nuitka 4.2.1 or later; the Nuitka builds stop with the
 install command when Nuitka is missing or older.
@@ -97,6 +100,15 @@ with its assets, `VERSION` and licences beside it. `DECITECT_DEBUG_CONSOLE=1`
 gives a console build. `main.py` calls `multiprocessing.freeze_support()`, so
 several `decitect.exe` processes during guide planning are the worker pool.
 
+Every Nuitka build (this one, the installer and the macOS app) leaves out the
+Qt plugins and libraries the app never loads: the TLS, style and icon-engine
+plugins, the spare platform plugins, every image format but `.ico` and the Qt
+Network, Pdf and Svg libraries. The list lives once, in `qt_trim_args()` in
+`build_utils.py`, with the reason each entry is safe. Qt stays as separate,
+unmodified libraries beside the executable. A feature that needs one of those
+pieces (a JPEG, an SVG icon, QtNetwork) has to take it off that list or it
+fails to load in the packaged app while working from source.
+
 ### Windows installer
 
 ```
@@ -104,7 +116,8 @@ python buildinstaller.py
 ```
 
 Run `buildexe.py` first. Produces `dist-installer/DecitectSetup.exe`, which
-installs per user to `%LOCALAPPDATA%\Programs\Decitect`, registers in the Apps
+embeds the zipped bundle plus the two files setup reads from it (the icon and
+`VERSION`), then installs per user to `%LOCALAPPDATA%\Programs\Decitect`, registers in the Apps
 list and creates shortcuts. In `installer/`, `installer_logic.py` and
 `installer_legacy.py` decide (the latter for an old Fulcrum install) and are
 gated at 100%; `installer_scripts.py` builds the command text; `installer_ops.py`

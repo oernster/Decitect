@@ -13,6 +13,7 @@ PySide6 desktop app. Every invariant below but the last is enforced by a test.
 | Each layer rule above fails on a planted violation. | `tests/structural/test_layer_plants.py` |
 | No module in the package, the tests or the installer exceeds 400 lines; the repo-root build and analysis scripts are exempt. | `tests/structural/test_architecture.py::test_modules_stay_under_the_line_limit` |
 | The update check is the only network code: nothing in the package, the installer or `main.py` imports a networking module except `infrastructure/github_release_source.py`, which may import `urllib.request` alone. | `tests/structural/test_architecture.py::test_only_the_update_check_reaches_the_network` and `::test_the_update_check_exemption_is_exact` |
+| No bundled book cover is taller than twice the tallest the app draws it (its dialog height times `ui_scale.MAX_FACTOR`), so the packages carry no pixels nobody sees. | `tests/structural/test_book_covers.py` |
 | The installer imports nothing from the `decitect` package. | `tests/structural/test_architecture.py::test_the_installer_stays_standalone` |
 | The installer's decision modules (`installer_logic.py`, `installer_legacy.py`, `installer_scripts.py`) touch no registry, subprocess, environment or Qt. | `tests/structural/test_architecture.py::test_the_installer_decisions_touch_no_side_effects` |
 | The domain, application, infrastructure, shared text helpers and installer decision modules are covered 100%. | `--cov-fail-under=100` in `pyproject.toml` with `.coveragerc` |
@@ -43,7 +44,8 @@ UI to Application to Domain, with Infrastructure pointing in to the same Domain.
   `~/.decitect` name, whose `resolve_state_dir` moves a pre-rename `~/.fulcrum`
   into place and answers the old folder if the move fails. All atomic writes;
   all I/O lives here.
-- **UI** (`decitect/ui`): the board, its two zoomable maps, the editor, the
+- **UI** (`decitect/ui`): the board, its two zoomable maps with the last-move
+  pulse (`ring_pulse`) and the colour key (`map_legend`), the editor, the
   guide, the help dialogs and three thin controllers (`org_intake`,
   `plan_files`, `update_check`). Long help content scrolls itself through one
   shared auto-scroller. `ui_scale` sizes everything to the screen;
@@ -127,8 +129,9 @@ The decisions behind the model are recorded with their trade-offs in
 
 The builds are plain scripts: `generate_icons.py`, `generate_button_icons.py`,
 `buildexe.py`, `buildinstaller.py`, `builddmg.py`, `build_flatpak.sh`,
-`clean_flatpak.sh` and `stamp_version.py`. The site under `docs/` is
-hand-maintained. `sensitivity.py`, `calibrate.py` and
+`clean_flatpak.sh` and `stamp_version.py`. `build_utils.py` holds what they
+share, including the one list of Qt pieces every Nuitka build leaves out. The
+site under `docs/` is hand-maintained. `sensitivity.py`, `calibrate.py` and
 `generate_matrixed_enterprise.py` are smoke-tested by the suite. See
 [DEVELOPMENT.md](DEVELOPMENT.md).
 

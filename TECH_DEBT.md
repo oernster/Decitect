@@ -10,13 +10,13 @@ A standing reference to the project's outstanding technical debt. It records wha
 
 It is small and the contract is honest (the docstring says the composition root sets it once), so the cost of the debt is low: the real price is that scale is global, so nothing can render at two scales and no test can vary the factor without leaking into the next test. Converting it to a `UiScale` value object injected down from `main.py` is the correct shape.
 
-**Blocked on an owner decision.** 23 of the 57 UI modules import `ui_scale` directly and everything sized flows through them; the UI is outside the coverage gate, so threading an injected value object through them is a wide, behaviour-neutral edit whose only verification is by eye on a real window. The direction is settled; the appetite for that edit (and when to spend it) is not. It stays open until the owner says to spend it.
+**Blocked on an owner decision.** 24 of the 60 UI modules import `ui_scale` directly and everything sized flows through them; the UI is outside the coverage gate, so threading an injected value object through them is a wide, behaviour-neutral edit whose only verification is by eye on a real window. The direction is settled; the appetite for that edit (and when to spend it) is not. It stays open until the owner says to spend it.
 
-## 2. The UI layer is 8517 lines with no coverage and some of it is not UI
+## 2. The UI layer is 8789 lines with no coverage and some of it is not UI
 
 `.coveragerc` omits `*/ui/*` wholesale, which `TESTING.md` documents as deliberate. For painting, layout and Qt wiring that is correct and matches every other project here.
 
-The open question is how much of those 57 modules is actually presentation. `org_editor.py`, `org_guide_dialog.py` and the board widgets carry sequencing and state-shaping decisions; each one of those is a decision no test can see. There is no proposal here to test Qt. The item is to keep pulling the decision-shaped parts down into `decitect/application` (where `org_draft.py` and `org_guide.py` show the pattern already working) so the omitted surface shrinks toward genuine presentation. This is continuous, not a task with an end state; it is recorded so the omission is never read as "the UI has no logic". The installer's split into a gated `installer_logic.py` and an untested Qt surface is the same move done in one go; it is the shape to copy.
+The open question is how much of those 60 modules is actually presentation. `org_editor.py`, `org_guide_dialog.py` and the board widgets carry sequencing and state-shaping decisions; each one of those is a decision no test can see. There is no proposal here to test Qt. The item is to keep pulling the decision-shaped parts down into `decitect/application` (where `org_draft.py` and `org_guide.py` show the pattern already working) so the omitted surface shrinks toward genuine presentation. This is continuous, not a task with an end state; it is recorded so the omission is never read as "the UI has no logic". The installer's split into a gated `installer_logic.py` and an untested Qt surface is the same move done in one go; it is the shape to copy.
 
 ## 3. The frozen-build worker pool has never been exercised
 
@@ -30,18 +30,18 @@ It has not been run against a real Nuitka standalone build. Under freezing, each
 
 With ruff 0.15.22 (the repo venv's), `ruff check .` passes clean and exits zero; that is ruff's default selection (E4, E7, E9 and F) doing very little work. `requirements-dev.txt` pins `ruff==0.15.22`, so a fresh install runs the same rules. Moving the pin to 0.16 is its own piece of work: ruff 0.16.0 widens its default selection and the same command reports 11 findings and exits 1 (nine `I001` unsorted import blocks, one `UP035` and one `SIM117`, all auto-fixable), across `main_window.py`, `complete_map_painter.py`, `github_release_source.py`, four installer modules and four test modules, which would be cleared in the commit that moves the pin.
 
-Run with `--select ALL` under ruff 0.15.22 the repository reports **5336 findings**, of which 336 are auto-fixable with `--fix` and a further 1023 sit behind `--unsafe-fixes`. The largest families:
+Run with `--select ALL` under ruff 0.15.22 the repository reports **5415 findings**, of which 337 are auto-fixable with `--fix` and a further 1035 sit behind `--unsafe-fixes`. The largest families:
 
 | Rule | Count | What it is |
 |---|---|---|
-| `S101` | 1368 | `assert` (every assertion in the suite; noise, not debt) |
-| `ANN001`, `ANN201`, `ANN202` | 1318 | missing type annotations |
-| `D1xx`, `D4xx` | 1012 | missing and non-imperative docstrings |
-| `COM812` | 293 | missing trailing comma (auto-fixable) |
-| `FBT003` | 285 | boolean positional argument in a call |
-| `TC001`, `TC002`, `TC003` | 156 | imports that could move under `TYPE_CHECKING` |
-| `T201` | 107 | `print` (the analysis and build scripts, by design) |
-| `PLR2004` | 89 | magic value in a comparison |
+| `S101` | 1380 | `assert` (every assertion in the suite; noise, not debt) |
+| `ANN001`, `ANN201`, `ANN202` | 1339 | missing type annotations |
+| `D1xx`, `D4xx` | 1032 | missing and non-imperative docstrings |
+| `COM812` | 294 | missing trailing comma (auto-fixable) |
+| `FBT003` | 290 | boolean positional argument in a call |
+| `TC001`, `TC002`, `TC003` | 161 | imports that could move under `TYPE_CHECKING` |
+| `T201` | 105 | `print` (the analysis and build scripts, by design) |
+| `PLR2004` | 91 | magic value in a comparison |
 
 Two findings matter more than the counts. `DTZ` (naive datetime) is **zero**: every timestamp in the repo is timezone-aware, so the correctness risk that family exists to catch is absent. `PLR2004` is the family that touches the repo's own no-magic-numbers rule and is the one worth reading properly.
 
@@ -55,7 +55,7 @@ Clearing this means one dedicated commit per rule family, each with the gate gre
 
 ## Looks like debt, not worth touching
 
-- The modules between 351 and 379 lines (`hierarchy.py`, `simulation.py`, `models.py`, `org_draft.py`, `org_guide.py`, `game_session.py`, `glossary.py`, `org_guide_dialog.py`, `board_view.py`, `theme.py` and the installer's `installer_logic.py`, `installer_widgets.py` and `installer_window.py`) are under the cap and clear of the danger band. `simulation.py` is the closest at 379, two lines short of the band; its next growth should lift a cohesive slice out rather than add to it.
+- The modules between 351 and 379 lines (`hierarchy.py`, `simulation.py`, `models.py`, `org_draft.py`, `org_guide.py`, `game_session.py`, `glossary.py`, `org_guide_dialog.py`, `board_view.py`, `org_map_view.py`, `theme.py` and the installer's `installer_logic.py`, `installer_widgets.py` and `installer_window.py`) are under the cap and clear of the danger band. `simulation.py` is the closest at 379, two lines short of the band; its next growth should lift a cohesive slice out rather than add to it.
 - The `org_guide_*` family (`org_guide.py`, `_compose`, `_growth`, `_parallel`) reads as a file that got split four ways. It is the 400-line cap doing its job and each part is cohesive; merging them would breach the cap immediately.
 - The dual GPL-3.0 model and LGPL-3.0 UI split, with three licence files at root plus `INSTALLER_LICENSE`, looks like duplication. It is the deliberate licence design and every file is load-bearing.
 - The four `except Exception` blocks in the installer (`installer_ops.py` once, `installer_window.py` three times) each carry a `# noqa: BLE001` and a reason; each one is a degrade-gracefully path where a raised exception is worse than a status message. Correct as written.
@@ -66,10 +66,10 @@ These look like candidates but are correct as they stand; changing them would re
 
 - **`multiprocessing.freeze_support()` guarded by `if __name__ == "__main__"` in `main.py`.** It looks like boilerplate that could move into the app. It cannot: it has to run before any other import-time work in a frozen worker; the module guard is what stops a spawned worker starting a second Decitect.
 - **The `BrokenProcessPool` in-process fallbacks.** They duplicate the chunking loop and look like copy-paste. Each is a different pricing function with different progress semantics; the duplication is the price of never failing a guide because a worker died.
-- **The delivery scripts' length** (`builddmg.py` 631, `buildexe.py` and `buildinstaller.py` 319 each). These are linear recipes read top to bottom and are exempt from the module cap by design. Do not raise length against them. The installer under `installer/` is not one of these: it is a second application and is held to the cap.
+- **The delivery scripts' length** (`builddmg.py` 634, `buildexe.py` 331, `buildinstaller.py` 325). These are linear recipes read top to bottom and are exempt from the module cap by design. Do not raise length against them. The installer under `installer/` is not one of these: it is a second application and is held to the cap.
 - **The coverage omissions of `main.py`, `shared/resources.py`, `application/interfaces.py` and `version.py`.** Composition root, resource path resolution, Protocol declarations and a version reader. Nothing there is a decision; testing them would test the language.
 - **The coverage omissions of the installer's Qt and side-effect modules** (`app.py`, `installer_bundle.py`, `installer_lifecycle.py`, `installer_ops.py`, `installer_startup.py`, `installer_theme.py`, `installer_widgets.py`, `installer_window.py`). The decisions were lifted into `installer_logic.py` and the command text it produces into `installer_scripts.py`, both gated at 100%; what remains is widgets, a registry and subprocess edge plus the composition that wires them. Testing `installer_ops.py` would mean writing to the real HKCU hive.
 - **`docs/` being hand-maintained with no generator.** The generator that used to write `docs/index.html` was retired because it had diverged: it emitted a single page with no navigation while the live site carries ten further hand-written pages. The site is authored, not built. Do not reintroduce a generator without teaching it the whole page set.
 - **`VERSION` as the only real version string, with `stamp_version.py` writing the delimited tokens into the `docs/` site.** The apparent duplication is generated, not maintained. No documentation outside the site carries version data.
 - **Only `buildexe.py` and `buildinstaller.py` calling `stamp_version.main()`.** `builddmg.py` and `build_flatpak.sh` deliberately do not stamp. The app reads `VERSION` at runtime and every build bundles it, so About is right on every platform. The site is committed files published from `main`, stamped when the version is bumped. Stamping from the macOS and Linux builds would rewrite tracked files on a machine that is not making the release commit.
-- **The 48 tracked PNGs.** Each image has one source and the copies are generated from it. `generate_icons.py` emits the app icon set and its provenance kin from `decitect.png`; `generate_button_icons.py` draws the header icons and writes the app's render of the donate mark from `assets/donate.png` (the site's copy is the shared mark, not generated); the book covers keep web-sized copies under `docs/`; the stepper arrows and the site screenshots are single files. This is the single-master rule working, not asset sprawl.
+- **The 49 tracked PNGs.** Each image has one source and the copies are generated from it. `generate_icons.py` emits the app icon set and its provenance kin from `decitect.png`; `generate_button_icons.py` draws the header icons and writes the app's render of the donate mark from `assets/donate.png` (the site's copy is the shared mark, not generated); the book covers are held to the height the app draws them under `assets/books`, while the site keeps its own copies under `docs/`; the stepper arrows, the site's touch icon and the site screenshots are single files. This is the single-master rule working, not asset sprawl.
