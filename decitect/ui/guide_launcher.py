@@ -33,6 +33,7 @@ class GuideLauncher:
         on_played: Callable[[], None],
         inform: Callable[[str, str], None],
         theme_of: Callable[[], str],
+        on_closed_changed: Callable[[], None],
     ) -> None:
         self._window = window
         self._simulator = simulator
@@ -40,6 +41,7 @@ class GuideLauncher:
         self._on_played = on_played
         self._inform = inform
         self._theme_of = theme_of
+        self._on_closed_changed = on_closed_changed
 
     def show(self) -> None:
         """Plan every level off-thread, then open the hierarchy guide."""
@@ -74,7 +76,14 @@ class GuideLauncher:
             self._theme_of(),
             grow_planner=self._plan_growth_for,
         )
+        session = self._session_of()
+        before = session.history if session is not None else ()
         self._dialog.exec()
+        # Moves played from the guide land behind the dialog, where their
+        # pulse cannot be seen; once it closes, show the last one.
+        session = self._session_of()
+        if session is not None and session.history != before:
+            self._on_closed_changed()
 
     def _plan_growth_for(self, dialog) -> None:
         """Build the grown guide for the open dialog, off-thread with a bar."""

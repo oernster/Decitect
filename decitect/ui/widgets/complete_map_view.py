@@ -25,6 +25,7 @@ from decitect.ui.widgets.complete_map_layout import (
     flow,
     root_boxes,
 )
+from decitect.ui.widgets.ring_pulse import RingPulse
 
 _MIN_SCALE = 0.15
 _MAX_SCALE = 3.0
@@ -73,6 +74,7 @@ class CompleteMapView(QGraphicsView):
         self._press_pos = None
         self._hover_id: str | None = None
         self._highlight: frozenset[str] = frozenset()
+        self._pulse = RingPulse(self.viewport().update, self)
         self._anchor_on_show = False
         self.setMouseTracking(True)
         self.viewport().setMouseTracking(True)
@@ -156,6 +158,10 @@ class CompleteMapView(QGraphicsView):
         self._highlight = frozenset(node_ids)
         self.viewport().update()
 
+    def pulse(self, node_ids) -> None:
+        """Glow the given nodes (or their nearest drawn ancestor) a few times."""
+        self._pulse.start(node_ids)
+
     def _highlight_rects(self) -> list[QRectF]:
         if self._org is None:
             return []
@@ -163,6 +169,13 @@ class CompleteMapView(QGraphicsView):
         return [self._node_rects[node_id] for node_id in ringed]
 
     def drawForeground(self, scene_painter: QPainter, rect: QRectF) -> None:
+        if self._org is not None:
+            pulsing = ringed_nodes(self._org, self._pulse.targets, self._node_rects)
+            self._pulse.paint(
+                scene_painter,
+                (self._node_rects[node_id] for node_id in pulsing),
+                (_RING_INSET, _RING_PEN, painter.CORNER),
+            )
         targets = self._highlight_rects()
         hover = self._domain_rects.get(self._hover_id) if self._hover_id else None
         if hover is not None:

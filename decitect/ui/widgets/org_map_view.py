@@ -22,6 +22,7 @@ from decitect.domain.models import OrgState
 from decitect.ui import ui_scale
 from decitect.ui.map_palette import map_palette
 from decitect.ui.widgets import org_map_painter as painter
+from decitect.ui.widgets.ring_pulse import RingPulse
 
 # One ring model everywhere: green marks the node you can act on, whether
 # reached by mouse (hover), keyboard (cursor) or affected by a change; muted
@@ -68,6 +69,7 @@ class OrgMapView(QGraphicsView):
         self._hover_id: str | None = None
         self._hover_back = False
         self._highlight: frozenset[str] = frozenset()
+        self._pulse = RingPulse(self.viewport().update, self)
         self._cursor_id: str | None = None
         self._min_scale = 0.0
         self._user_zoom = _FIT_ZOOM
@@ -91,6 +93,10 @@ class OrgMapView(QGraphicsView):
         """Ring the given node ids to mark them as changed, then repaint."""
         self._highlight = frozenset(node_ids)
         self.viewport().update()
+
+    def pulse(self, node_ids) -> None:
+        """Glow the given nodes a few times to show where a move landed."""
+        self._pulse.start(node_ids)
 
     def set_min_scale(self, scale: float) -> None:
         """Never fit smaller than this scale; scroll instead of shrinking tiny.
@@ -334,9 +340,16 @@ class OrgMapView(QGraphicsView):
             if target is not None:
                 painter.draw_ring(scene_painter, target)
         # A move is recorded against real teams; a department drawn as one
-        # box rings when any of its teams (at any depth) was a target.
-        if self._org is None or not self._highlight:
+        # box rings (or pulses) when any of its teams, at any depth, was a
+        # target.
+        if self._org is None:
             return
         drawn = {node_id: node_rect for node_rect, _kind, node_id in self._hot}
         for node_id in ringed_nodes(self._org, self._highlight, drawn):
             painter.draw_ring(scene_painter, drawn[node_id])
+        pulsing = ringed_nodes(self._org, self._pulse.targets, drawn)
+        self._pulse.paint(
+            scene_painter,
+            (drawn[node_id] for node_id in pulsing),
+            (painter.RING_INSET, painter.RING_PEN, painter.CORNER),
+        )

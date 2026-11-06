@@ -108,6 +108,7 @@ class MainWindow(QMainWindow):
             self._board.refresh,
             self._inform,
             lambda: self._theme,
+            self._board.show_last_move,
         )
         restored = org_store.load() if org_store is not None else None
         # A failed restore is not the same as having nothing to restore; the

@@ -12,7 +12,6 @@ from PySide6.QtWidgets import (
     QFrame,
     QHBoxLayout,
     QLabel,
-    QPushButton,
     QScrollArea,
     QSplitter,
     QVBoxLayout,
@@ -33,6 +32,7 @@ from decitect.ui.widgets.board_renderers import (
     render_signal_rows,
 )
 from decitect.ui.widgets.board_scope import ScopePresenter
+from decitect.ui.widgets.history_controls import HistoryControls
 from decitect.ui.widgets.move_note_view import MoveNoteView
 from decitect.ui.widgets.move_preview_dialog import MovePreviewDialog
 from decitect.ui.widgets.signal_detail_dialog import SignalDetailDialog
@@ -60,8 +60,6 @@ _MAP_PANE_W = 520
 _RIGHT_PANE_W = 480
 _RIGHT_PANE_MIN = 360
 _MOVES_RIGHT_PAD = 12
-_UNDO_LABEL = "Take a move back"
-_UNDO_TIP = "Undo the last move played"
 
 
 class BoardView(QWidget):
@@ -85,11 +83,9 @@ class BoardView(QWidget):
         self._map_pane = BoardMapPane(lambda: self._session)
         self._map_pane.drilled.connect(self._on_drilled)
         self._move_note = MoveNoteView()
-        self._undo_button = QPushButton(_UNDO_LABEL)
-        self._undo_button.setObjectName("UndoButton")
-        self._undo_button.setToolTip(_UNDO_TIP)
-        self._undo_button.setEnabled(False)
-        self._undo_button.clicked.connect(self.take_back)
+        self._history = HistoryControls()
+        self._history.take_back_requested.connect(self.take_back)
+        self._history.show_last_requested.connect(self.show_last_move)
         self._signals_row = QVBoxLayout()
         self._moves_box = QVBoxLayout()
         self._moves_holder = QWidget()
@@ -129,10 +125,7 @@ class BoardView(QWidget):
         column.addWidget(self._origin_label)
         column.addWidget(self._headcount_label)
         column.addWidget(self._scope.focus_label)
-        controls = QHBoxLayout()
-        controls.addWidget(self._undo_button)
-        controls.addStretch()
-        column.addLayout(controls)
+        column.addWidget(self._history)
         caption_row = QHBoxLayout()
         caption_row.addWidget(self._scope.map_caption)
         caption_row.addStretch()
@@ -238,23 +231,27 @@ class BoardView(QWidget):
         )
         self._scope.refresh()
         self._map_pane.set_org(self._session.org)
-        # Mark where the last move acted. Without this the map redraws in the
-        # new position and shows nothing: at whole-org scope a leaf repair
-        # moves the encoding by hundredths, so the ring is the only visible
-        # evidence a move landed. Derived from the history rather than held as
-        # its own state, so a take-back falls back to the move before it and a
-        # fresh organisation clears it.
-        self._map_pane.set_highlight(self._last_move_targets())
         self._move_note.show_last_move(self._session)
         self._update_undo()
         self._start_analysis()
 
     def take_back(self) -> None:
-        """Undo the last move played and re-render the position."""
+        """Undo the last move played, re-render, then pulse where it acted."""
         if self._session is None or not self._session.can_take_back:
             return
+        undone = self._last_move_targets()
         self._session.take_back()
         self.refresh()
+        self._map_pane.pulse(undone)
+
+    def show_last_move(self) -> None:
+        """Pulse the boxes the last move acted on, again.
+
+        At whole-org scope a leaf repair moves the encoding by hundredths,
+        so the pulse is the visible evidence of where a move landed; it
+        fades, so this brings it back on demand.
+        """
+        self._map_pane.pulse(self._last_move_targets())
 
     def _last_move_targets(self) -> tuple[str, ...]:
         """The nodes the most recent move acted on, empty when none is played."""
@@ -264,13 +261,14 @@ class BoardView(QWidget):
 
     def _update_undo(self) -> None:
         can = self._session is not None and self._session.can_take_back
-        self._undo_button.setEnabled(can)
+        self._history.sync(can, bool(self._last_move_targets()))
         self.historyChanged.emit(can)
 
     def nav_targets(self) -> tuple[QWidget, ...]:
         """The board's keyboard-nav stops, in reading order."""
         return (
-            self._undo_button,
+            self._history.undo_button,
+            self._history.show_button,
             self._map_pane,
             self._scope.level_button,
             self._moves_holder,
@@ -350,6 +348,7 @@ class BoardView(QWidget):
             return
         self._session.play(valuation.move)
         self.refresh()
+        self.show_last_move()
 
     def _open_move_preview(self, valuation: MoveValuation) -> None:
         if self._session is None:

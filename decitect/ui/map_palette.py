@@ -35,6 +35,10 @@ class MapPalette:
     contested: QColor
     ring: QColor
     preview: QColor
+    # The last-move pulse: sky blue, kept clear of the authority green, the
+    # escalation amber and the contested violet so a change never reads as
+    # a state.
+    pulse: QColor
 
 
 DARK_MAP = MapPalette(
@@ -49,6 +53,7 @@ DARK_MAP = MapPalette(
     contested=QColor("#a855f7"),
     ring=QColor("#2f9e64"),
     preview=QColor("#fbbf24"),
+    pulse=QColor("#38bdf8"),
 )
 
 LIGHT_MAP = MapPalette(
@@ -63,6 +68,7 @@ LIGHT_MAP = MapPalette(
     contested=QColor("#7c3aed"),
     ring=QColor("#15803d"),
     preview=QColor("#b45309"),
+    pulse=QColor("#0284c7"),
 )
 
 _current: MapPalette = DARK_MAP if DEFAULT_THEME != THEME_LIGHT else LIGHT_MAP
