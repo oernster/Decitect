@@ -1,1 +1,5 @@
-PySide6>=6.7.0
+# Only the Essentials half of PySide6: QtCore, QtGui and QtWidgets are all the
+# app imports. The PySide6 meta-package also pulls Addons, Pdf and WebEngine,
+# which the Flatpak installed wholesale (about 170 MB of wheels) and nothing
+# loads. The structural tests forbid importing the network and web modules.
+PySide6-Essentials>=6.7.0

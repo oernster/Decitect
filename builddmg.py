@@ -40,7 +40,7 @@ from pathlib import Path
 
 from packaging.requirements import InvalidRequirement, Requirement
 
-from build_utils import require, require_nuitka, run, section
+from build_utils import qt_trim_args, require, require_nuitka, run, section
 from dmg_icon import png_to_icns, set_volume_icon
 
 
@@ -98,8 +98,9 @@ BUNDLED_ICONS = [
     "decitect_128.png",
     "decitect_256.png",
     "decitect_provenance_256.png",
-    "decitect_512.png",
-    "decitect.png",
+    # Neither decitect_512.png (0.4 MB) nor the decitect.png master (1.6 MB)
+    # ships: the resolver takes the first icon file that exists and
+    # decitect.ico, listed ahead of both, is always here.
     "decitect.ico",
     "spin_up.png",
     "spin_down.png",
@@ -385,6 +386,8 @@ def build_app_bundle(icns_path: Path | None = None) -> Path:
         "--standalone",
         "--assume-yes-for-downloads",
         "--enable-plugin=pyside6",
+        *qt_trim_args(),
+        "--remove-output",
         "--macos-create-app-bundle",
         "--macos-app-mode=gui",
         f"--macos-app-name={APP_NAME}",

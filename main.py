@@ -29,7 +29,6 @@ from decitect.ui.theme import get_qss
 from decitect.version import __version__
 
 _UI_SCALE_REFERENCE_HEIGHT = 1260.0
-_MAX_UI_SCALE = 1.5
 _WIDTH_FRACTION = 0.5
 _HEIGHT_FRACTION = 0.85
 _MIN_WIDTH = 720
@@ -56,7 +55,7 @@ def main() -> int:
     app.setStyle("fusion")
 
     avail = app.primaryScreen().availableGeometry()
-    ui_scale.init(min(avail.height() / _UI_SCALE_REFERENCE_HEIGHT, _MAX_UI_SCALE))
+    ui_scale.init(min(avail.height() / _UI_SCALE_REFERENCE_HEIGHT, ui_scale.MAX_FACTOR))
     # Resolved once, before either store opens a file, so a pre-rename
     # ~/.fulcrum is adopted before anything could write a fresh directory.
     state = resolve_state_dir(Path.home())

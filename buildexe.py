@@ -34,7 +34,7 @@ import sys
 from pathlib import Path
 
 import stamp_version
-from build_utils import require_nuitka
+from build_utils import qt_trim_args, require_nuitka
 
 # --- Project identity (single source of truth for build metadata) -----------
 APP_DISPLAY_NAME = "Decitect"
@@ -52,12 +52,14 @@ MODEL_LICENSE_FILE = PROJECT_ROOT / "LICENSE-GPL-3.0.txt"
 UI_LICENSE_FILE = PROJECT_ROOT / "LICENSE-LGPL-3.0.txt"
 
 # Asset files bundled at the bundle root (the app's resource resolver looks for
-# these beside the executable, not inside an assets subdirectory).
+# these beside the executable, not inside an assets subdirectory). The
+# 1254px decitect.png master is not among them: the resolver tries
+# decitect.ico first, which always ships, so the master was never read.
+# decitect_256.png stays because the installer shows it.
 ASSET_FILES = (
     PROJECT_ROOT / "decitect.ico",
     PROJECT_ROOT / "decitect_256.png",
     PROJECT_ROOT / "decitect_provenance_256.png",
-    PROJECT_ROOT / "decitect.png",
     PROJECT_ROOT / "spin_up.png",
     PROJECT_ROOT / "spin_down.png",
 )
@@ -187,6 +189,12 @@ def build_exe() -> int:
         print(f"[buildexe] Removing previous build: {standalone_dir}")
         shutil.rmtree(standalone_dir, ignore_errors=True)
 
+    # Remove a C build tree an older build left behind in the payload.
+    build_tree = OUTPUT_DIR / f"{ENTRY_SCRIPT.stem}.build"
+    if build_tree.exists():
+        print(f"[buildexe] Removing previous build tree: {build_tree}")
+        shutil.rmtree(build_tree, ignore_errors=True)
+
     # Remove a previous renamed bundle too.
     final_bundle_dir = OUTPUT_DIR / BUNDLE_DIR_NAME
     if final_bundle_dir.exists():
@@ -202,6 +210,10 @@ def build_exe() -> int:
         "--standalone",
         "--assume-yes-for-downloads",
         "--enable-plugin=pyside6",
+        *qt_trim_args(),
+        # Delete the C build tree once linked. It lands in the output dir,
+        # which is the installer payload; setup was embedding it.
+        "--remove-output",
         f"--jobs={jobs}",
         f"--windows-console-mode={console_mode}",
         f"--output-dir={OUTPUT_DIR}",

@@ -32,7 +32,7 @@ import time
 from pathlib import Path
 
 import stamp_version
-from build_utils import require_nuitka
+from build_utils import qt_trim_args, require_nuitka
 
 # --- Project identity (single source of truth for installer metadata) -------
 APP_DISPLAY_NAME = "Decitect"
@@ -56,6 +56,9 @@ INSTALLER_ENTRY = INSTALLER_DIR / "app.py"
 PAYLOAD_DIR_NAME = "payload"
 PAYLOAD_STAGE_DIR = INSTALLER_DIR / PAYLOAD_DIR_NAME
 APP_BUNDLE_DIR = PAYLOAD_STAGE_DIR / APP_DISPLAY_NAME
+# The bundle files the installer UI reads before deploying: the window badge
+# (installer_logic.ICON_FILE_NAME) and the version it is about to install.
+PAYLOAD_BUNDLE_FILES = ("decitect_256.png", "VERSION")
 
 # Staging + output locations. The installer is compiled into a temporary dist
 # folder and then moved into place, so a running copy of an older installer
@@ -144,13 +147,20 @@ def replace_file(src: Path, dst: Path) -> None:
     shutil.move(str(src), str(dst))
 
 
-def stage_payload() -> None:
-    """Archive the built app bundle and stage the LICENSE into the payload dir.
+def stage_payload() -> list[str]:
+    """Archive the built app bundle; return the payload files to embed.
 
-    buildexe.py already placed the standalone bundle at APP_BUNDLE_DIR; this
-    step adds the deploy archive (a zip of the bundle) and the LICENSE next to
-    it. The bundle directory itself is left in place because the installer UI
-    reads its non-binary files (icon, VERSION) directly.
+    buildexe.py already placed the standalone bundle at APP_BUNDLE_DIR. The
+    whole bundle ships as one zip: Nuitka's onefile build strips loose
+    executables and DLLs from included data, while a zip is opaque data it
+    embeds verbatim. The installer extracts it on deploy.
+
+    Only the files the installer reads are embedded beside the zip: the icon
+    and VERSION from the bundle (installer_logic.payload_app_dir). Embedding
+    the payload directory wholesale also carried the unzipped bundle and any
+    build tree left in it, so the same application shipped twice over.
+    The licences are embedded at the installer's root, the first place it
+    looks, so no payload copy is staged.
     """
     if not APP_BUNDLE_DIR.exists():
         raise SystemExit(
@@ -158,26 +168,21 @@ def stage_payload() -> None:
             "Run `python buildexe.py` first to produce the standalone bundle."
         )
 
-    # Nuitka's onefile build strips loose executables and DLLs from an included
-    # data directory, so the staged bundle ships only the app's non-binary
-    # files (enough for the installer UI). Archive the full bundle into a single
-    # zip too: a zip is opaque data that Nuitka embeds verbatim and the
-    # installer extracts it on deploy to restore the exe and its DLLs.
-    archive_base = str(APP_BUNDLE_DIR)
-    archive_path = shutil.make_archive(
-        archive_base, "zip", root_dir=str(APP_BUNDLE_DIR)
+    archive_path = Path(
+        shutil.make_archive(str(APP_BUNDLE_DIR), "zip", root_dir=str(APP_BUNDLE_DIR))
     )
     print(f"[buildinstaller] Archived bundle for deploy: {archive_path}")
 
-    if LICENSE_FILE.exists():
-        shutil.copy2(LICENSE_FILE, PAYLOAD_STAGE_DIR / "LICENSE")
-        print(f"[buildinstaller] Staged LICENSE into payload from {LICENSE_FILE}")
-    else:
-        print(f"[buildinstaller] WARNING: LICENSE not found at {LICENSE_FILE}.")
-    for licence in (MODEL_LICENSE_FILE, UI_LICENSE_FILE):
-        if licence.exists():
-            shutil.copy2(licence, PAYLOAD_STAGE_DIR / licence.name)
-            print(f"[buildinstaller] Staged {licence.name} into payload")
+    target_root = f"{PAYLOAD_DIR_NAME}/{APP_DISPLAY_NAME}"
+    args = [
+        f"--include-data-file={archive_path}={PAYLOAD_DIR_NAME}/{archive_path.name}"
+    ]
+    for name in PAYLOAD_BUNDLE_FILES:
+        source = APP_BUNDLE_DIR / name
+        if not source.exists():
+            raise SystemExit(f"[buildinstaller] {source} is missing from the bundle.")
+        args.append(f"--include-data-file={source}={target_root}/{name}")
+    return args
 
 
 def build_installer() -> int:
@@ -208,8 +213,8 @@ def build_installer() -> int:
     # never ships a stale version string (single source of truth: VERSION).
     stamp_version.main()
 
-    # 1) Stage the payload (zip of the built bundle + LICENSE).
-    stage_payload()
+    # 1) Stage the payload: the zip of the built bundle plus what setup reads.
+    payload_args = stage_payload()
 
     # 2) Reset temporary build/output locations.
     for path in (TEMP_DIST_DIR,):
@@ -223,6 +228,8 @@ def build_installer() -> int:
         "--onefile",
         "--assume-yes-for-downloads",
         "--enable-plugin=pyside6",
+        *qt_trim_args(),
+        "--remove-output",
         f"--jobs={jobs}",
         f"--windows-console-mode={CONSOLE_MODE}",
         f"--output-dir={TEMP_DIST_DIR}",
@@ -236,8 +243,7 @@ def build_installer() -> int:
         # name, so it carries the app name, not the tagline.
         f"--file-description={APP_DISPLAY_NAME} Setup",
         f"--copyright={copyright_text()}",
-        # Embed the staged payload (app bundle + zip + LICENSE) in the installer.
-        f"--include-data-dir={PAYLOAD_STAGE_DIR}={PAYLOAD_DIR_NAME}",
+        *payload_args,
     ]
 
     if ICON_FILE.exists():

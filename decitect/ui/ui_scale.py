@@ -8,6 +8,8 @@ from __future__ import annotations
 
 _DEFAULT_FACTOR = 1.0
 _MIN_FACTOR = 0.5
+# The largest factor the composition root ever sets, however tall the screen.
+MAX_FACTOR = 1.5
 _state = {"factor": _DEFAULT_FACTOR}
 
 

@@ -3,7 +3,7 @@
 #
 # Uses org.freedesktop.Platform//25.08 (Python 3.13, glibc 2.42). Decitect is a
 # pure PySide6 desktop app: no native toolchains, no model downloads and no
-# network at runtime beyond the update check. Its single wheel set (PySide6 plus shiboken6) is pre-downloaded on
+# network at runtime beyond the update check. Its single wheel set (PySide6-Essentials plus shiboken6) is pre-downloaded on
 # the host, then installed inside the sandbox from those local wheels with
 # --no-index, so the build itself is offline.
 #
@@ -101,8 +101,9 @@ flatpak install --user --noninteractive flathub \
 
 # Pre-download wheels (Python 3.13 / manylinux x86_64). Downloading on the host
 # avoids slow sandboxed network calls and lets the sandbox install with
-# --no-index (fully offline build). Dependencies are resolved here so PySide6's
-# Essentials/Addons sub-wheels come along too.
+# --no-index (fully offline build). requirements.txt names PySide6-Essentials
+# alone, so only it and shiboken6 come down: the Addons, Pdf and WebEngine
+# wheels the PySide6 meta-package would add are never fetched or installed.
 section "Pre-downloading wheels (Python ${WHEEL_PYTHON} / ${WHEEL_PLATFORM})"
 rm -rf .flatpak-wheels
 mkdir -p .flatpak-wheels
