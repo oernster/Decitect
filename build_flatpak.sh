@@ -130,6 +130,9 @@ export PYTHONPATH="/app/share/${SHARE_DIR}:/app/lib/python${PYTHON_MM}/site-pack
 export QT_PLUGIN_PATH="/app/lib/python${PYTHON_MM}/site-packages/PySide6/Qt/plugins"
 export QT_QPA_PLATFORM_PLUGIN_PATH="/app/lib/python${PYTHON_MM}/site-packages/PySide6/Qt/plugins/platforms"
 export QML2_IMPORT_PATH="/app/lib/python${PYTHON_MM}/site-packages/PySide6/Qt/qml"
+# Mutes Qt 6.12's harmless Wayland text-input "Trying to disable" warnings;
+# main.py sets the same rule for a run from source. A user rule is kept after it.
+export QT_LOGGING_RULES="qt.qpa.wayland.textinput.warning=false\${QT_LOGGING_RULES:+;\$QT_LOGGING_RULES}"
 if [ -n "\${WAYLAND_DISPLAY:-}" ] && [ -z "\${FORCE_X11:-}" ]; then
     export QT_QPA_PLATFORM=wayland
 elif [ -n "\${DISPLAY:-}" ]; then

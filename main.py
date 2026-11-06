@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 from random import Random
 
+from PySide6.QtCore import QLoggingCategory
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
@@ -34,6 +35,13 @@ _HEIGHT_FRACTION = 0.85
 _MIN_WIDTH = 720
 _MIN_HEIGHT = 640
 
+# Qt 6.12's Wayland text-input-v3 code warns "Trying to disable ... but 0x0 is
+# focused" whenever a window without keyboard focus has its text input turned
+# off. Nothing fails and the app runs on, so the one category is muted here.
+# The launcher sets the same rule for the flatpak; QT_LOGGING_RULES is applied
+# after this, so a rule set in the environment still wins.
+_QT_LOG_FILTER = "qt.qpa.wayland.textinput.warning=false"
+
 
 def _size_window(window: MainWindow, avail) -> None:
     width = min(max(int(avail.width() * _WIDTH_FRACTION), _MIN_WIDTH), avail.width())
@@ -46,6 +54,7 @@ def _size_window(window: MainWindow, avail) -> None:
 
 
 def main() -> int:
+    QLoggingCategory.setFilterRules(_QT_LOG_FILTER)
     app = QApplication(sys.argv)
 
     # The app is themed entirely by stylesheet. The native windows11 style
